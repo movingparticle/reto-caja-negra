@@ -1,8 +1,22 @@
-<p align="center">
-  <a href="https://reto-caja-negra.pages.dev/" target="_blank" rel="noopener noreferrer">
-    <img src="assets/hero.png" alt="Design doc — FRONTIER Bogotá 2026" width="100%">
-  </a>
-</p>
+```text
+movingparticle@caja-negra:~$ cat ./SYSTEM_DESIGN.txt
+
+      .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+    /                                                                           \
+  /                                                                               \
+ /                                                                                 \
+ +---------------------------------------------------------------------------------+
+ |                                                                                 |
+ |   ██████╗  ██╗       █████╗   ██████╗ ██╗  ██╗    ██████╗   ██████╗  ██╗  ██╗   |
+ |   ██╔══██╗ ██║      ██╔══██╗ ██╔════╝ ██║ ██╔╝    ██╔══██╗ ██╔═══██╗ ╚██╗██╔╝   |
+ |   ██████╔╝ ██║      ███████║ ██║      █████╔╝     ██████╔╝ ██║   ██║  ╚███╔╝    |
+ |   ██╔══██╗ ██║      ██╔══██║ ██║      ██╔═██╗     ██╔══██╗ ██║   ██║  ██╔██╗    |
+ |   ██████╔╝ ███████╗ ██║  ██║ ╚██████╗ ██║  ██╗    ██████╔╝ ╚██████╔╝ ██╔╝ ██╗   |
+ |   ╚═════╝  ╚══════╝ ╚═╝  ╚═╝  ╚═════╝ ╚═╝  ╚═╝    ╚═════╝   ╚═════╝  ╚═╝  ╚═╝   |
+ +---------------------------------------------------------------------------------+
+ FRONTIER Bogota 2026 · Reto 2 · hito 12:00
+ INPUT --> CAJA --> OUTPUT
+```
 
 <p align="center">
   <a href="https://reto-caja-negra.pages.dev/" target="_blank" rel="noopener noreferrer"><img alt="Abrir design doc" src="https://img.shields.io/badge/design%20doc-abrir%20p%C3%A1gina-39ff14?style=for-the-badge&logo=githubpages&logoColor=07110a"></a>
