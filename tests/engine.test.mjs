@@ -4,8 +4,8 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { BankingEngine } from '../src/engine.mjs';
 
-test('Replicates all 20 examples from pruebas/ejemplos.jsonl exactly', () => {
-  const filePath = resolve('pruebas/ejemplos.jsonl');
+test('Replicates all 20 post-incident examples from pruebas/ejemplos_post_incidente.jsonl exactly', () => {
+  const filePath = resolve('pruebas/ejemplos_post_incidente.jsonl');
   const lines = readFileSync(filePath, 'utf-8').trim().split('\n').filter(Boolean);
 
   const engine = new BankingEngine();

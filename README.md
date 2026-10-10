@@ -54,10 +54,14 @@ y reimplementarla, generalizando a casos no vistos.
 - El campo de control es un **ISO 7064 Mod 97-10 alfanumérico 1-based**
   (`CD = (98 − (N·100)) mod 97`). Verificado en 16/16 ejemplos. Implementado en
   `src/checksum.mjs`.
-- Comandos: `PING`, `ALTA`, `CONSULTA`, `DEPOSITO`, `TRANSFER`, `ANULA` (case-insensitive).
-- 17 códigos de error exactos (`E0xx`–`E5xx`) con mensajes literales (incluye el espacio
-  final de `"comando desconocido "` y el typo `"recieved"`).
+- Comandos: `PING`, `ALTA`, `CONSULTA`, `DEPOSITO`, `TRANSFER`, `ANULA`, `HALT` (case-insensitive).
+  `HALT;1` es destructivo (`503 E599`); `HALT;<otro>` pide confirmación (`409 E520`).
+- 20 códigos de error exactos (`E0xx`–`E5xx`) con mensajes literales (incluye el espacio
+  final de `"comando desconocido "`, el typo `"recieved"` y `"sugerencia"` opcional en `E301`).
 - Precedencia de validación determinada (p. ej. `E303` > `E304` > `E401` > `E506` > `E507`).
+- **Incidente (15:30):** el saldo se devuelve como cadena decimal (`"1.00"`), el límite de
+  `TRANSFER` es `50000` y 3 fallos `E506`/`E507` de la cuenta origen la bloquean
+  (`423 E510`). Ver [`INCIDENT.md`](INCIDENT.md) y `SPEC.md` §8.
 
 ---
 
@@ -111,14 +115,18 @@ reto-caja-negra/
 ├── src/
 │   ├── checksum.mjs          # ISO 7064 Mod 97-10 (integridad)
 │   ├── engine.mjs            # Máquina de estados y reglas de negocio
+│   ├── suggest.mjs           # Sugerencia de comando (Levenshtein ≤ 2) para E301
 │   ├── security.mjs          # Auth timing-safe, límites, saneo
 │   ├── server.mjs            # Servidor HTTP local (node:http)
 │   └── worker.mjs            # Cloudflare Worker + Durable Object (producción)
-├── tests/                    # 11 tests: Paridad 20/20, adversariales, worker
-├── pruebas/ejemplos.jsonl    # 20 casos públicos de referencia
+├── tests/                    # parity, engine, server, worker, adversarial, checksum
+├── tools/                    # Arnés diferencial y sondas (ver §6)
+├── pruebas/ejemplos.jsonl    # 20 casos públicos (versión mañana, histórica)
+├── pruebas/ejemplos_post_incidente.jsonl  # 20 casos recapturados tras el incidente
 ├── experimentos.jsonl        # Log de probes reales (hipótesis -> resultado)
 ├── SPEC.md                   # Especificación deducida (comportamiento por ID)
-├── LOG.md / LOG.html         # Bitácora de 40 sondas: hipótesis antes/después y decisión
+├── INCIDENT.md               # Incidencia 15:30: cambio, detección, fix, regresión
+├── LOG.md / LOG.html         # Bitácora de sondas: hipótesis antes/después y decisión
 ├── CHALLENGE_ANALYSIS.md     # Análisis del reto, opciones y matriz de tests
 ├── TECHNICAL_DEFENSE.md      # Defensa técnica (debrief)
 ├── DESIGN_DOC.md / .html     # Documento de System Design (hito 12:00)
@@ -139,11 +147,27 @@ npm test
 
 Cubre, entre otros:
 
-- **Paridad exacta** de los 20 ejemplos públicos (`pruebas/ejemplos.jsonl`).
+- **Paridad exacta** de los 20 ejemplos recapturados tras el incidente
+  (`pruebas/ejemplos_post_incidente.jsonl`).
 - **Integridad**: control válido, inválido (`E202`), mal formado (`E201`), faltante (`E103`),
-  segmentos vacíos (`E104`), ceros iniciales.
-- **Adversariales**: límite 100.000, precedencia de errores, reversión de `ANULA`, aridad.
+  segmentos vacíos (`E104`), ceros iniciales, controles límite `2`/`98`.
+- **Adversariales**: límite 50000, precedencia de errores, reversión de `ANULA`, aridad.
+- **Incidente**: saldo decimal, `E510` (bloqueo tras 3 fallos, `intentos`, desbloqueo), `HALT`
+  (`409 E520` / `503 E599`), sugerencia en `E301`, protocolo estricto (OPTIONS 404, sin query auth).
 - **Worker**: hardening, autenticación multi-clave, límite 8 KiB.
+
+### Arnés diferencial (oráculo vs reemplazo)
+
+```bash
+python tools/diff_battery.py --ignore-xreq          # compara contra el oráculo
+python tools/diff_battery.py --replica http://127.0.0.1:3000
+python tools/capture_fixture.py                     # recaptura el fixture post-incidente
+python tools/probe_xreq.py                          # semántica de X-Req
+```
+
+`tools/diff_report.json` guarda la transcripción completa por caso.
+
+
 
 ---
 

@@ -39,13 +39,13 @@ test('Cloudflare Worker Hardening & Multi-Key Auth', async () => {
   assert.equal(authTutorRes.status, 200);
   assert.deepEqual(await authTutorRes.json(), { ok: true });
 
-  // 4. CORS pre-flight
+  // 4. OPTIONS /msg: el oráculo no implementa CORS -> 404 E404 (no 204)
   const corsRes = await worker.fetch(
     new Request('https://caja-negra.worker/msg', { method: 'OPTIONS' }),
     env
   );
-  assert.equal(corsRes.status, 204);
-  assert.equal(corsRes.headers.get('access-control-allow-origin'), '*');
+  assert.equal(corsRes.status, 404);
+  assert.deepEqual(await corsRes.json(), { error: 'E404', mensaje: 'ruta desconocida' });
 
   // 5. Anti-DoS: Oversized body bytes (> 8 KiB)
   const hugePadding = ' '.repeat(10000);
@@ -89,8 +89,8 @@ test('Cloudflare Worker Hardening & Multi-Key Auth', async () => {
   );
   assert.equal(resetRes.status, 200);
 
-  // 8. Execute all 20 examples from pruebas/ejemplos.jsonl against Worker
-  const filePath = resolve('pruebas/ejemplos.jsonl');
+  // 8. Execute all 20 post-incident examples from pruebas/ejemplos_post_incidente.jsonl against Worker
+  const filePath = resolve('pruebas/ejemplos_post_incidente.jsonl');
   const lines = readFileSync(filePath, 'utf-8').trim().split('\n').filter(Boolean);
 
   let expectedXReq = 0;

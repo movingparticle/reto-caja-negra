@@ -58,8 +58,8 @@ test('Server end-to-end integration test with probed invariants', async () => {
     assert.equal(resReset.status, 200);
     assert.deepEqual(await resReset.json(), { ok: true });
 
-    // 7. Run all 20 examples from pruebas/ejemplos.jsonl over HTTP
-    const filePath = resolve('pruebas/ejemplos.jsonl');
+    // 7. Run all 20 post-incident examples from pruebas/ejemplos_post_incidente.jsonl over HTTP
+    const filePath = resolve('pruebas/ejemplos_post_incidente.jsonl');
     const lines = readFileSync(filePath, 'utf-8').trim().split('\n').filter(Boolean);
 
     let expectedXReq = 0;

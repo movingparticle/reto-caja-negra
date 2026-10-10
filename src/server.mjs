@@ -28,7 +28,7 @@ export function createServer(options = {}) {
     const authHeader = req.headers['authorization'];
     let providedToken = null;
     if (authHeader && authHeader.startsWith('Bearer ')) {
-      providedToken = authHeader.slice(7).trim();
+      providedToken = authHeader.slice(7);
     }
     const isValidToken = Boolean(providedToken && allowedTokens.has(providedToken));
 
@@ -39,19 +39,20 @@ export function createServer(options = {}) {
     });
 
     req.on('end', () => {
-      const bodyText = Buffer.concat(bodyBuffer).toString('utf-8');
-      const url = req.url;
+      const bodyRaw = Buffer.concat(bodyBuffer);
+      const bodyText = bodyRaw.toString('utf-8');
+      const pathname = new URL(req.url, 'http://localhost').pathname;
       const method = req.method;
 
-      // Check endpoints
-      if (url === '/health' && method === 'GET') {
+      // Check endpoints (el oráculo enruta por pathname, ignora el query string)
+      if (pathname === '/health' && method === 'GET') {
         if (!isValidToken) {
           return sendJson(401, { error: 'E001', mensaje: 'no autorizado' });
         }
         return sendJson(200, { ok: true });
       }
 
-      if (url === '/__reset' && method === 'POST') {
+      if (pathname === '/__reset' && method === 'POST') {
         if (!isValidToken) {
           return sendJson(401, { error: 'E001', mensaje: 'no autorizado' });
         }
@@ -60,13 +61,21 @@ export function createServer(options = {}) {
         return sendJson(200, { ok: true });
       }
 
-      if (url === '/msg' && method === 'POST') {
+      if (pathname === '/msg' && method === 'POST') {
         if (!isValidToken) {
           return sendJson(401, { error: 'E001', mensaje: 'no autorizado' });
         }
 
         const currentXReq = ++xReqSeq;
         const msgJson = (status, data) => sendJson(status, data, { 'X-Req': String(currentXReq) });
+
+        if (engine.halted) {
+          return msgJson(503, { error: 'E599', mensaje: 'service halted' });
+        }
+
+        if (bodyRaw.byteLength > 8192) {
+          return msgJson(413, { error: 'E101', mensaje: 'cuerpo demasiado grande' });
+        }
 
         // Validate JSON body
         if (!bodyText || bodyText.trim().length === 0) {

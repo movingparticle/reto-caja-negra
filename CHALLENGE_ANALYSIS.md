@@ -23,10 +23,13 @@ A través de análisis diferencial en pares de secuencias de prueba (`AC-0001` v
 - **`CONSULTA`**: 1 argumento (cuenta). Retorna saldo. 404 `E401` si no existe.
 - **`DEPOSITO`**: 2 argumentos (cuenta, monto). Acredita saldo y genera `OP-XXXX`. Retorna `{"status":"recieved","operacionId":"OP-XXXX"}`.
 - **`TRANSFER`**: 3 argumentos (origen, destino, monto).
-  - Límite máximo: 100.000. Si supera, retorna 422 `E506`.
+  - Límite máximo **50000** tras el incidente (antes 100000). Si supera, retorna 422 `E506`.
   - Saldo suficiente: si $saldo < monto$, retorna 422 `E507`.
   - Cuentas existentes: 404 `E401`.
+  - **Bloqueo (incidente):** 3 fallos `E506`/`E507` del origen → siguiente `TRANSFER` → 423 `E510`; un depósito exitoso desbloquea.
 - **`ANULA`**: 1 argumento (operacionId). Revierte transferencias/depósitos. Si ya fue anulada, retorna 200 `{"ok":false,"motivo":"ya anulada"}`.
+- **`HALT`**: 1 argumento. `HALT;1` → 503 `E599` (detiene el servicio); `HALT;<otro>` → 409 `E520` (pide confirmación). `POST /__reset` recupera.
+- **Saldo (incidente):** `CONSULTA` devuelve `saldo` como cadena decimal (`"1.00"`).
 
 ## 5. Architecture Options & Trade-offs
 
@@ -40,18 +43,28 @@ A través de análisis diferencial en pares de secuencias de prueba (`AC-0001` v
 
 | ID | Hipótesis / Caso Adversarial | Resultado Esperado | Prioridad |
 |---|---|---|---|
-| T-01 | Transferencia de exactamente 100.000 | 200 OK | P0 |
-| T-02 | Transferencia de 100.001 | 422 `E506` | P0 |
-| T-03 | Saldo exacto debitado a 0 | 200 OK | P0 |
+| T-01 | Transferencia de exactamente 50000 (límite post-incidente) | 200 OK | P0 |
+| T-02 | Transferencia de 50001 | 422 `E506` | P0 |
+| T-03 | Saldo exacto debitado a 0 | 200 OK (`saldo` `"0.00"`) | P0 |
 | T-04 | Saldo insuficiente por 1 unidad | 422 `E507` | P0 |
 | T-05 | Aridad incorrecta (0, 2 o más args según comando) | 400 `E302` | P0 |
 | T-06 | Control con letras o caracteres extraños | 400 `E201` | P0 |
 | T-07 | Nombre de comando en minúsculas o mixto (`pInG`, `AlTa`) | 200 / 201 OK | P0 |
 | T-08 | Re-anulación de operación ya anulada | 200 `ok: false, motivo: "ya anulada"` | P0 |
-| T-09 | Reinicio de estado con `POST /__reset` | 200 OK, reset de contadores | P0 |
+| T-09 | Reinicio de estado con `POST /__reset` (limpia bloqueo) | 200 OK, reset de estado | P0 |
 | T-10 | Carga HTTP mayor a 8.192 bytes (8 KiB) | 413 `E101` (`cuerpo demasiado grande`) | P0 |
 | T-11 | Monto con ceros iniciales (`0100`) o flotante (`10.5`) | 400 `E303` (`monto inválido`) | P0 |
 | T-12 | Monto con 11 dígitos decimales (`10000000000`) | 400 `E303` (`monto inválido`) | P0 |
 | T-13 | Monto con 10 dígitos decimales (`9999999999`) | 200 OK (`status: recieved`) | P0 |
 | T-14 | Cálculo de control donde $(rem \times 3) \equiv 1$ produce 97 (no 0) | 200 OK (Control válido en ISO 7064) | P0 |
 | T-15 | Ruta no mapeada (ej. `GET /unmapped`) sin autenticación | 404 `E404` (`ruta desconocida`) | P0 |
+| T-16 | `CONSULTA` devuelve saldo como cadena decimal | 200 `{"saldo":"X.YY"}` | P0 |
+| T-17 | 3 fallos `E506`/`E507` del origen | el 4.º `TRANSFER` → 423 `E510` | P0 |
+| T-18 | `E510` mientras bloqueada, con `intentos` incremental | 423 `{intentos:1,2,3…}` | P0 |
+| T-19 | Precedencia en cuenta bloqueada (`E303`/`E304`/`E401` antes de `E510`) | 400/404 según caso | P0 |
+| T-20 | `DEPOSITO` exitoso desbloquea | 200 y `TRANSFER` vuelve a operar | P0 |
+| T-21 | `HALT;<x>` sin confirmación | 409 `E520` | P0 |
+| T-22 | `HALT;1` | 503 `E599`, todo `/msg` → 503 hasta reset | P0 |
+| T-23 | Comando desconocido cercano (`ALTAX`) | 400 `E301` con `"sugerencia":"ALTA"` | P0 |
+| T-24 | `OPTIONS /msg` | 404 `E404` | P1 |
+| T-25 | Token por `?token=`/`?key=` | 401 `E001` | P1 |

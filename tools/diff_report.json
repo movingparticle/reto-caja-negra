@@ -1,0 +1,3119 @@
+[
+  {
+    "id": "P0-A-01",
+    "family": "protocolo",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-A-02",
+    "family": "protocolo",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-A-03",
+    "family": "protocolo",
+    "oracle": [
+      {
+        "status": 404,
+        "body": {
+          "error": "E404",
+          "mensaje": "ruta desconocida"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 404,
+        "body": {
+          "error": "E404",
+          "mensaje": "ruta desconocida"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-A-04",
+    "family": "protocolo",
+    "oracle": [
+      {
+        "status": 404,
+        "body": {
+          "error": "E404",
+          "mensaje": "ruta desconocida"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 404,
+        "body": {
+          "error": "E404",
+          "mensaje": "ruta desconocida"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-A-05",
+    "family": "protocolo",
+    "oracle": [
+      {
+        "status": 404,
+        "body": {
+          "error": "E404",
+          "mensaje": "ruta desconocida"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 404,
+        "body": {
+          "error": "E404",
+          "mensaje": "ruta desconocida"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-A-06",
+    "family": "protocolo",
+    "oracle": [
+      {
+        "status": 404,
+        "body": {
+          "error": "E404",
+          "mensaje": "ruta desconocida"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 404,
+        "body": {
+          "error": "E404",
+          "mensaje": "ruta desconocida"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-A-07",
+    "family": "protocolo",
+    "oracle": [
+      {
+        "status": 404,
+        "body": {
+          "error": "E404",
+          "mensaje": "ruta desconocida"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 404,
+        "body": {
+          "error": "E404",
+          "mensaje": "ruta desconocida"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-A-08",
+    "family": "protocolo",
+    "oracle": [
+      {
+        "status": 404,
+        "body": {
+          "error": "E404",
+          "mensaje": "ruta desconocida"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 404,
+        "body": {
+          "error": "E404",
+          "mensaje": "ruta desconocida"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-A-09",
+    "family": "protocolo",
+    "oracle": [
+      {
+        "status": 404,
+        "body": {
+          "error": "E404",
+          "mensaje": "ruta desconocida"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 404,
+        "body": {
+          "error": "E404",
+          "mensaje": "ruta desconocida"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-A-10",
+    "family": "protocolo",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-A-11",
+    "family": "protocolo",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-A-12",
+    "family": "protocolo",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-A-13",
+    "family": "protocolo",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-A-14",
+    "family": "protocolo",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-A-15",
+    "family": "protocolo",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-B-01",
+    "family": "entrada",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-B-02",
+    "family": "entrada",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-B-03",
+    "family": "entrada",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-B-04",
+    "family": "entrada",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-B-05",
+    "family": "entrada",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-B-06",
+    "family": "entrada",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-B-07",
+    "family": "entrada",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-B-08",
+    "family": "entrada",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-B-09",
+    "family": "entrada",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-B-10",
+    "family": "entrada",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-B-11",
+    "family": "entrada",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-B-12",
+    "family": "entrada",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-B-13",
+    "family": "entrada",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-B-14",
+    "family": "entrada",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-B-15",
+    "family": "entrada",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-B-16",
+    "family": "entrada",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-C-01",
+    "family": "integridad",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-C-02",
+    "family": "integridad",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-C-03",
+    "family": "integridad",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-C-04",
+    "family": "integridad",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-C-05",
+    "family": "integridad",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-C-06",
+    "family": "integridad",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-C-07",
+    "family": "integridad",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-C-08",
+    "family": "integridad",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-C-09",
+    "family": "integridad",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-C-10",
+    "family": "integridad",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-C-11",
+    "family": "integridad",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-D-01",
+    "family": "negocio",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-D-02",
+    "family": "negocio",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-D-03",
+    "family": "negocio",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-D-04",
+    "family": "negocio",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-D-05",
+    "family": "negocio",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-D-06",
+    "family": "negocio",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-D-07",
+    "family": "negocio",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-D-08",
+    "family": "negocio",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-D-09",
+    "family": "negocio",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-D-10",
+    "family": "negocio",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-E-01",
+    "family": "secuencia",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-E-02",
+    "family": "secuencia",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-E-03",
+    "family": "secuencia",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-F-01",
+    "family": "protocolo",
+    "oracle": [
+      {
+        "status": 404,
+        "body": {
+          "error": "E404",
+          "mensaje": "ruta desconocida"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 404,
+        "body": {
+          "error": "E404",
+          "mensaje": "ruta desconocida"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-F-02",
+    "family": "protocolo",
+    "oracle": [
+      {
+        "status": 404,
+        "body": {
+          "error": "E404",
+          "mensaje": "ruta desconocida"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 404,
+        "body": {
+          "error": "E404",
+          "mensaje": "ruta desconocida"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-F-03",
+    "family": "protocolo",
+    "oracle": [
+      {
+        "status": 404,
+        "body": "",
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 404,
+        "body": "",
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-F-04",
+    "family": "protocolo",
+    "oracle": [
+      {
+        "status": 404,
+        "body": {
+          "error": "E404",
+          "mensaje": "ruta desconocida"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 404,
+        "body": {
+          "error": "E404",
+          "mensaje": "ruta desconocida"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-F-05",
+    "family": "protocolo",
+    "oracle": [
+      {
+        "status": 404,
+        "body": {
+          "error": "E404",
+          "mensaje": "ruta desconocida"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 404,
+        "body": {
+          "error": "E404",
+          "mensaje": "ruta desconocida"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-F-06",
+    "family": "protocolo",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-F-07",
+    "family": "protocolo",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-F-08",
+    "family": "protocolo",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-F-09",
+    "family": "protocolo",
+    "oracle": [
+      {
+        "status": 404,
+        "body": {
+          "error": "E404",
+          "mensaje": "ruta desconocida"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 404,
+        "body": {
+          "error": "E404",
+          "mensaje": "ruta desconocida"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-F-10",
+    "family": "protocolo",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-F-11",
+    "family": "protocolo",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-F-12",
+    "family": "protocolo",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-F-13",
+    "family": "protocolo",
+    "oracle": [
+      {
+        "status": 404,
+        "body": {
+          "error": "E404",
+          "mensaje": "ruta desconocida"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 404,
+        "body": {
+          "error": "E404",
+          "mensaje": "ruta desconocida"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-F-14",
+    "family": "protocolo",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-G-01",
+    "family": "integridad",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-G-02",
+    "family": "integridad",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-G-03",
+    "family": "integridad",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-G-04",
+    "family": "integridad",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-G-05",
+    "family": "integridad",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-G-06",
+    "family": "integridad",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-G-07",
+    "family": "integridad",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-G-08",
+    "family": "integridad",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-G-09",
+    "family": "negocio",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-G-10",
+    "family": "negocio",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-G-11",
+    "family": "negocio",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-G-12",
+    "family": "negocio",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-G-13",
+    "family": "negocio",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-G-14",
+    "family": "negocio",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-G-15",
+    "family": "negocio",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-G-16",
+    "family": "negocio",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-H-01",
+    "family": "halt",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-H-02",
+    "family": "halt",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-H-03",
+    "family": "halt",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      },
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-H-04",
+    "family": "sugerencia",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-H-05",
+    "family": "sugerencia",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  },
+  {
+    "id": "P0-H-06",
+    "family": "sugerencia",
+    "oracle": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "replica": [
+      {
+        "status": 401,
+        "body": {
+          "error": "E001",
+          "mensaje": "no autorizado"
+        },
+        "xreq": null
+      }
+    ],
+    "match": true
+  }
+]

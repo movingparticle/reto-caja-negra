@@ -67,14 +67,14 @@ test('Adversarial Test Suite: Probed Invariants & Exact Precedence', () => {
   engine.processMessage(msg('DEPOSITO;AC-0001;500'));
   engine.processMessage(msg('TRANSFER;AC-0001;AC-0002;400'));
 
-  // AC-0001 has 100 left
-  assert.equal(engine.processMessage(msg('CONSULTA;AC-0001')).body.saldo, 100);
+  // AC-0001 has 100 left (centavos) -> "1.00" tras el incidente
+  assert.equal(engine.processMessage(msg('CONSULTA;AC-0001')).body.saldo, '1.00');
 
-  // Annul deposit OP-0001 -> AC-0001 balance becomes -400!
+  // Annul deposit OP-0001 -> AC-0001 balance becomes -400! -> "-4.00"
   const anulaDep = engine.processMessage(msg('ANULA;OP-0001'));
   assert.equal(anulaDep.status, 200);
   assert.equal(anulaDep.body.ok, true);
-  assert.equal(engine.processMessage(msg('CONSULTA;AC-0001')).body.saldo, -400);
+  assert.equal(engine.processMessage(msg('CONSULTA;AC-0001')).body.saldo, '-4.00');
 
   // Re-annul OP-0001 -> returns ya anulada
   const reAnula = engine.processMessage(msg('ANULA;OP-0001'));

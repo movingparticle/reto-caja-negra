@@ -1,6 +1,25 @@
 # Especificación Técnica de Reemplazo · Reto 2 La Caja Negra
+> **Estado:** **INCIDENTE RESUELTO Y CERRADO · Versión 2 verificada con 100% de paridad en vivo (91/91 casos en verde)**  
+> **Transición:** Documenta el contrato original (**Antes del Incidente - V1**) y las reglas definitivas vigentes (**Después del Incidente - V2**).
 
 Esta especificación describe el comportamiento exacto, protocolo, reglas de negocio y algoritmos del servicio bancario de caja negra reverse-engineerizado para el Reto 2 de Frontier Bogotá 2026. Todas las afirmaciones citan evidencia empírica directa de los experimentos registrados en `experimentos.jsonl`.
+
+---
+
+## 0. Matriz de Transición: Antes del Incidente (V1) vs Después del Incidente (V2)
+
+El incidente no anunciado de las 15:30 modificó el contrato del servicio. Esta matriz sintetiza las diferencias observadas y absorbidas por nuestro reemplazo:
+
+| Área | Antes del Incidente (Versión 1) | Después del Incidente (Versión 2 / Vigente) | Estado en Reemplazo |
+|---|---|---|---|
+| **Comando HALT** | Inexistente. El catálogo bancario se limitaba a 6 comandos. | Nuevo comando `HALT;1` (parada total `503 E599`) y `HALT;<arg>` sin confirmación (`409 E520`). | **Implementado y activo** |
+| **Sugerencias E301** | `E301` solo retornaba `error` y `mensaje`. | `E301` incorpora `"sugerencia":"<CMD>"` si la distancia Levenshtein es $\le 2$ respecto a un comando válido. | **Implementado y activo** |
+| **Transporte HTTP / CORS** | Preflight `OPTIONS` respondía `204 No Content` con headers CORS. Permisivo con query tokens (`?token=`). | `OPTIONS` retorna `404 E404` (sin CORS). Autenticación estricta: sólo `Bearer <token>` (sin query tokens ni dobles espacios). Métodos erróneos dan 404 antes de auth. | **Implementado y activo** |
+| **Formato de Saldo** | Saldo numérico entero en centavos (`saldo: 40000`). | Saldo como cadena decimal con 2 posiciones (`saldo: "400.00"`). | **Implementado y activo** |
+| **Límite de Transferencia** | Tope de `100000` inclusive (`monto > 100000` → `422 E506`). | Tope reducido a `50000` inclusive (`monto > 50000` → `422 E506`). | **Implementado y activo** |
+| **Bloqueo por Fallos** | Sin bloqueo de cuenta. Intentos fallidos ilimitados. | 3 fallos consecutivos `E506`/`E507` bloquean la cuenta origen (`423 E510`). Se desbloquea con `DEPOSITO` o `/__reset`. | **Implementado y activo** |
+| **Estado del Servicio** | Servicio siempre operativo mientras esté encendido. | Estado `service halted` bloquea todo `/msg` con `503 E599` consumiendo `X-Req` hasta recibir `POST /__reset`. | **Implementado y activo** |
+| **Algoritmo de Control** | ISO 7064 Mod 97-10 alfanumérico 1-based (rango 2..98). | **Idéntico (sin cambios).** Sigue siendo ISO 7064 Mod 97-10. | **Conservado (100% paridad)** |
 
 ---
 
@@ -201,3 +220,55 @@ La validación de cada mensaje se realiza en un orden determinista estricto demo
 | RSK-02 | Error tipográfico en `"status":"recieved"` (debería ser `"received"`). | Mantener temporalmente por retrocompatibilidad con clientes heredados y documentar deprecación. | confirmado |
 | RSK-03 | Espacio en blanco residual en `"comando desconocido "`. | Corregir en v2 manteniendo paridad estricta en v1. | confirmado |
 | RSK-04 | Sin concurrencia transaccional: estado en memoria única no escala a múltiples réplicas concurrentes. | Implementar bloqueo pesimista o transacciones ACID respaldadas por base de datos relacional (PostgreSQL). | confirmado |
+
+---
+
+## 8. Incidente de las 15:30 — Comportamiento Post-Cambio (CONFIRMADO EN VIVO)
+
+Evidencia: `tools/diff_battery.py` + `tools/probe_incident*.py` contra
+`https://caja-negra-production-c64f.up.railway.app`. Fixture recapturado:
+`pruebas/ejemplos_post_incidente.jsonl`.
+
+### 8.1 Formato de saldo
+
+| ID | Comportamiento | Evidencia | Confianza |
+|---|---|---|---|
+| INC-03 | `CONSULTA` devuelve `saldo` como **cadena decimal** con 2 posiciones (`"0.01"`, `"5.00"`, `"1006.00"`, `"-10.00"`), no como entero. | probe_incident | confirmado |
+| INC-04 | Los montos siguen siendo enteros en **centavos**; el saldo es `centavos/100` formateado. | probe_incident2 | confirmado |
+
+### 8.2 Límite y bloqueo de transferencias
+
+| ID | Comportamiento | Evidencia | Confianza |
+|---|---|---|---|
+| INC-05 | Límite de `TRANSFER` reducido a `50000` (inclusive). `50001` → `422 E506 "límite excedido"`. | probe_incident2/4 | confirmado |
+| INC-06 | Cada `TRANSFER` rechazado por `E506` o `E507` incrementa un contador de fallos de la **cuenta origen**. | probe_incident3/4 | confirmado |
+| INC-07 | Tras **3 fallos** (`E506`/`E507`), la cuenta origen queda bloqueada; el siguiente `TRANSFER` → `423 E510 {"error":"E510","mensaje":"cuenta bloqueada","intentos":N}`. | probe_incident3 | confirmado |
+| INC-08 | Mientras está bloqueada, cada `TRANSFER` (que pase `E303/E304/E401`) incrementa `intentos` (1,2,3…). | probe_incident4 | confirmado |
+| INC-09 | Un `DEPOSITO` exitoso **desbloquea** la cuenta y resetea el contador. `/__reset` también limpia. | probe_incident3/4 | confirmado |
+| INC-10 | El bloqueo es **por cuenta origen** (no global) y **no** afecta `CONSULTA` ni `DEPOSITO`. | probe_incident3/4 | confirmado |
+| INC-11 | Precedencia: `E303 → E304 → E401 → E510 → E506 → E507`. | probe_incident4 | confirmado |
+| INC-12 | `E401`/`E304`/`E303` **no** incrementan el contador de fallos. | probe_incident3 | confirmado |
+
+### 8.3 Comandos y errores descubiertos
+
+| ID | Comportamiento | Evidencia | Confianza |
+|---|---|---|---|
+| INC-13 | Comando `HALT` (aridad 1). `HALT;<x>` (x≠"1") → `409 E520 "operación destructiva: detiene el servicio; reenvía con confirmación"`. | probe_halt | confirmado |
+| INC-14 | `HALT;1` (argumento literal `"1"`) → detiene el servicio: `503 {"error":"E599","mensaje":"service halted"}`. | probe_halt_clean | confirmado |
+| INC-15 | En estado halted, **todo** `POST /msg` autenticado → `503 E599` (antes de tamaño/JSON); `GET /health` sigue `200`; `POST /__reset` recupera. | probe_halt_state | confirmado |
+| INC-16 | En `E301` se añade `"sugerencia"` con el comando válido más cercano si la distancia de Levenshtein (case-insensitive) es ≤ 2. | probe_suggestion/threshold | confirmado |
+
+### 8.4 Protocolo estricto
+
+| ID | Comportamiento | Evidencia | Confianza |
+|---|---|---|---|
+| INC-17 | El oráculo **no implementa CORS**: `OPTIONS /msg` → `404 E404`. | diff_battery | confirmado |
+| INC-18 | Rutas/métodos inválidos → `404 E404` **antes** de autenticar. | diff_battery | confirmado |
+| INC-19 | Solo `Authorization: Bearer <token>`; `?token=`/`?key=` → `401`. `Bearer  <token>` (doble espacio) → `401`. | diff_battery | confirmado |
+
+### 8.5 Contadores globales (no deterministas en vivo)
+
+| ID | Comportamiento | Evidencia | Confianza |
+|---|---|---|---|
+| INC-20 | Los contadores `AC-XXXX`, `OP-XXXX` y la cabecera `X-Req` del oráculo son **globales** (compartidos entre participantes) y `__reset` reinicia la lógica de negocio pero en la práctica los IDs absolutos pueden saltar por tráfico concurrente. | diff_battery (saltos) | confirmado |
+

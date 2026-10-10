@@ -1,4 +1,20 @@
 import { validateControl } from './checksum.mjs';
+import { suggestCommand } from './suggest.mjs';
+
+/**
+ * Formato de saldo del oráculo tras el incidente (15:30): entero en centavos
+ * -> cadena decimal con 2 posiciones ("0.01", "5.00", "-10.00").
+ */
+export function formatSaldo(cents) {
+  const sign = cents < 0 ? '-' : '';
+  const abs = Math.abs(cents);
+  const entero = Math.floor(abs / 100);
+  const decimal = String(abs % 100).padStart(2, '0');
+  return `${sign}${entero}.${decimal}`;
+}
+
+export const TRANSFER_LIMIT = 50000; // límite tras el incidente (antes 100000)
+export const MAX_FALLOS = 3; // fallos E506/E507 consecutivos antes de bloquear
 
 export class BankingEngine {
   constructor() {
@@ -6,10 +22,11 @@ export class BankingEngine {
   }
 
   reset() {
-    this.accounts = new Map(); // cuentaId -> { id, nombre, saldo }
+    this.accounts = new Map(); // cuentaId -> { id, nombre, saldo, fails, blocked, intentos }
     this.operations = new Map(); // operacionId -> { id, tipo, ... }
     this.accountSeq = 1;
     this.operationSeq = 1;
+    this.halted = false; // estado "service halted" (comando HALT;1)
   }
 
   processMessage(rawMessage) {
@@ -68,6 +85,9 @@ export class BankingEngine {
           id: cuentaId,
           nombre,
           saldo: 0,
+          fails: 0,
+          blocked: false,
+          intentos: 0,
         });
         return { status: 201, body: { cuentaId } };
       }
@@ -85,7 +105,7 @@ export class BankingEngine {
           status: 200,
           body: {
             cuenta_id: acc.id,
-            saldo: acc.saldo,
+            saldo: formatSaldo(acc.saldo),
           },
         };
       }
@@ -109,6 +129,10 @@ export class BankingEngine {
 
         const acc = this.accounts.get(cuentaId);
         acc.saldo += monto;
+        // Un depósito exitoso resetea el contador de fallos y desbloquea la cuenta.
+        acc.fails = 0;
+        acc.blocked = false;
+        acc.intentos = 0;
         const operacionId = `OP-${String(this.operationSeq++).padStart(4, '0')}`;
         this.operations.set(operacionId, {
           id: operacionId,
@@ -153,21 +177,35 @@ export class BankingEngine {
           return { status: 404, body: { error: 'E401', mensaje: 'cuenta inexistente' } };
         }
 
-        // Precedence 4: Límite excedido
-        if (monto > 100000) {
-          return { status: 422, body: { error: 'E506', mensaje: 'límite excedido' } };
-        }
-
-        // Precedence 5: Saldo insuficiente
         const origen = this.accounts.get(origenId);
         const destino = this.accounts.get(destinoId);
 
+        // Precedence 4 (incidente): cuenta origen bloqueada -> E510 (423)
+        if (origen.blocked) {
+          origen.intentos += 1;
+          return {
+            status: 423,
+            body: { error: 'E510', mensaje: 'cuenta bloqueada', intentos: origen.intentos },
+          };
+        }
+
+        // Precedence 5: Límite excedido (50000 tras el incidente)
+        if (monto > TRANSFER_LIMIT) {
+          this._registrarFallo(origen);
+          return { status: 422, body: { error: 'E506', mensaje: 'límite excedido' } };
+        }
+
+        // Precedence 6: Saldo insuficiente
         if (origen.saldo < monto) {
+          this._registrarFallo(origen);
           return { status: 422, body: { error: 'E507', mensaje: 'saldo insuficiente' } };
         }
 
         origen.saldo -= monto;
         destino.saldo += monto;
+        // Transferencia exitosa: resetea el contador de fallos del origen.
+        origen.fails = 0;
+        origen.intentos = 0;
         const operacionId = `OP-${String(this.operationSeq++).padStart(4, '0')}`;
         this.operations.set(operacionId, {
           id: operacionId,
@@ -219,9 +257,37 @@ export class BankingEngine {
         return { status: 200, body: { ok: true, anulada: operacionId } };
       }
 
-      default: {
-        return { status: 400, body: { error: 'E301', mensaje: 'comando desconocido ' } };
+      case 'HALT': {
+        if (args.length !== 1) {
+          return { status: 400, body: { error: 'E302', mensaje: 'aridad inválida' } };
+        }
+        // Confirmación exacta: el único argumento debe ser literalmente "1".
+        if (args[0] === '1') {
+          this.halted = true;
+          return { status: 503, body: { error: 'E599', mensaje: 'service halted' } };
+        }
+        return {
+          status: 409,
+          body: {
+            error: 'E520',
+            mensaje: 'operación destructiva: detiene el servicio; reenvía con confirmación',
+          },
+        };
       }
+
+      default: {
+        const body = { error: 'E301', mensaje: 'comando desconocido ' };
+        const sugerencia = suggestCommand(cmd);
+        if (sugerencia) body.sugerencia = sugerencia;
+        return { status: 400, body };
+      }
+    }
+  }
+
+  _registrarFallo(cuenta) {
+    cuenta.fails += 1;
+    if (cuenta.fails >= MAX_FALLOS) {
+      cuenta.blocked = true;
     }
   }
 }

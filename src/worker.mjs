@@ -45,6 +45,11 @@ export class BankingDurableObject {
       const msgResponse = (status, data) =>
         jsonResponse(status, data, { 'X-Req': String(currentXReq) });
 
+      // Estado "service halted" (HALT;1): todo /msg -> 503 E599 hasta /__reset.
+      if (this.engine.halted) {
+        return msgResponse(503, { error: 'E599', mensaje: 'service halted' });
+      }
+
       let rawText = '';
       try {
         const bodyArrayBuffer = await request.arrayBuffer();
@@ -96,24 +101,17 @@ let fallbackXReqSeq = 0;
 export default {
   async fetch(request, env = {}, ctx) {
     const url = new URL(request.url);
-
-    // 1. CORS Pre-flight Handling
-    if (request.method === 'OPTIONS') {
-      return new Response(null, {
-        status: 204,
-        headers: {
-          ...SECURITY_HEADERS,
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-          'Access-Control-Allow-Headers': 'Authorization, Content-Type',
-          'Access-Control-Max-Age': '86400',
-        },
-      });
-    }
-
-    // 2. Validate known route (unknown routes return 404 regardless of auth, exactly as live server)
     const pathname = url.pathname;
-    if (pathname !== '/msg' && pathname !== '/health' && pathname !== '/__reset') {
+    const method = request.method;
+
+    // 1. Route + method validation (unknown route or wrong method -> 404, before auth).
+    //    El oráculo no implementa CORS: OPTIONS /msg devuelve 404, no 204.
+    const routeOk =
+      (pathname === '/health' && method === 'GET') ||
+      (pathname === '/__reset' && method === 'POST') ||
+      (pathname === '/msg' && method === 'POST');
+
+    if (!routeOk) {
       return new Response(JSON.stringify({ error: 'E404', mensaje: 'ruta desconocida' }), {
         status: 404,
         headers: {
@@ -123,8 +121,8 @@ export default {
       });
     }
 
-    // 3. Authentication Check (Timing-safe)
-    // Supports both Authorization: Bearer <token> AND query param (?token=... o ?key=...) para navegadores
+    // 2. Authentication (timing-safe). Solo `Authorization: Bearer <token>`.
+    //    El oráculo NO acepta token por query (?token=/?key=) ni espacios extra.
     const officialToken = env.TEAM_TOKEN || null;
     const tutorKey = env.TUTOR_KEY || env.TUTOR_TOKEN || null;
     const legacyToken = env.LEGACY_TOKEN || null;
@@ -135,11 +133,7 @@ export default {
     const authHeader = request.headers.get('authorization') || '';
     let providedToken = null;
     if (authHeader.startsWith('Bearer ')) {
-      providedToken = authHeader.slice(7).trim();
-    } else if (url.searchParams.has('key')) {
-      providedToken = url.searchParams.get('key');
-    } else if (url.searchParams.has('token')) {
-      providedToken = url.searchParams.get('token');
+      providedToken = authHeader.slice(7);
     }
 
     const authorized = await isAuthorizedToken(providedToken, allowedTokens);
@@ -161,7 +155,6 @@ export default {
     }
 
     // Direct fallback logic
-    const method = request.method;
 
     const jsonResponse = (status, data, extraHeaders = {}) => {
       return new Response(JSON.stringify(data), {
@@ -188,6 +181,10 @@ export default {
       const currentXReq = ++fallbackXReqSeq;
       const msgResponse = (status, data) =>
         jsonResponse(status, data, { 'X-Req': String(currentXReq) });
+
+      if (fallbackEngine.halted) {
+        return msgResponse(503, { error: 'E599', mensaje: 'service halted' });
+      }
 
       let rawText = '';
       try {
