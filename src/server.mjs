@@ -65,16 +65,19 @@ export function createServer(options = {}) {
           return sendJson(401, { error: 'E001', mensaje: 'no autorizado' });
         }
 
+        const currentXReq = ++xReqSeq;
+        const msgJson = (status, data) => sendJson(status, data, { 'X-Req': String(currentXReq) });
+
         // Validate JSON body
         if (!bodyText || bodyText.trim().length === 0) {
-          return sendJson(400, { error: 'E100', mensaje: 'json inválido' });
+          return msgJson(400, { error: 'E100', mensaje: 'json inválido' });
         }
 
         let parsed;
         try {
           parsed = JSON.parse(bodyText);
         } catch {
-          return sendJson(400, { error: 'E100', mensaje: 'json inválido' });
+          return msgJson(400, { error: 'E100', mensaje: 'json inválido' });
         }
 
         // Validate presence of string field 'm'
@@ -84,12 +87,11 @@ export function createServer(options = {}) {
           Array.isArray(parsed) ||
           typeof parsed.m !== 'string'
         ) {
-          return sendJson(400, { error: 'E102', mensaje: 'falta m' });
+          return msgJson(400, { error: 'E102', mensaje: 'falta m' });
         }
 
-        const currentXReq = ++xReqSeq;
         const result = engine.processMessage(parsed.m);
-        return sendJson(result.status, result.body, { 'X-Req': String(currentXReq) });
+        return msgJson(result.status, result.body);
       }
 
       // Any other route or method

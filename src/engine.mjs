@@ -20,7 +20,29 @@ export class BankingEngine {
       };
     }
 
-    // Step 1: Validate control code, semicolon existence, and non-empty segments
+    // Step 1: Delimiter and segment structure check
+    const lastSemi = rawMessage.lastIndexOf(';');
+    if (lastSemi === -1) {
+      return { status: 400, body: { error: 'E103', mensaje: 'falta control' } };
+    }
+
+    const parts = rawMessage.split(';');
+    if (parts.some(p => p.length === 0)) {
+      return { status: 400, body: { error: 'E104', mensaje: 'segmento vacío' } };
+    }
+
+    const rawCmd = parts[0];
+    const cmd = rawCmd.toUpperCase();
+
+    // PING in the black box skips checksum verification but strictly enforces arity (exactly 2 segments: PING;<control>)
+    if (cmd === 'PING') {
+      if (parts.length !== 2) {
+        return { status: 400, body: { error: 'E302', mensaje: 'aridad inválida' } };
+      }
+      return { status: 200, body: { pong: true } };
+    }
+
+    // Step 2: Validate control code for all other commands
     const validation = validateControl(rawMessage);
     if (!validation.valid) {
       return {
@@ -29,20 +51,12 @@ export class BankingEngine {
       };
     }
 
-    // Step 2: Parse command and arguments
-    const parts = validation.payload.split(';');
-    const rawCmd = parts[0];
-    const cmd = rawCmd.toUpperCase();
-    const args = parts.slice(1);
+    // Step 3: Parse command and arguments
+    const payloadParts = validation.payload.split(';');
+    const args = payloadParts.slice(1);
 
-    // Step 3: Route command
+    // Step 4: Route command
     switch (cmd) {
-      case 'PING': {
-        if (args.length !== 0) {
-          return { status: 400, body: { error: 'E302', mensaje: 'aridad inválida' } };
-        }
-        return { status: 200, body: { pong: true } };
-      }
 
       case 'ALTA': {
         if (args.length !== 1) {

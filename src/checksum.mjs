@@ -52,8 +52,8 @@ export function validateControl(rawMessage) {
   const payload = rawMessage.slice(0, lastSemi);
   const rawControl = rawMessage.slice(lastSemi + 1);
 
-  // Check if control is purely digits (no signs, no characters)
-  if (!/^\d+$/.test(rawControl)) {
+  // Check if control is purely 1 or 2 digits (no signs, no characters, max 2 digits)
+  if (!/^\d{1,2}$/.test(rawControl)) {
     return { valid: false, error: 'E201', message: 'control mal formado' };
   }
 

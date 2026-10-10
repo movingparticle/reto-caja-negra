@@ -41,26 +41,30 @@ export class BankingDurableObject {
     }
 
     if (pathname === '/msg' && method === 'POST') {
+      const currentXReq = ++this.xReqSeq;
+      const msgResponse = (status, data) =>
+        jsonResponse(status, data, { 'X-Req': String(currentXReq) });
+
       let rawText = '';
       try {
         const bodyArrayBuffer = await request.arrayBuffer();
         if (bodyArrayBuffer.byteLength > MAX_BODY_BYTES) {
-          return jsonResponse(413, { error: 'E101', mensaje: 'cuerpo demasiado grande' });
+          return msgResponse(413, { error: 'E101', mensaje: 'cuerpo demasiado grande' });
         }
         rawText = new TextDecoder('utf-8', { fatal: true }).decode(bodyArrayBuffer);
       } catch {
-        return jsonResponse(400, { error: 'E100', mensaje: 'json inválido' });
+        return msgResponse(400, { error: 'E100', mensaje: 'json inválido' });
       }
 
       if (!rawText || rawText.trim().length === 0) {
-        return jsonResponse(400, { error: 'E100', mensaje: 'json inválido' });
+        return msgResponse(400, { error: 'E100', mensaje: 'json inválido' });
       }
 
       let parsed;
       try {
         parsed = JSON.parse(rawText);
       } catch {
-        return jsonResponse(400, { error: 'E100', mensaje: 'json inválido' });
+        return msgResponse(400, { error: 'E100', mensaje: 'json inválido' });
       }
 
       if (
@@ -69,17 +73,16 @@ export class BankingDurableObject {
         Array.isArray(parsed) ||
         typeof parsed.m !== 'string'
       ) {
-        return jsonResponse(400, { error: 'E102', mensaje: 'falta m' });
+        return msgResponse(400, { error: 'E102', mensaje: 'falta m' });
       }
 
       const sanitized = sanitizeInput(parsed.m);
       if (!sanitized.valid) {
-        return jsonResponse(400, { error: sanitized.error, mensaje: sanitized.message });
+        return msgResponse(400, { error: sanitized.error, mensaje: sanitized.message });
       }
 
-      const currentXReq = ++this.xReqSeq;
       const result = this.engine.processMessage(sanitized.sanitized);
-      return jsonResponse(result.status, result.body, { 'X-Req': String(currentXReq) });
+      return msgResponse(result.status, result.body);
     }
 
     return jsonResponse(404, { error: 'E404', mensaje: 'ruta desconocida' });
@@ -182,26 +185,30 @@ export default {
     }
 
     if (pathname === '/msg' && method === 'POST') {
+      const currentXReq = ++fallbackXReqSeq;
+      const msgResponse = (status, data) =>
+        jsonResponse(status, data, { 'X-Req': String(currentXReq) });
+
       let rawText = '';
       try {
         const bodyArrayBuffer = await request.arrayBuffer();
         if (bodyArrayBuffer.byteLength > MAX_BODY_BYTES) {
-          return jsonResponse(413, { error: 'E101', mensaje: 'cuerpo demasiado grande' });
+          return msgResponse(413, { error: 'E101', mensaje: 'cuerpo demasiado grande' });
         }
         rawText = new TextDecoder('utf-8', { fatal: true }).decode(bodyArrayBuffer);
       } catch {
-        return jsonResponse(400, { error: 'E100', mensaje: 'json inválido' });
+        return msgResponse(400, { error: 'E100', mensaje: 'json inválido' });
       }
 
       if (!rawText || rawText.trim().length === 0) {
-        return jsonResponse(400, { error: 'E100', mensaje: 'json inválido' });
+        return msgResponse(400, { error: 'E100', mensaje: 'json inválido' });
       }
 
       let parsed;
       try {
         parsed = JSON.parse(rawText);
       } catch {
-        return jsonResponse(400, { error: 'E100', mensaje: 'json inválido' });
+        return msgResponse(400, { error: 'E100', mensaje: 'json inválido' });
       }
 
       if (
@@ -210,17 +217,16 @@ export default {
         Array.isArray(parsed) ||
         typeof parsed.m !== 'string'
       ) {
-        return jsonResponse(400, { error: 'E102', mensaje: 'falta m' });
+        return msgResponse(400, { error: 'E102', mensaje: 'falta m' });
       }
 
       const sanitized = sanitizeInput(parsed.m);
       if (!sanitized.valid) {
-        return jsonResponse(400, { error: sanitized.error, mensaje: sanitized.message });
+        return msgResponse(400, { error: sanitized.error, mensaje: sanitized.message });
       }
 
-      const currentXReq = ++fallbackXReqSeq;
       const result = fallbackEngine.processMessage(sanitized.sanitized);
-      return jsonResponse(result.status, result.body, { 'X-Req': String(currentXReq) });
+      return msgResponse(result.status, result.body);
     }
 
     return jsonResponse(404, { error: 'E404', mensaje: 'ruta desconocida' });
