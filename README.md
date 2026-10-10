@@ -89,6 +89,7 @@ reto-caja-negra/
 ├── pruebas/ejemplos.jsonl    # 20 casos públicos de referencia
 ├── experimentos.jsonl        # Log de probes reales (hipótesis -> resultado)
 ├── SPEC.md                   # Especificación deducida (comportamiento por ID)
+├── LOG.md / LOG.html         # Bitácora de 40 sondas: hipótesis antes/después y decisión
 ├── CHALLENGE_ANALYSIS.md     # Análisis del reto, opciones y matriz de tests
 ├── TECHNICAL_DEFENSE.md      # Defensa técnica (debrief)
 ├── DESIGN_DOC.md / .html     # Documento de System Design (hito 12:00)
@@ -121,6 +122,7 @@ Cubre, entre otros:
 
 - [`DESIGN_DOC.md`](DESIGN_DOC.md) · [`DESIGN_DOC.html`](DESIGN_DOC.html) — System Design.
 - [`SPEC.md`](SPEC.md) — comportamiento inferido con evidencia y nivel de confianza.
+- [`LOG.md`](LOG.md) · [`LOG.html`](LOG.html) — bitácora de sondas (hipótesis antes/después, decisión).
 - [`experimentos.jsonl`](experimentos.jsonl) — log de experimentos.
 - [`docs/decisions/`](docs/decisions/README.md) — decisiones de arquitectura (MADR).
 - [`INCIDENT.md`](INCIDENT.md) — registro del incidente.

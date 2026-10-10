@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>caja-negra://log — FRONTIER Bogotá 2026</title>
+<meta name="description" content="Bitácora de 40 sondas, hipótesis y decisiones del Reto 2 (La Caja Negra). FRONTIER Bogotá 2026." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=VT323&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#070908; --bg2:#0c100e; --panel:#0e1411; --ink:#d7f5c8; --dim:#7d9a78;
+    --line:#1e3a28; --green:#39ff14; --amber:#ffb000; --cyan:#7ee7ff; --red:#ff5c57;
+    --ok:#39ff14; --warn:#ffb000; --danger:#ff5c57; --info:#7ee7ff;
+    --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --display:"VT323",var(--mono);
+  }
+  body[data-theme="amber"]{
+    --ink:#ffe7b8; --dim:#b89a62; --line:#3a2c12; --green:#ffb000; --panel:#141008; --bg:#0c0a06; --bg2:#141008;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:var(--mono);font-size:14.5px;line-height:1.55;
+    text-rendering:optimizeLegibility;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:80;
+    background:repeating-linear-gradient(to bottom,rgba(0,0,0,.16) 0 1px,transparent 1px 3px);
+    mix-blend-mode:multiply;opacity:.55;
+  }
+  a{color:var(--cyan);text-decoration:none}
+  a:hover{color:var(--green);text-decoration:underline}
+  a:focus-visible,button:focus-visible{outline:1px dashed var(--green);outline-offset:3px}
+  code{font-family:inherit;color:var(--amber);background:transparent}
+  .skip{position:absolute;left:-999px}
+  .skip:focus{left:12px;top:12px;z-index:100;background:#000;color:var(--green);padding:8px 12px}
+
+  .shell{max-width:1080px;margin:0 auto;padding:0 18px 72px}
+
+  header.termbar{
+    position:sticky;top:0;z-index:40;
+    background:rgba(7,9,8,.92);backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+  }
+  .win{display:flex;align-items:center;gap:10px;padding:8px 16px;border-bottom:1px solid var(--line);font-size:12px;color:var(--dim)}
+  .dots{display:flex;gap:6px}
+  .dots i{width:10px;height:10px;border-radius:50%;display:block;background:#3a3a3a}
+  .dots i:nth-child(1){background:#ff5f57}
+  .dots i:nth-child(2){background:#febc2e}
+  .dots i:nth-child(3){background:#28c840}
+  .win b{color:var(--ink);font-weight:600}
+  .win .right{margin-left:auto;display:flex;gap:14px;align-items:center}
+  button.ghost{
+    background:transparent;color:var(--amber);border:1px solid var(--line);
+    font-family:inherit;font-size:11px;padding:4px 8px;cursor:pointer;letter-spacing:.04em;
+  }
+  button.ghost:hover{border-color:var(--amber);color:var(--green)}
+  nav.cmds{display:flex;gap:4px;flex-wrap:wrap;padding:8px 16px}
+  nav.cmds a{
+    color:var(--dim);font-size:12px;padding:4px 8px;border:1px solid transparent;
+  }
+  nav.cmds a::before{content:"$ ";color:var(--green)}
+  nav.cmds a:hover,nav.cmds a:focus{color:var(--ink);border-color:var(--line);text-decoration:none;background:#101612}
+
+  .hero{padding:28px 0 8px}
+  .prompt{color:var(--green);margin:0 0 10px;font-size:13px}
+  .prompt span{color:var(--dim)}
+  pre.banner{
+    margin:0;display:block;width:fit-content;padding:20px 24px;background:var(--green);color:#05080a;
+    font-family:var(--mono);font-size:clamp(7px,1.5vw,13px);
+    line-height:1.02;letter-spacing:0;overflow:auto;max-width:100%;
+    box-shadow:0 0 34px rgba(57,255,20,.30);
+  }
+  .blink{display:inline-block;width:.62em;height:1.05em;background:var(--green);vertical-align:-2px;animation:blink 1.05s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+  .sub{color:var(--dim);max-width:78ch;margin:30px 0 0}
+  .sub strong{color:var(--ink);font-weight:600}
+
+  .ascii-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+  @media(max-width:820px){.ascii-row,.grid.g3,.grid.g2,.cons,.metrics{grid-template-columns:1fr !important}}
+  .box{
+    border:1px solid var(--line);background:var(--panel);padding:14px 14px 12px;position:relative;
+  }
+  .box h3,.card h3{margin:0 0 8px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--amber);font-weight:600}
+  .box p,.card p,.card li,.lead,.qa .a,.kv .v{color:var(--dim)}
+  .box p{margin:0}
+  .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+  .tags span{border:1px solid var(--line);padding:4px 8px;font-size:12px;color:var(--ink)}
+  .tags span::before{content:"[ ";color:var(--green)}
+  .tags span::after{content:" ]";color:var(--green)}
+
+  main{padding-top:8px}
+  section{padding:36px 0 8px;border-top:1px dashed var(--line);margin-top:18px}
+  .sec-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .kicker{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--green)}
+  .kicker::before{content:"> "}
+  h2{
+    font-family:var(--display);font-weight:400;font-size:clamp(2.4rem,6vw,4.2rem);
+    letter-spacing:.02em;line-height:.9;margin:4px 0 8px;color:var(--ink);
+    text-transform:uppercase;
+  }
+  .lead{max-width:78ch;margin:0 0 18px}
+  .grid{display:grid;gap:12px}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  .card{border:1px solid var(--line);background:linear-gradient(180deg,#101612,var(--panel));padding:14px}
+  .card ul{margin:8px 0 0;padding-left:0;list-style:none}
+  .card li{margin:5px 0;padding-left:1.1em;position:relative}
+  .card li::before{content:"▸";position:absolute;left:0;color:var(--green)}
+
+  .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+  .metric{border:1px solid var(--line);padding:12px;background:#0a0e0b}
+  .metric .n{font-family:var(--display);font-size:3.1rem;line-height:.85;color:var(--green);text-shadow:0 0 10px rgba(57,255,20,.25)}
+  .metric.dan .n{color:var(--red);text-shadow:none}
+  .metric.warn .n{color:var(--amber);text-shadow:none}
+  .metric.i .n{color:var(--cyan);text-shadow:none}
+  .metric .l{margin-top:8px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+
+  .bars{border:1px solid var(--line);padding:14px;background:#0a0e0b}
+  .bars h3{margin:0 0 2px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--amber)}
+  .bars .hint{margin:0 0 12px;color:var(--dim);font-size:12px}
+  .bar-row{display:grid;grid-template-columns:118px 1fr 36px;gap:10px;align-items:center;margin:7px 0;font-size:12px}
+  .bar-row .lab{color:var(--ink)}
+  .bar-track{height:12px;background:#07110c;border:1px solid #16301c;position:relative}
+  .bar-fill{width:0;height:100%;transition:width 1s cubic-bezier(.22,.8,.28,1);
+    background:repeating-linear-gradient(90deg,var(--green) 0 7px,transparent 7px 9px);
+    box-shadow:0 0 8px rgba(57,255,20,.35);}
+  .bar-fill.r{background:repeating-linear-gradient(90deg,var(--red) 0 7px,transparent 7px 9px);box-shadow:none}
+  .bar-fill.o{background:repeating-linear-gradient(90deg,var(--amber) 0 7px,transparent 7px 9px);box-shadow:none}
+  .bar-fill.c{background:repeating-linear-gradient(90deg,var(--cyan) 0 7px,transparent 7px 9px);box-shadow:none}
+  .bar-row .val{text-align:right;color:var(--green)}
+
+  .badge{display:inline-block;margin-left:8px;font-size:9px;letter-spacing:.1em;padding:1px 6px;
+    border:1px solid var(--line);color:var(--dim);vertical-align:middle;text-transform:uppercase;font-weight:600}
+  .bars.probe{border-color:#1c3b45;background:#08110f}
+  .bars.probe h3{color:var(--cyan)}
+  .bars.probe .badge{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 8px rgba(126,231,255,.25)}
+  .bars.probe .bar-track{background:#06121a;border-color:#173a45}
+  .bars.probe .bar-fill{background:repeating-linear-gradient(90deg,var(--cyan) 0 7px,transparent 7px 9px);box-shadow:0 0 8px rgba(126,231,255,.28)}
+  .bars.probe .bar-row .val{color:var(--cyan)}
+
+  .table-wrap{overflow:auto;border:1px solid var(--line);background:#090d0a}
+  table{border-collapse:collapse;width:100%;min-width:760px;font-size:12.5px}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--green);font-weight:600;font-size:11px;letter-spacing:.08em;text-transform:uppercase;background:#0c120e;position:sticky;top:0}
+  tr:hover td{background:#101812}
+  td.n{color:var(--cyan);white-space:nowrap;font-weight:600}
+  .conf,.prio{font-size:11px;letter-spacing:.06em;text-transform:uppercase;border:1px solid currentColor;padding:1px 6px;white-space:nowrap}
+  .conf.c1{color:var(--green)}
+  .conf.c2{color:var(--amber)}
+  .conf.c3{color:var(--cyan)}
+  .conf.cr{color:var(--red)}
+  .st{font-size:11px;letter-spacing:.04em;white-space:nowrap}
+  .st.ok{color:var(--green)}
+  .st.bad{color:var(--red)}
+
+  .note{
+    margin:14px 0;padding:12px 14px;border:1px solid var(--line);
+    border-left:3px solid var(--amber);color:var(--ink);background:#100e08;
+  }
+  .qa{padding:10px 0;border-bottom:1px dashed var(--line)}
+  .qa .q::before{content:"? ";color:var(--amber)}
+  .qa .q{color:var(--ink);font-weight:600}
+  .qa .a::before{content:"→ ";color:var(--green)}
+  .pillrow{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .pill{border:1px solid var(--line);padding:3px 7px;font-size:11px;color:var(--ink)}
+
+  .kv{margin-top:10px}
+  .kv .row2{display:grid;grid-template-columns:148px 1fr;gap:8px;padding:6px 0;border-top:1px dashed #183022;font-size:13px}
+  .kv .k{color:var(--cyan)}
+
+  pre.map{
+    margin:12px 0 0;padding:14px;border:1px solid var(--line);background:#070908;
+    color:var(--green);font-size:12.5px;line-height:1.25;overflow:auto;
+  }
+  pre.map .dim{color:var(--dim)}
+  pre.map .am{color:var(--amber)}
+  pre.map .cy{color:var(--cyan)}
+
+  footer{margin-top:28px;border-top:1px solid var(--line);padding:16px;color:var(--dim);font-size:12px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  footer b{color:var(--green);font-weight:600}
+  .terms{position:relative;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .info{
+    width:16px;height:16px;flex:none;border-radius:50%;
+    border:1px solid var(--cyan);color:var(--cyan);background:transparent;
+    font-family:var(--mono);font-size:10px;font-style:italic;cursor:pointer;
+    display:inline-flex;align-items:center;justify-content:center;line-height:1;padding:0;
+  }
+  .info:hover,.info:focus-visible,.info[aria-expanded="true"]{background:var(--cyan);color:#05080a;box-shadow:0 0 10px rgba(126,231,255,.55);outline:none}
+  .glosario{
+    position:absolute;bottom:calc(100% + 10px);right:0;width:min(480px,82vw);
+    border:1px solid var(--line);background:#0a0f0c;padding:14px 16px;text-align:left;
+    box-shadow:0 10px 40px rgba(0,0,0,.7),0 0 0 1px rgba(126,231,255,.08);z-index:60;
+  }
+  .glosario[hidden]{display:none}
+  .glosario::after{content:"";position:absolute;top:100%;right:6px;border:7px solid transparent;border-top-color:var(--line)}
+  .glosario dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:8px 12px}
+  .glosario dt{color:var(--cyan);font-weight:600;white-space:nowrap}
+  .glosario dd{margin:0;color:var(--dim)}
+  .help{
+    position:fixed;right:14px;bottom:14px;z-index:30;
+    display:flex;align-items:center;gap:9px;
+    padding:8px 12px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--dim);border:1px solid var(--line);background:rgba(7,9,8,.92);
+    backdrop-filter:blur(6px);border-radius:3px;
+    box-shadow:0 0 22px rgba(57,255,20,.14),inset 0 0 0 1px rgba(57,255,20,.04);
+  }
+  .help::before{
+    content:"";width:6px;height:6px;border-radius:50%;flex:none;
+    background:var(--green);box-shadow:0 0 9px var(--green);
+    animation:pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse{50%{opacity:.25;transform:scale(.7)}}
+  .help .keys{display:flex;gap:3px}
+  .help kbd{
+    font-family:var(--mono);font-size:10px;min-width:17px;height:17px;padding:0 3px;
+    display:inline-flex;align-items:center;justify-content:center;
+    color:var(--ink);background:#101612;
+    border:1px solid var(--line);border-bottom:2px solid var(--line);border-radius:3px;
+    transition:.15s;cursor:pointer;
+  }
+  .help kbd:hover,.help kbd:focus-visible{color:var(--green);border-color:var(--green);box-shadow:0 0 9px rgba(57,255,20,.4);transform:translateY(-1px)}
+  .help .lbl b{color:var(--ink);font-weight:600}
+  @keyframes keyGlow{0%{box-shadow:0 0 0 transparent}18%{box-shadow:0 0 16px var(--green)}100%{box-shadow:0 0 0 transparent}}
+  .help kbd.hit{animation:keyGlow .9s ease-out;color:var(--green);border-color:var(--green);box-shadow:0 0 14px var(--green)}
+  @keyframes secGlow{0%{box-shadow:0 0 0 transparent}15%{box-shadow:0 0 70px var(--green)}100%{box-shadow:0 0 0 transparent}}
+  section.glow{animation:secGlow 1s ease-out;outline:2px solid var(--green);outline-offset:5px;border-radius:8px;background:rgba(57,255,20,.05)}
+  @media print{
+    body::before,.help,header.termbar{display:none}
+    body{background:#fff;color:#111}
+    a{color:#111}
+  }
+  @media(max-width:640px){
+    .help{display:none}
+    .metrics{grid-template-columns:1fr 1fr}
+    .bar-row{grid-template-columns:92px 1fr 28px}
+    .kv .row2{grid-template-columns:1fr}
+    pre.banner{font-size:7px}
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#resumen">saltar al contenido</a>
+
+<header class="termbar">
+  <div class="win">
+    <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+    <b>movingparticle@caja-negra</b>
+    <span>~/reto-2/LOG</span>
+    <span class="right">
+      <span id="clock">--:--:--</span>
+      <button class="ghost" type="button" id="theme">theme --amber</button>
+    </span>
+  </div>
+  <nav class="cmds" aria-label="secciones">
+    <a href="#resumen">resumen</a>
+    <a href="#hipotesis">hipotesis</a>
+    <a href="#baseline">baseline</a>
+    <a href="#probes">probes</a>
+    <a href="#fuzz">fuzz</a>
+    <a href="#decisiones">decisiones</a>
+  </nav>
+</header>
+
+<div class="shell">
+  <div class="hero">
+    <p class="prompt">movingparticle@caja-negra:~$ <span>cat ./LOG.txt</span> <i class="blink" aria-hidden="true"></i></p>
+    <pre class="banner" aria-label="LOG en video inverso">+---------------------------------------------------------------------------------+
+ |                                                                                 |
+ |   ██╗       ██████╗  ██████╗                                                    |
+ |   ██║      ██╔═══██╗██╔════╝     40 registros · 3 grupos · 0 pendientes          |
+ |   ██║      ██║   ██║██║  ███╗    H-01 → H-04 confirmadas                         |
+ |   ██║      ██║   ██║██║   ██║    ISO 7064 Mod 97-10 · E303>E304>E401>E506>E507     |
+ |   ███████╗ ╚██████╔╝╚██████╔╝                                                    |
+ |   ╚══════╝  ╚═════╝  ╚═════╝                                                     |
+ +---------------------------------------------------------------------------------+</pre>
+    <p class="sub"><strong>FRONTIER Bogotá 2026 · Reto 2 · bitácora de sondas.</strong><br/>Un sistema opaco solo se entiende preguntándole. Este log registra <strong>cada</strong> pregunta, por qué la hicimos, qué respondió y qué decidimos después. Nada se afirma sin un <code>id</code> de <code>experimentos.jsonl</code>.</p>
+    <div class="ascii-row">
+      <article class="box"><h3>01 // método</h3><p>Probing guiado por hipótesis: cada sonda busca falsar una hipótesis rival, no acumular ejemplos.</p></article>
+      <article class="box"><h3>02 // evidencia</h3><p>40 registros reales: 20 del baseline público, 14 de probing en vivo, 6 de fuzzing adversarial.</p></article>
+      <article class="box"><h3>03 // resultado</h3><p>Regla real: <code>ISO 7064 Mod 97-10</code> y precedencia <code>E303&gt;E304&gt;E401&gt;E506&gt;E507</code>.</p></article>
+    </div>
+    <div class="tags">
+      <span>40/40 citados</span>
+      <span>sin filas "por ejecutar"</span>
+      <span>hipótesis → resultado → decisión</span>
+      <span>anti-overfitting</span>
+    </div>
+  </div>
+
+<main>
+
+  <section id="resumen">
+    <div class="sec-head"><span class="kicker">cómo leer</span></div>
+    <h2>Resumen</h2>
+    <p class="lead">Cada línea de <code>experimentos.jsonl</code> es una sonda real. Este log las reproduce en orden de ejecución y las agrupa por origen.</p>
+    <div class="metrics">
+      <div class="metric"><div class="n">40</div><div class="l">registros</div></div>
+      <div class="metric"><div class="n">20</div><div class="l">baseline</div></div>
+      <div class="metric i"><div class="n">14</div><div class="l">probes viva</div></div>
+      <div class="metric warn"><div class="n">6</div><div class="l">adversarial fuzz</div></div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>grupo</th><th>ids</th><th>fuente</th><th>pregunta que responde</th></tr></thead>
+        <tbody>
+          <tr><td><strong>A · Baseline</strong></td><td class="n">1–20</td><td><code>pruebas/ejemplos.jsonl</code> (público, mañana)</td><td>¿Cuál es el contrato mínimo observable?</td></tr>
+          <tr><td><strong>B · Probes en vivo</strong></td><td class="n">21–34</td><td>probing guiado por hipótesis</td><td>¿Cuáles son los bordes y la precedencia real?</td></tr>
+          <tr><td><strong>C · Adversarial fuzz</strong></td><td class="n">35–40</td><td>fuzzing dirigido a límites</td><td>¿Dónde se rompe el modelo y dónde está el tope?</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note"><strong>Columnas de la rúbrica.</strong> <code># | Probe | Razón | Resultado | Hipótesis antes | Hipótesis después | Decisión</code>. <code>#N</code> = <code>id:N</code> en <code>experimentos.jsonl</code>. <strong>Hipótesis antes</strong> = lo que creíamos antes del probe; <strong>después</strong> = el estado del modelo tras observarlo (<span class="st ok">confirmada</span> / <span class="st bad">falsada</span> / ampliada).</div>
+  </section>
+
+  <section id="hipotesis">
+    <div class="sec-head"><span class="kicker">evolución</span></div>
+    <h2>Hipótesis</h2>
+    <p class="lead">La investigación no empezó por la fórmula del control: empezó por el dominio. Cada hipótesis se mantuvo hasta que un probe la falsó o la confirmó.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>id</th><th>hipótesis</th><th>estado</th><th>evidencia</th><th>cómo murió / se confirmó</th></tr></thead>
+        <tbody>
+          <tr><td class="n">H-01</td><td>El dominio es bancario y los mensajes son posicionales <code>CMD;arg;…;Q</code> con 6 verbos.</td><td><span class="conf c1">confirmada</span></td><td class="n">#1, #3–#8, #13, #34</td><td>#34 (<code>RETIRO</code>) falsó verbos extra: el set se cierra en 6.</td></tr>
+          <tr><td class="n">H-02</td><td>El último campo <code>Q</code> es un valor de verificación determinista que se valida <strong>antes</strong> de ejecutar el comando (<code>E201</code>/<code>E202</code>).</td><td><span class="conf c1">confirmada</span></td><td class="n">#2, #17, #20, #29, #30, #31</td><td>#2 y #17 prueban que validar <code>Q</code> precede a todo efecto; #29/#30 cierran el parser.</td></tr>
+          <tr><td class="n">H-03</td><td>El algoritmo de <code>Q</code> es <strong>ISO 7064 Mod 97-10 alfanumérico 1-based</strong> (<code>A=1…Z=26</code> sin padding, <code>CD = 98 − (N·100) mod 97</code>, rango <code>2..98</code>).</td><td><span class="conf c1">confirmada</span></td><td class="n">#3–#6, #10, #39</td><td>#31 descarta el padding de ceros; #39 confirma <code>(rem·3) mod 97 == 1 ⇒ Q=97</code>, no <code>0</code>.</td></tr>
+          <tr><td class="n">H-04</td><td>La validación sigue un orden determinista con precedencia <strong>E303 &gt; E304 &gt; E401 &gt; E506 &gt; E507</strong>.</td><td><span class="conf c1">confirmada</span></td><td class="n">#26, #27, #28, #9, #16</td><td>#26 (E303&gt;E304), #27 (E304&gt;E506), #28 (E401&gt;E506); #16 cierra con E507.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin:22px 0 10px;color:var(--amber);font-size:13px;letter-spacing:.08em;text-transform:uppercase">Hipótesis rivales descartadas</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>rival</th><th>predicción</th><th>probe discriminante</th><th>resultado</th><th>veredicto</th></tr></thead>
+        <tbody>
+          <tr><td>Control = Luhn / Módulo 10</td><td><code>Q</code> de 1–2 dígitos con paridad</td><td class="n">#3, #5</td><td>no reproduce la serie</td><td><span class="conf cr">falsada</span></td></tr>
+          <tr><td>Control = suma ponderada de caracteres</td><td>monótona por longitud</td><td class="n">#11</td><td>coincide con ISO 7064, no con suma</td><td><span class="conf cr">falsada</span></td></tr>
+          <tr><td>Control = CRC/hash truncado</td><td>sin estructura módulo 97</td><td class="n">#39</td><td><code>97</code> válido ⇒ residuo mod 97</td><td><span class="conf cr">falsada</span></td></tr>
+          <tr><td>El control admite relleno <code>03</code> ≈ <code>3</code></td><td>comparación numérica laxa</td><td class="n">#31</td><td><code>400 E202</code></td><td><span class="conf cr">falsada</span></td></tr>
+          <tr><td><code>E506</code> antes que existencia de cuenta</td><td>límite primero</td><td class="n">#28</td><td><code>404 E401</code></td><td><span class="conf cr">falsada</span></td></tr>
+          <tr><td><code>E304</code> antes que el monto</td><td>cuentas iguales primero</td><td class="n">#26</td><td><code>400 E303</code></td><td><span class="conf cr">falsada</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <pre class="map">H-01 dominio bancario, 6 verbos posicionales        <span class="cy">✓ #1 #3–#8 #13 #34</span>
+H-02 el último campo Q se valida antes de ejecutar   <span class="cy">✓ #2 #17 #20 #29 #30 #31</span>
+H-03 Q = ISO 7064 Mod 97-10 alfanumérico 1-based      <span class="cy">✓ #3–#6 #10 #39  (16/16)</span>
+H-04 precedencia E303&gt;E304&gt;E401&gt;E506&gt;E507          <span class="cy">✓ #26 #27 #28 #9 #16</span>
+<span class="dim">rivales: Luhn ✗ · suma ✗ · CRC ✗ · padding-03 ✗ · E506-primero ✗ · E304-primero ✗</span></pre>
+  </section>
+
+  <section id="baseline">
+    <div class="sec-head"><span class="kicker">grupo A · ids 1–20</span></div>
+    <h2>Baseline</h2>
+    <p class="lead"><code>pruebas/ejemplos.jsonl</code> ejecutado tras <code>POST /__reset</code>. Fija la paridad observable. Los saldos dependen del orden de la secuencia.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>probe</th><th>razón</th><th>resultado</th><th>hipótesis antes</th><th>hipótesis después</th><th>decisión</th></tr></thead>
+        <tbody>
+          <tr><td class="n">#1</td><td><code>PING;64</code></td><td>Comando sin argumentos, sin estado</td><td><span class="st ok">200</span> <code>{"pong":true}</code></td><td><code>PING</code> responde <code>pong</code> independiente del estado</td><td><span class="st ok">confirmada</span></td><td>Implementar <code>PING → {pong:true}</code> (aridad 0)</td></tr>
+          <tr><td class="n">#2</td><td><code>ALTA;Lucia;83</code></td><td>Aislar el campo de control</td><td><span class="st bad">400 E202</span> control inválido</td><td>control erróneo ⇒ <code>E202</code> (H-02)</td><td><span class="st ok">H-02 confirmada</span>: se valida antes de ejecutar</td><td>Validar <code>Q</code> antes de cualquier efecto</td></tr>
+          <tr><td class="n">#3</td><td><code>ALTA;Lucia;82</code></td><td>Creación y numeración de cuentas</td><td><span class="st ok">201</span> <code>{"cuentaId":"AC-0001"}</code></td><td><code>ALTA</code> crea cuenta secuencial (H-01)</td><td><span class="st ok">H-01 confirmada</span>; saldo inicial 0</td><td>Contador <code>AC-</code> desde 1 con padding 4</td></tr>
+          <tr><td class="n">#4</td><td><code>ALTA;Mateo;3</code></td><td>Secuencia y control de 1 dígito</td><td><span class="st ok">201</span> <code>{"cuentaId":"AC-0002"}</code></td><td>el contador avanza; <code>Q</code> de 1 dígito es válido</td><td><span class="st ok">confirmada</span>; sin relleno de ceros</td><td>Aceptar <code>Q</code> sin padding; incrementar secuencia</td></tr>
+          <tr><td class="n">#5</td><td><code>CONSULTA;AC-0001;14</code></td><td>Saldo de cuenta recién creada</td><td><span class="st ok">200</span> <code>{"cuenta_id":"AC-0001","saldo":0}</code></td><td><code>CONSULTA</code> devuelve <code>cuenta_id</code> + saldo numérico</td><td><span class="st ok">confirmada</span></td><td><code>CONSULTA</code> de solo lectura</td></tr>
+          <tr><td class="n">#6</td><td><code>DEPOSITO;AC-0001;250000;86</code></td><td>Acreditación y <code>operacionId</code></td><td><span class="st ok">200</span> <code>{"status":"recieved","operacionId":"OP-0001"}</code></td><td><code>DEPOSITO</code> acredita y genera <code>OP-</code></td><td><span class="st ok">confirmada</span>; typo <code>recieved</code></td><td>Replicar <code>recieved</code> literal; contador <code>OP-</code></td></tr>
+          <tr><td class="n">#7</td><td><code>TRANSFER;AC-0001;AC-0002;40000;86</code></td><td>Movimiento entre cuentas</td><td><span class="st ok">200</span> <code>{"status":"recieved","operacionId":"OP-0002"}</code></td><td><code>TRANSFER</code> debita origen y acredita destino</td><td><span class="st ok">confirmada</span></td><td>Implementar débito/crédito + <code>OP-</code></td></tr>
+          <tr><td class="n">#8</td><td><code>CONSULTA;AC-0002;11</code></td><td>Destino refleja fondos</td><td><span class="st ok">200</span> <code>{"cuenta_id":"AC-0002","saldo":40000}</code></td><td>saldo acumulativo</td><td><span class="st ok">confirmada</span></td><td>Estado persistente entre requests</td></tr>
+          <tr><td class="n">#9</td><td><code>TRANSFER;AC-0001;AC-0002;120000;55</code></td><td>Tope de transferencia</td><td><span class="st bad">422 E506</span> límite excedido</td><td>existe tope, se evalúa antes del saldo</td><td><span class="st ok">confirmada</span>: supera tope ⇒ E506</td><td>Tope 100000 → <code>422 E506</code></td></tr>
+          <tr><td class="n">#10</td><td><code>TRANSFER;AC-0001;AC-0002;100000;12</code></td><td>Borde del tope</td><td><span class="st ok">200</span> <code>{"operacionId":"OP-0003"}</code></td><td>el límite es inclusivo</td><td><span class="st ok">confirmada</span></td><td>Comparación <code>monto &gt; 100000</code></td></tr>
+          <tr><td class="n">#11</td><td><code>CONSULTa;AC-0001;14</code></td><td>Sensibilidad a mayúsculas del comando</td><td><span class="st ok">200</span> <code>{"saldo":110000}</code></td><td>comando case-insensitive</td><td><span class="st ok">confirmada</span>; mismo <code>Q</code>=14</td><td>Normalizar comando a mayúsculas</td></tr>
+          <tr><td class="n">#12</td><td><code>SALDOS;AC-0001;38</code></td><td>Comando inexistente</td><td><span class="st bad">400 E301</span> <code>"comando desconocido "</code></td><td>comando desconocido ⇒ <code>E301</code></td><td><span class="st ok">confirmada</span>; espacio final literal</td><td>Replicar mensaje exacto (espacio final)</td></tr>
+          <tr><td class="n">#13</td><td><code>ANULA;OP-0003;66</code></td><td>Reversión de operación</td><td><span class="st ok">200</span> <code>{"ok":true,"anulada":"OP-0003"}</code></td><td><code>ANULA</code> revierte la operación previa</td><td><span class="st ok">confirmada</span></td><td>Implementar reversión de saldos</td></tr>
+          <tr><td class="n">#14</td><td><code>ANULA;OP-0003;66</code></td><td>Idempotencia de <code>ANULA</code></td><td><span class="st ok">200</span> <code>{"ok":false,"motivo":"ya anulada"}</code></td><td>repetir no falla con 4xx</td><td><span class="st ok">confirmada</span></td><td>Marcar <code>anulada</code>; 2ª vez <code>ok:false</code></td></tr>
+          <tr><td class="n">#15</td><td><code>CONSULTA;AC-0009;87</code></td><td>Cuenta inexistente</td><td><span class="st bad">404 E401</span> cuenta inexistente</td><td>cuenta no registrada ⇒ <code>E401</code></td><td><span class="st ok">confirmada</span></td><td><code>CONSULTA</code> inexistente → <code>404 E401</code></td></tr>
+          <tr><td class="n">#16</td><td><code>TRANSFER;AC-0002;AC-0001;50000;23</code></td><td>Fondos insuficientes</td><td><span class="st bad">422 E507</span> saldo insuficiente</td><td><code>saldo &lt; monto</code> ⇒ <code>E507</code> (tras anular OP-0003)</td><td><span class="st ok">confirmada</span></td><td>Comprobar saldo → <code>422 E507</code></td></tr>
+          <tr><td class="n">#17</td><td><code>DEPOSITO;AC-0002;700;5X</code></td><td>Control no numérico</td><td><span class="st bad">400 E201</span> control mal formado</td><td><code>Q</code> no numérico ⇒ <code>E201</code> antes del algoritmo</td><td><span class="st ok">confirmada</span></td><td>Validar formato de <code>Q</code> primero</td></tr>
+          <tr><td class="n">#18</td><td><code>DEPOSITO;AC-0002;700;35</code></td><td>Control correcto</td><td><span class="st ok">200</span> <code>{"operacionId":"OP-0004"}</code></td><td><code>Q</code> numérico válido se ejecuta</td><td><span class="st ok">confirmada</span></td><td>Acreditar saldo; emitir <code>OP-</code></td></tr>
+          <tr><td class="n">#19</td><td><code>CONSULTA;AC-0002;11</code></td><td>Nuevo saldo tras depósito</td><td><span class="st ok">200</span> <code>{"saldo":40700}</code></td><td>saldo refleja el último depósito</td><td><span class="st ok">confirmada</span></td><td>Estado acumulativo (40700)</td></tr>
+          <tr><td class="n">#20</td><td><code>ALTA;Lucia;Gomez;11</code></td><td>Aridad incorrecta</td><td><span class="st bad">400 E302</span> aridad inválida</td><td>nº de args ≠ aridad ⇒ <code>E302</code> (tras control)</td><td><span class="st ok">confirmada</span></td><td>Validar aridad después del control</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="probes">
+    <div class="sec-head"><span class="kicker">grupo B · ids 21–34</span></div>
+    <h2>Probes</h2>
+    <p class="lead">Probing guiado por hipótesis en vivo contra el oráculo. Aquí se descubren los bordes, la precedencia y el algoritmo de control.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>probe</th><th>razón</th><th>resultado</th><th>hipótesis antes</th><th>hipótesis después</th><th>decisión</th></tr></thead>
+        <tbody>
+          <tr><td class="n">#21</td><td><code>ANULA;OP-9999;62</code></td><td>Operación inexistente</td><td><span class="st bad">404 E402</span> operación inexistente</td><td>operación desconocida ⇒ <code>E402</code></td><td><span class="st ok">confirmada</span></td><td>Añadir <code>E402</code> al catálogo</td></tr>
+          <tr><td class="n">#22</td><td><code>TRANSFER;AC-0001;AC-0001;500;49</code></td><td>Origen = destino</td><td><span class="st bad">400 E304</span> origen y destino iguales</td><td>origen≠destino es regla dura</td><td><span class="st ok">confirmada</span></td><td>Comparación de IDs → <code>E304</code></td></tr>
+          <tr><td class="n">#23</td><td><code>ANULA;OP-0001;46</code></td><td>Revertir un <code>DEPOSITO</code></td><td><span class="st ok">200</span> <code>{"ok":true,"anulada":"OP-0001"}</code></td><td><code>ANULA</code> aplica a depósitos y transferencias</td><td><span class="st ok">confirmada</span></td><td>Reversión genérica (no solo <code>TRANSFER</code>)</td></tr>
+          <tr><td class="n">#24</td><td><code>DEPOSITO;AC-0001;0;49</code></td><td>Monto cero</td><td><span class="st bad">400 E303</span> monto inválido</td><td>monto estrictamente positivo</td><td><span class="st ok">confirmada</span>: <code>0</code> ⇒ <code>E303</code></td><td>Validar <code>monto &gt; 0</code></td></tr>
+          <tr><td class="n">#25</td><td><code>DEPOSITO;AC-0001;abc;47</code></td><td>Monto no numérico</td><td><span class="st bad">400 E303</span> monto inválido</td><td>monto no numérico ⇒ <code>E303</code></td><td><span class="st ok">confirmada</span></td><td>Validar formato entero</td></tr>
+          <tr><td class="n">#26</td><td><code>TRANSFER;AC-0001;AC-0001;0;94</code></td><td>Monto inválido <strong>+</strong> cuentas iguales</td><td><span class="st bad">400 E303</span> monto inválido</td><td>¿qué error gana?</td><td>resuelta: <span class="st ok">E303 &gt; E304</span></td><td>Orden: monto antes de igualdad</td></tr>
+          <tr><td class="n">#27</td><td><code>TRANSFER;AC-0001;AC-0001;150000;80</code></td><td>Cuentas iguales <strong>+</strong> límite</td><td><span class="st bad">400 E304</span> origen y destino iguales</td><td>¿gana el límite?</td><td>resuelta: <span class="st ok">E304 &gt; E506</span></td><td>Igualdad antes de límite</td></tr>
+          <tr><td class="n">#28</td><td><code>TRANSFER;AC-9999;AC-8888;150000;22</code></td><td>Cuenta inexistente <strong>+</strong> límite</td><td><span class="st bad">404 E401</span> cuenta inexistente</td><td>¿gana el límite?</td><td>resuelta: <span class="st ok">E401 &gt; E506</span></td><td>Existencia antes de límite</td></tr>
+          <tr><td class="n">#29</td><td><code>PING</code> (sin <code>;</code>)</td><td>Falta el campo de control</td><td><span class="st bad">400 E103</span> falta control</td><td>mensaje sin delimitador ⇒ <code>E103</code></td><td><span class="st ok">confirmada</span></td><td>Parser exige <code>;</code> antes de validar <code>Q</code></td></tr>
+          <tr><td class="n">#30</td><td><code>;64</code></td><td>Segmento vacío</td><td><span class="st bad">400 E104</span> segmento vacío</td><td>segmento nulo ⇒ <code>E104</code></td><td><span class="st ok">confirmada</span></td><td>Rechazar cualquier segmento vacío</td></tr>
+          <tr><td class="n">#31</td><td><code>ALTA;Mateo;03</code></td><td>Ceros a la izquierda</td><td><span class="st bad">400 E202</span> control inválido</td><td><code>03</code> podría igualar a <code>3</code></td><td><span class="st bad">falsada</span>: comparación estricta de string</td><td>No normalizar ceros; rechazar <code>03</code></td></tr>
+          <tr><td class="n">#32</td><td><code>CONSULTA;ac-0001;14</code></td><td>IDs de cuenta en minúsculas</td><td><span class="st bad">404 E401</span> cuenta inexistente</td><td>¿el case-insensitive aplica a IDs?</td><td><span class="st bad">falsada</span>: solo el comando es case-insensitive</td><td>Normalizar comando, <strong>no</strong> los IDs</td></tr>
+          <tr><td class="n">#33</td><td><code>ANULA;OP-0001;46</code></td><td>Revertir con saldo negativo</td><td><span class="st ok">200</span> <code>{"ok":true,"anulada":"OP-0001"}</code></td><td>la anulación podría bloquear negativos</td><td><span class="st bad">falsada</span>: se permite saldo negativo</td><td>No bloquear anulación por saldo</td></tr>
+          <tr><td class="n">#34</td><td><code>RETIRO;AC-0001;71</code></td><td>Verbos bancarios alternativos</td><td><span class="st bad">400 E301</span> comando desconocido</td><td>podría existir <code>RETIRO</code>/otros</td><td><span class="st ok">confirmada la negación</span>: set = 6 comandos</td><td>No implementar verbos extra</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="fuzz">
+    <div class="sec-head"><span class="kicker">grupo C · ids 35–40</span></div>
+    <h2>Fuzz</h2>
+    <p class="lead">Fuzzing dirigido a los bordes: tamaño de transporte, formato de monto y el caso <code>97</code> del control.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>probe</th><th>razón</th><th>resultado</th><th>hipótesis antes</th><th>hipótesis después</th><th>decisión</th></tr></thead>
+        <tbody>
+          <tr><td class="n">#35</td><td><code>PING;[8193 bytes];10</code></td><td>Exceder el cuerpo HTTP</td><td><span class="st bad">413 E101</span> cuerpo demasiado grande</td><td>hay tope de cuerpo ⇒ error estable</td><td><span class="st ok">confirmada</span>: umbral exacto <strong>8.192 B</strong></td><td>Límite 8 KiB → <code>413 E101</code></td></tr>
+          <tr><td class="n">#36</td><td><code>DEPOSITO;AC-0001;0100;79</code></td><td>Ceros a la izquierda en monto</td><td><span class="st bad">400 E303</span> monto inválido</td><td>monto con <code>0</code> inicial ⇒ <code>E303</code></td><td><span class="st ok">confirmada</span></td><td>Monto <code>^[1-9]\d{0,9}$</code></td></tr>
+          <tr><td class="n">#37</td><td><code>DEPOSITO;AC-0001;10000000000;22</code></td><td>Monto de 11 dígitos</td><td><span class="st bad">400 E303</span> monto inválido</td><td>existe tope de dígitos</td><td><span class="st ok">confirmada</span>: máx <strong>10 dígitos</strong></td><td>Validar longitud del monto</td></tr>
+          <tr><td class="n">#38</td><td><code>DEPOSITO;AC-0001;9999999999;62</code></td><td>Monto de 10 dígitos</td><td><span class="st ok">200</span> <code>{"operacionId":"OP-0009"}</code></td><td>10 dígitos admitidos sin overflow</td><td><span class="st ok">confirmada</span></td><td>Enteros seguros hasta 10 dígitos</td></tr>
+          <tr><td class="n">#39</td><td><code>DEPOSITO;AC-0002;2147483647;97</code></td><td><code>Q</code>=97 en ISO 7064</td><td><span class="st ok">200</span> <code>{"operacionId":"OP-0006"}</code></td><td><code>Q</code> puede valer 97</td><td><span class="st ok">confirmada</span>: rango <code>2..98</code>; <code>(rem·3) mod 97 == 1 ⇒ 97</code>, no <code>0</code></td><td>Implementar la fórmula exacta, no <code>mod</code> ingenuo</td></tr>
+          <tr><td class="n">#40</td><td>ruta no mapeada (<code>{}</code>)</td><td>Ruta/método fuera del contrato</td><td><span class="st bad">404 E404</span> ruta desconocida</td><td>el router responde antes de auth</td><td><span class="st ok">confirmada</span></td><td>Despachar <code>E404</code> previo al middleware</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="decisiones">
+    <div class="sec-head"><span class="kicker">código · cierre</span></div>
+    <h2>Decisiones</h2>
+    <p class="lead">Cada sonda derivó en una regla concreta. Estas son las que viven en el código.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>decisión</th><th>evidencia</th><th>implementación</th></tr></thead>
+        <tbody>
+          <tr><td>Control = <strong>ISO 7064 Mod 97-10</strong> (A=1…Z=26 sin padding; <code>CD = 98 − (N·100) mod 97</code>)</td><td class="n">H-03 · #3–#6, #10, #39</td><td><code>src/checksum.mjs</code></td></tr>
+          <tr><td>Orden de validación <code>E303 &gt; E304 &gt; E401 &gt; E506 &gt; E507</code></td><td class="n">H-04 · #26, #27, #28, #9, #16</td><td><code>src/engine.mjs</code></td></tr>
+          <tr><td>Monto <code>^[1-9]\d{0,9}$</code> (positivo, sin ceros iniciales, ≤ 10 dígitos)</td><td class="n">#24, #25, #36, #37, #38</td><td><code>src/engine.mjs</code></td></tr>
+          <tr><td>Transporte: cuerpo ≤ 8.192 B → <code>413 E101</code>; ruta desconocida → <code>404 E404</code> antes de auth</td><td class="n">#35, #40</td><td><code>src/security.mjs</code>, <code>src/worker.mjs</code></td></tr>
+          <tr><td>Comando case-insensitive; IDs de cuenta case-sensitive</td><td class="n">#11, #32</td><td><code>src/engine.mjs</code></td></tr>
+          <tr><td><code>ANULA</code> genérica e idempotente; permite saldo negativo</td><td class="n">#13, #14, #23, #33</td><td><code>src/engine.mjs</code></td></tr>
+          <tr><td>Replicar literales con defectos históricos (<code>"recieved"</code>, <code>"comando desconocido "</code>)</td><td class="n">#6, #12</td><td><code>src/engine.mjs</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note"><strong>Límites de este log.</strong> El baseline (#1–#20) es una secuencia con estado: reproducirlo exige <code>POST /__reset</code> primero. #35 registra un payload simbólico (<code>[8193 bytes]</code>): mide el <em>umbral</em>, no el contenido. El incidente de las 15:30 puede invalidar cualquiera de estas filas; el baseline congelado y su re-test viven en <code>INCIDENT.md</code>.</div>
+    <pre class="map">movingparticle@caja-negra:~$ ./probe --verify
+40/40 registros citados · 20 baseline · 14 probes · 6 fuzz · 0 pendientes
+Hypothesis H-01 → H-04 : <span class="cy">CONFIRMED</span>
+checksum              : <span class="am">ISO 7064 Mod 97-10</span>
+precedence            : <span class="am">E303 &gt; E304 &gt; E401 &gt; E506 &gt; E507</span></pre>
+  </section>
+
+</main>
+
+<footer>
+  <div><b>FRONTIER Bogotá 2026</b> · reto 2 · log de sondas · <span>movingparticle@caja-negra</span></div>
+  <div class="terms">
+    <span>hypothesis-driven probing · ISO 7064 · rubric columns</span>
+    <button class="info" type="button" aria-expanded="false" aria-controls="glosario" aria-label="qué significan estos términos">i</button>
+    <div class="glosario" id="glosario" role="tooltip" hidden>
+      <dl>
+        <dt>Probe</dt><dd>Petición deliberada al oráculo para separar dos hipótesis que predicen resultados distintos (mayor ganancia de información).</dd>
+        <dt>ISO 7064 Mod 97-10</dt><dd>Estándar de dígito de control para NIF/cuenta bancaria. Alfanumérico 1-based: A=1…Z=26 sin padding; <code>CD = 98 − (N·100) mod 97</code>.</dd>
+        <dt>Precedencia</dt><dd>Orden determinista en que se evalúan las validaciones; el primer error que aplica es el que se devuelve.</dd>
+        <dt>Anti-overfitting</dt><dd>Modelar la regla, no la secuencia de ejemplos: cada regla se falsa contra una hipótesis rival.</dd>
+      </dl>
+    </div>
+  </div>
+</footer>
+</div>
+<div class="help">
+  <span class="lbl">teclas</span>
+  <span class="keys" aria-label="atajos de teclado">
+    <kbd data-jump="1">1</kbd><kbd data-jump="2">2</kbd><kbd data-jump="3">3</kbd>
+    <kbd data-jump="4">4</kbd><kbd data-jump="5">5</kbd><kbd data-jump="6">6</kbd>
+  </span>
+  <span class="lbl">saltan <b>sección</b></span>
+</div>
+
+<script type="module">
+  const clock = document.getElementById("clock");
+  const tick = () => { clock.textContent = new Date().toLocaleTimeString("es-CO", { hour12: false }); };
+  tick();
+  setInterval(tick, 1000);
+
+  const btn = document.getElementById("theme");
+  btn.addEventListener("click", () => {
+    const next = document.body.dataset.theme === "amber" ? "" : "amber";
+    document.body.dataset.theme = next;
+    btn.textContent = next ? "theme --green" : "theme --amber";
+  });
+
+  const jumps = ["resumen","hipotesis","baseline","probes","fuzz","decisiones"];
+  const flash = (el, cls, ms) => {
+    el.classList.remove(cls);
+    void el.offsetWidth;
+    el.classList.add(cls);
+    clearTimeout(el["_" + cls]);
+    el["_" + cls] = setTimeout(() => el.classList.remove(cls), ms);
+  };
+  const goTo = (n) => {
+    const id = jumps[n - 1];
+    const sec = document.getElementById(id);
+    if (!sec) { location.href = "index.html#" + id; return; }
+    sec.scrollIntoView({ behavior: "smooth" });
+    flash(sec, "glow", 1000);
+    const k = document.querySelector(`.help kbd[data-jump="${n}"]`);
+    if (k) flash(k, "hit", 900);
+  };
+  document.addEventListener("keydown", (e) => {
+    if (e.target.matches("input,textarea")) return;
+    const n = Number(e.key);
+    if (n >= 1 && n <= 6) goTo(n);
+  });
+  document.querySelectorAll(".help kbd").forEach((k) => {
+    k.addEventListener("click", () => goTo(Number(k.dataset.jump)));
+  });
+
+  const infoBtn = document.querySelector(".info");
+  const glosario = document.getElementById("glosario");
+  if (infoBtn && glosario) {
+    const setOpen = (open) => {
+      glosario.hidden = !open;
+      infoBtn.setAttribute("aria-expanded", String(open));
+    };
+    infoBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      setOpen(glosario.hidden);
+    });
+    document.addEventListener("click", (e) => {
+      if (!glosario.hidden && !glosario.contains(e.target) && e.target !== infoBtn) setOpen(false);
+    });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") setOpen(false); });
+  }
+
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+  const groups = [];
+  document.querySelectorAll(".metrics, .bars").forEach((el) => {
+    const items = [];
+    el.querySelectorAll(".bar-fill").forEach((b, i) => {
+      const target = parseFloat(b.style.width) || 0;
+      b.style.transition = "none";
+      b.style.width = "0%";
+      items.push({ type: "bar", el: b, target, off: i * 0.06 });
+    });
+    el.querySelectorAll(".metric .n").forEach((n) => {
+      const target = parseInt(n.textContent.trim(), 10) || 0;
+      n.dataset.target = target;
+      n.textContent = "0";
+      items.push({ type: "num", el: n, target, off: 0 });
+    });
+    groups.push({ el, items, max: 0 });
+  });
+
+  const paint = () => {
+    groups.forEach((g) => {
+      const rect = g.el.getBoundingClientRect();
+      const p = clamp((window.innerHeight * 0.9 - rect.top) / (window.innerHeight * 0.55), 0, 1);
+      if (p <= g.max) return;
+      g.max = p;
+      g.items.forEach((it) => {
+        const pi = clamp((g.max - it.off) / (1 - it.off), 0, 1);
+        if (it.type === "bar") it.el.style.width = it.target * pi + "%";
+        else it.el.textContent = Math.round(it.target * pi);
+      });
+    });
+  };
+
+  if (reduce) {
+    groups.forEach((g) => g.items.forEach((it) => {
+      if (it.type === "bar") it.el.style.width = it.target + "%";
+      else it.el.textContent = it.target;
+    }));
+  } else {
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => { paint(); ticking = false; });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    paint();
+  }
+</script>
+</body>
+</html>
