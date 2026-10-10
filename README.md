@@ -4,6 +4,14 @@
   </a>
 </p>
 
+<p align="center">
+  <a href="https://reto-caja-negra.pages.dev/"><img alt="Abrir design doc" src="https://img.shields.io/badge/design%20doc-abrir%20p%C3%A1gina-39ff14?style=for-the-badge&logo=githubpages&logoColor=07110a"></a>
+  &nbsp;
+  <a href="https://reto-caja-negra.pages.dev/architecture"><img alt="Arquitectura" src="https://img.shields.io/badge/arquitectura-C4-ffb000?style=for-the-badge"></a>
+  &nbsp;
+  <a href="https://reto-caja-negra.pages.dev/en/"><img alt="English" src="https://img.shields.io/badge/EN-english-7ee7ff?style=for-the-badge"></a>
+</p>
+
 # Reto 2 · La Caja Negra — Reemplazo autónomo
 
 Reemplazo determinista y **autónomo** de un servicio bancario heredado (10 años en
@@ -11,10 +19,11 @@ producción, sin código ni documentación) para **FRONTIER Bogotá 2026**. Repr
 paridad exacta el protocolo, los estados, los códigos HTTP y los mensajes de error del
 original, incluidos sus errores tipográficos históricos.
 
+- **Design doc (página):** [https://reto-caja-negra.pages.dev/](https://reto-caja-negra.pages.dev/)
+- **Arquitectura:** [https://reto-caja-negra.pages.dev/architecture](https://reto-caja-negra.pages.dev/architecture)
+- **English:** [https://reto-caja-negra.pages.dev/en/](https://reto-caja-negra.pages.dev/en/)
 - **Entrypoint de producción (Cloudflare Workers):**
   `https://caja-negra-reemplazo.parsec-ai-labs.workers.dev`
-- **Documento de diseño navegable:** `https://reto-caja-negra.pages.dev/`
-- **Diagrama de arquitectura:** `https://reto-caja-negra.pages.dev/architecture`
 
 > El reemplazo **no llama** al servicio original ni a otro reemplazo: es 100% autónomo.
 
