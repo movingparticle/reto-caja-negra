@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/hero.svg" alt="Caja Negra — observe, infer, replicate" width="100%">
+</p>
+
 # Reto 2 · La Caja Negra — Reemplazo autónomo
 
 Reemplazo determinista y **autónomo** de un servicio bancario heredado (10 años en
