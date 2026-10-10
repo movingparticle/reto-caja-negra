@@ -671,8 +671,10 @@ RETO 2 · CAJA NEGRA · DEMO EN VIVO
         </div>
 
         <!-- Comando personalizado (integrado) -->
-        <details class="custom-cmd" open>
-          <summary>$ comando_personalizado</summary>
+        <details class="custom-cmd">
+          <summary>$ comando_personalizado
+            <span title="Probador manual: manda UN solo mensaje al worker y muestra la respuesta cruda. No forma parte de la batería de 95 casos." style="font-size:10.5px; font-weight:400; letter-spacing:0; text-transform:none; color:var(--dim);">&#9432; ¿qué es?</span>
+          </summary>
           <div style="margin:10px 0 4px; padding:9px 11px; border-left:3px solid var(--green); background:#0a1410; font-size:12px; line-height:1.55; color:var(--ink);">
             <strong style="color:var(--green);">¿Qué es esto?</strong> Un <em>probador manual</em> de un solo mensaje contra el worker real (no forma parte de la batería de 95 casos):<br>
             <span style="color:var(--dim);">1)</span> Escribe un mensaje del protocolo <code>CMD;arg;…</code> (ej. <code>ALTA;Carlos</code>).<br>
