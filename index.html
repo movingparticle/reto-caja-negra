@@ -53,11 +53,11 @@
   .dots i:nth-child(3){background:#28c840}
   .win b{color:var(--ink);font-weight:600}
   .win .right{margin-left:auto;display:flex;gap:14px;align-items:center}
-  button.ghost{
+  button.ghost,a.ghost{
     background:transparent;color:var(--amber);border:1px solid var(--line);
     font-family:inherit;font-size:11px;padding:4px 8px;cursor:pointer;letter-spacing:.04em;
   }
-  button.ghost:hover{border-color:var(--amber);color:var(--green)}
+  button.ghost:hover,a.ghost:hover{border-color:var(--amber);color:var(--green);text-decoration:none}
   nav.cmds{display:flex;gap:4px;flex-wrap:wrap;padding:8px 16px}
   nav.cmds a{
     color:var(--dim);font-size:12px;padding:4px 8px;border:1px solid transparent;
@@ -288,10 +288,11 @@
 <header class="termbar">
   <div class="win">
     <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
-    <b>movingparticle@caja-negra</b>
+    <b>movingparticle@caja-negra</b> <span class="who" style="color:var(--amber,#ffb000);font-weight:600;letter-spacing:.06em">RODRIGO POLO</span> <a class="loc" href="https://www.google.com/maps/search/?api=1&query=Guayaquil%2C%20Ecuador" target="_blank" rel="noopener" title="Guayaquil, Ecuador — ver en Google Maps" style="color:var(--cyan,#7ee7ff);border:1px solid var(--line,#1e3a28);padding:1px 7px;border-radius:3px;font-size:10px;letter-spacing:.08em;text-decoration:none">EC, GYE</a>
     <span>~/reto-2/DESIGN_DOC</span>
     <span class="right">
       <span id="clock">--:--:--</span>
+      <a class="ghost" href="en/index.html" title="English version" hreflang="en" lang="en">EN</a>
       <button class="ghost" type="button" id="theme">theme --amber</button>
     </span>
   </div>
@@ -327,7 +328,7 @@
     <p class="sub"><strong>FRONTIER Bogotá 2026 · Reto 2 · hito 12:00.</strong><br/>Un servicio lleva 10 años en producción y nadie sabe cómo funciona. Vamos a descubrir su comportamiento observándolo y construir una réplica que responda exactamente igual — errores incluidos — sin llamarlo nunca en ejecución.</p>
     <div class="ascii-row">
       <article class="box"><h3>01 // qué</h3><p>Reemplazar un sistema sin código ni documentación por una réplica determinista, byte a byte, frente a casos que no conocemos.</p></article>
-      <article class="box"><h3>02 // cómo</h3><p>Probing guiado por hipótesis para inferir la regla real, y un servidor HTTP nativo en memoria que emula comandos, estados y errores.</p></article>
+      <article class="box"><h3>02 // cómo</h3><p>Probing guiado por hipótesis para inferir la regla real, y un Worker de Cloudflare (con Durable Object para un estado único) que emula comandos, estados y errores.</p></article>
       <article class="box"><h3>03 // prueba</h3><p>Comparación diferencial oráculo vs. réplica, batería adversarial y paridad exacta de status y cuerpo.</p></article>
     </div>
     <div class="tags">
@@ -357,7 +358,7 @@
       </div>
       <div class="card">
         <h3>La solución</h3>
-        <p>Un <strong>harness de descubrimiento</strong> que pregunta al original, y un <strong>entrypoint HTTP</strong> que responde igual con una máquina de estados en memoria.</p>
+        <p>Un <strong>harness de descubrimiento</strong> que pregunta al original, y un <strong>entrypoint HTTP</strong> (Cloudflare Worker + Durable Object) que responde igual.</p>
       </div>
       <div class="card">
         <h3>La evidencia</h3>
@@ -365,6 +366,21 @@
       </div>
     </div>
     <div class="note"><strong>PRINCIPIO.</strong> Una función que reproduce los ejemplos conocidos no reproduce necesariamente la regla real. Diseñamos para generalizar, no para aprobar el set visible.</div>
+
+    <h3 style="margin:26px 0 10px;color:var(--amber);font-size:13px;letter-spacing:.08em;text-transform:uppercase">Puntos críticos</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>punto crítico</th><th>estado</th><th>resolución</th></tr></thead>
+        <tbody>
+          <tr><td>Réplica no implementada</td><td><span class="conf c1">resuelto</span></td><td>6 comandos + 17 errores en <code>src/engine.mjs</code>; paridad <strong>20/20</strong>.</td></tr>
+          <tr><td>Algoritmo del control desconocido</td><td><span class="conf c1">resuelto</span></td><td><strong>ISO 7064 Mod 97-10</strong> (16/16 casos + probes de borde).</td></tr>
+          <tr><td>Estado no aislado / multi-instancia</td><td><span class="conf c1">resuelto</span></td><td><strong>Durable Object</strong> único <code>global-caja-negra</code> (un solo estado).</td></tr>
+          <tr><td>Entrypoint no desplegado</td><td><span class="conf c1">resuelto</span></td><td>Cloudflare Workers: <code>https://caja-negra-reemplazo.parsec-ai-labs.workers.dev</code>.</td></tr>
+          <tr><td>Incidente de las 15:30</td><td><span class="conf c3">abierto</span></td><td>Baseline congelado + adaptación sin regresión (<code>INCIDENT.md</code>).</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note" style="margin-top:14px"><strong>Notas de contrato (supuestos).</strong> <code>GET /health</code> exige token: sin él → <code>401 E001</code> (el arnés manda token en todas las llamadas). El cuerpo de <code>/__reset</code> es <code>{"ok":true}</code> y no es comparado por el arnés. Ambos quedan como supuestos hasta verificar contra el original.</div>
   </section>
 
   <section id="metricas">
@@ -569,17 +585,18 @@
     </div>
 
     <div class="card adr">
-      <h3><span class="status">ACEPTADA</span> ADR-0003 · RAM + reset atómico</h3>
+      <h3><span class="status">ACEPTADA</span> ADR-0003 · Estado único con Durable Object + reset atómico</h3>
       <div class="kv">
-        <div class="row2"><span class="k">contexto</span><span class="v">El juez llama <code>/__reset</code> antes de cada uno de 100 tests.</span></div>
-        <div class="row2"><span class="k">opciones</span><span class="v">(A) SQLite/Redis · (B) snapshot en memoria</span></div>
+        <div class="row2"><span class="k">contexto</span><span class="v">El juez llama <code>/__reset</code> antes de cada uno de 100 tests y asume un único proceso/estado.</span></div>
+        <div class="row2"><span class="k">drivers</span><span class="v">Estado único global · aislamiento entre tests · latencia de reset</span></div>
+        <div class="row2"><span class="k">opciones</span><span class="v">(A) SQLite/Redis clásico · (B) instancias sin estado · (C) Durable Object con nombre fijo</span></div>
       </div>
-      <div class="outcome">Elegimos <strong>(B)</strong>. Reset en < 1 ms, sin disco.</div>
+      <div class="outcome">Elegimos <strong>(C)</strong>: un Durable Object <code>global-caja-negra</code> garantiza un solo estado lógico, con reset en memoria (&lt; 1 ms) sin disco.</div>
       <div class="cons">
-        <div class="good">+ aislamiento instantáneo, deploy trivial</div>
-        <div class="bad">- no sobrevive a un kill del proceso</div>
+        <div class="good">+ estado único entre instancias, reset instantáneo, deploy trivial</div>
+        <div class="bad">- el estado vive en el DO y requiere binding (no es un proceso Node plano)</div>
       </div>
-      <div class="kv"><div class="row2"><span class="k">cambiar si</span><span class="v">El evaluador pide crash-recovery.</span></div></div>
+      <div class="kv"><div class="row2"><span class="k">cambiar si</span><span class="v">Se pidiera crash-recovery o estado compartido multi-región.</span></div></div>
     </div>
 
     <div class="card adr">
@@ -668,7 +685,7 @@
         <ul>
           <li><strong>P0</strong> servidor: <code>/health</code> <code>/__reset</code> <code>/*</code></li>
           <li><strong>P0</strong> motor + store con reset atómico</li>
-          <li><strong>P0</strong> fuzzer y tabla de probes</li>
+          <li><strong>P0</strong> probing guiado (<code>experimentos.jsonl</code>)</li>
           <li><strong>P1</strong> batería adversarial</li>
           <li><strong>P1</strong> incidente 15:30: detectar, aislar, patch, regresión</li>
           <li><strong>P2</strong> README + video 2 min</li>
@@ -706,7 +723,7 @@
 </main>
 
 <footer>
-  <div><b>FRONTIER Bogotá 2026</b> · reto 2 · system design 12:00</div>
+  <div><b>FRONTIER Bogotá 2026</b> · reto 2 · system design 12:00 · <span class="who" style="color:var(--amber,#ffb000);font-weight:600;letter-spacing:.06em">RODRIGO POLO</span></div>
   <div class="terms">
     <span>C4 · MADR 4.0 · arc42 · Diátaxis · Data-to-Viz</span>
     <button class="info" type="button" aria-expanded="false" aria-controls="glosario" aria-label="qué significan estos términos">i</button>
@@ -782,12 +799,10 @@
   };
   const goTo = (n) => {
     const id = jumps[n - 1];
-    if (id === "arquitectura") { location.href = "architecture.html"; return; }
     const sec = document.getElementById(id);
-    if (sec) {
-      sec.scrollIntoView({ behavior: "smooth" });
-      flash(sec, "glow", 1000);
-    }
+    if (!sec) { location.href = "index.html#" + id; return; }
+    sec.scrollIntoView({ behavior: "smooth" });
+    flash(sec, "glow", 1000);
     const k = document.querySelector(`.help kbd[data-jump="${n}"]`);
     if (k) flash(k, "hit", 900);
   };
@@ -869,6 +884,53 @@
     window.addEventListener("resize", onScroll);
     paint();
   }
+</script>
+<style>
+/* ---- glitch de bits del banner (contenido, sin flash del panel) ---- */
+pre.banner.glitch-hover{cursor:crosshair}
+</style>
+<script>
+(function(){
+  var b=document.querySelector("pre.banner");
+  if(!b) return;
+  var original=b.textContent;
+  var glyphs="01#%&@$*+=<>|/\\\u2593\u2592\u2591\u2588\u2500\u2502\u25A0\u25A1";
+  var hovering=false, hoverIv=null;
+  function corrupt(rate){
+    var out="", r=rate||0.10;
+    for(var i=0;i<original.length;i++){
+      var ch=original[i];
+      if(ch==="\n"||ch===" "){out+=ch;continue;}
+      out+=(Math.random()<r)?glyphs[Math.floor(Math.random()*glyphs.length)]:ch;
+    }
+    b.textContent=out;
+  }
+  function burst(times,rate,step){
+    var n=0;
+    var iv=setInterval(function(){
+      corrupt(rate);
+      if(++n>=times){clearInterval(iv);b.textContent=original;}
+    },step);
+  }
+  // glitches de fondo (dentro de la caja, sin movimiento externo)
+  setInterval(function(){ if(!hovering) burst(3,0.10,55); },1000);
+  // glitch intenso al pasar el mouse
+  function startHover(){
+    hovering=true;
+    b.classList.add("glitch-hover");
+    if(hoverIv) return;
+    hoverIv=setInterval(function(){ corrupt(0.42); },45);
+  }
+  function stopHover(){
+    hovering=false;
+    b.classList.remove("glitch-hover");
+    if(hoverIv){clearInterval(hoverIv);hoverIv=null;}
+    b.textContent=original;
+  }
+  b.addEventListener("mouseenter",startHover);
+  b.addEventListener("mouseleave",stopHover);
+  b.addEventListener("touchstart",function(){ startHover(); setTimeout(stopHover,1300); },{passive:true});
+})();
 </script>
 </body>
 </html>

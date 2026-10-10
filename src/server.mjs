@@ -2,11 +2,14 @@ import http from 'node:http';
 import { BankingEngine } from './engine.mjs';
 
 export function createServer(options = {}) {
+  const extraTokens = (process.env.ALLOWED_TOKENS || '')
+    .split(',')
+    .map(t => t.trim())
+    .filter(Boolean);
   const allowedTokens = new Set([
     options.token,
     process.env.TEAM_TOKEN,
-    'cn-p-abh_bog_wlw9_8r83-QnLthfmAjCo3D6QXyf_Ztb',
-    'ftr_904403fa4633e37c63c98b305a14ccbd',
+    ...extraTokens,
   ].filter(Boolean));
   const engine = options.engine || new BankingEngine();
   let xReqSeq = 0;

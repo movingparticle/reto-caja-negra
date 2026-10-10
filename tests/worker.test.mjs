@@ -5,7 +5,7 @@ import { resolve } from 'node:path';
 import worker from '../src/worker.mjs';
 
 const env = {
-  TEAM_TOKEN: 'ftr_904403fa4633e37c63c98b305a14ccbd',
+  TEAM_TOKEN: process.env.TEAM_TOKEN || 'test-team-token-fixture',
   TUTOR_KEY: 'tutor_secret_key_123',
 };
 

@@ -122,9 +122,9 @@ export default {
 
     // 3. Authentication Check (Timing-safe)
     // Supports both Authorization: Bearer <token> AND query param (?token=... o ?key=...) para navegadores
-    const officialToken = env.TEAM_TOKEN || 'cn-p-abh_bog_wlw9_8r83-QnLthfmAjCo3D6QXyf_Ztb';
+    const officialToken = env.TEAM_TOKEN || null;
     const tutorKey = env.TUTOR_KEY || env.TUTOR_TOKEN || null;
-    const legacyToken = 'ftr_904403fa4633e37c63c98b305a14ccbd';
+    const legacyToken = env.LEGACY_TOKEN || null;
     const extraTokens = (env.ALLOWED_TOKENS || '').split(',').map(t => t.trim()).filter(Boolean);
 
     const allowedTokens = [officialToken, tutorKey, legacyToken, ...extraTokens].filter(Boolean);

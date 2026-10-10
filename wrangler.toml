@@ -3,9 +3,10 @@ main = "src/worker.mjs"
 compatibility_date = "2024-04-05"
 
 [vars]
-TEAM_TOKEN = "cn-p-abh_bog_wlw9_8r83-QnLthfmAjCo3D6QXyf_Ztb"
-TUTOR_KEY = "tutor_key_cn-p-abh_bog_wlw9_8r83-QnLthfmAjCo3D6QXyf_Ztb"
-ALLOWED_TOKENS = "ftr_904403fa4633e37c63c98b305a14ccbd"
+# No secrets are embedded. Set them before deploying, e.g.:
+#   wrangler secret put TEAM_TOKEN
+#   wrangler secret put TUTOR_KEY
+#   wrangler secret put ALLOWED_TOKENS
 
 [durable_objects]
 bindings = [
