@@ -1,0 +1,72 @@
+%% FRONTIER Bogotá 2026 — Reto 2: Caja Negra
+%% Diagramas de arquitectura según el modelo C4 (c4model.com)
+%% Render: mermaid-cli (mmdc) o https://mermaid.live
+%% Nota: mmdc renderiza el primer diagrama del archivo por defecto; los demás
+%%       se renderizan usando bloques .mermaid independientes en DESIGN_DOC.html.
+
+%% ===========================================================================
+%% C4 NIVEL 1 — DIAGRAMA DE CONTEXTO DEL SISTEMA
+%% Tipo: System context · Scope: frontera del sistema y actores externos
+%% Leyenda: sólido = llamada síncrona; punteado = uso solo durante desarrollo
+%% ===========================================================================
+flowchart TD
+    Judge["👤 Evaluador / Juez<br/><i>Persona</i><br/>Ejecuta la batería oculta (100 tests)"]:::person
+
+    subgraph SYS["🎯 Reemplazo Autónomo de Caja Negra<br/><i>Software System</i>"]
+        direction TB
+        EP["HTTP Entrypoint<br/>GET /health · POST /__reset · POST /msg · /*"]:::system
+    end
+
+    Oracle["📦 Servicio Original (Caja Negra)<br/><i>External System</i><br/>caja-negra-production — 10 años, sin código"]:::external
+
+    Judge -->|"HTTPS + Bearer token<br/>JSON en 5 s"| SYS
+    SYS -.->|"Comparación de referencia<br/>(solo offline, prohibido en runtime)"| Oracle
+
+    classDef person fill:#e0e7ff,stroke:#4338ca,color:#1e1b4b,stroke-width:1.5px;
+    classDef system fill:#dbeafe,stroke:#2563eb,color:#1e3a8a,stroke-width:2px;
+    classDef external fill:#f1f5f9,stroke:#64748b,color:#334155,stroke-dasharray:4 3;
+
+%% ===========================================================================
+%% C4 NIVEL 2 — DIAGRAMA DE CONTENEDORES Y COMPONENTES
+%% Tipo: Container / Component · Scope: subsistema desplegado
+%% Leyenda: --> sincrónico · -.-> flujo offline de descubrimiento
+%% ===========================================================================
+flowchart TB
+    subgraph PROD["☁️ ENTRYPOINT DE PRODUCCIÓN (Node.js ESM, zero-dependency)"]
+        direction TB
+        Router["Router HTTP<br/><i>Component</i> · node:http<br/>Valida método y ruta · límites de payload por confirmar"]
+
+        subgraph CTRL["Controles de evaluación"]
+            Health["GET /health<br/><i>Component</i><br/>200 si el runtime está vivo"]
+            Reset["POST /__reset<br/><i>Component</i><br/>Bearer token → reset atómico"]
+        end
+
+        Engine["Motor de Dominio<br/><i>Component</i> · replica.mjs<br/>Comandos: PING · ALTA · CONSULTA · DEPOSITO · TRANSFER · ANULA"]
+        Store[("Almacén en Memoria<br/><i>Component/Store</i><br/>Cuentas · saldos · operaciones · snapshot")]
+
+        Router --> Health
+        Router --> Reset
+        Router -->|"POST /msg y /*"| Engine
+        Reset -->|"snapshot a estado 0"| Store
+        Engine <-->|"lee / escribe estado"| Store
+    end
+
+    subgraph DISC["🧪 HARNESS DE DESCUBRIMIENTO (offline, local)"]
+        direction TB
+        Fuzzer["Prober guiado<br/><i>Component</i> · fuzzer.mjs<br/>Probes discriminativos"]
+        Oracle2["Oráculo<br/>Servicio original"]
+        Comparator["Comparador<br/><i>Component</i><br/>Diff status + body"]
+        SpecLog["Generador SPEC.md / LOG.md"]
+
+        Fuzzer -->|"probe JSON"| Oracle2
+        Fuzzer -.->|"shadow replay"| Engine
+        Oracle2 -->|"respuesta real"| Comparator
+        Engine -.->|"respuesta réplica"| Comparator
+        Comparator --> SpecLog
+    end
+
+    Judge2["👤 Evaluador"]:::person
+    Judge2 -->|"HTTPS + Bearer token"| Router
+    Judge2 --> Health
+
+    classDef person fill:#e0e7ff,stroke:#4338ca,color:#1e1b4b,stroke-width:1.5px;

@@ -1,0 +1,18 @@
+{
+  "name": "reto-caja-negra",
+  "version": "1.0.0",
+  "description": "Reemplazo determinista y autónomo de servicio de caja negra - Frontier Bogotá 2026",
+  "type": "module",
+  "main": "src/server.mjs",
+  "scripts": {
+    "start": "node src/server.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "fuzz": "node src/fuzzer.mjs"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "keywords": ["frontier", "blackbox", "reverse-engineering", "clean-room"],
+  "author": "Equipo Frontier",
+  "license": "MIT"
+}

@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>System Design · Reemplazo Autónomo de Caja Negra — FRONTIER Bogotá 2026</title>
+<meta name="description" content="Documento de diseño del reemplazo autónomo de un servicio legado de caja negra. Reto 2 — FRONTIER Bogotá 2026." />
+<style>
+  :root{
+    --bg:#f5f7fb; --panel:#ffffff; --ink:#0f172a; --muted:#5b6478; --line:#e3e8f0;
+    --brand:#2563eb; --brand-2:#7c3aed; --ok:#16a34a; --warn:#d97706; --danger:#dc2626;
+    --info:#0891b2; --radius:16px; --shadow:0 1px 2px rgba(15,23,42,.06),0 8px 24px -12px rgba(15,23,42,.18);
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:var(--brand);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 22px}
+
+  /* ---------- NAV ---------- */
+  header.nav{position:sticky;top:0;z-index:50;background:rgba(245,247,251,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .nav-inner{display:flex;align-items:center;gap:18px;max-width:1120px;margin:0 auto;padding:12px 22px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.02em}
+  .brand .dot{width:12px;height:12px;border-radius:4px;background:linear-gradient(135deg,var(--brand),var(--brand-2))}
+  nav.links{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+  nav.links a{font-size:.82rem;color:var(--muted);padding:6px 10px;border-radius:999px;font-weight:600}
+  nav.links a:hover{background:#eef2f9;color:var(--ink);text-decoration:none}
+
+  /* ---------- HERO ---------- */
+  .hero{background:radial-gradient(1200px 500px at 15% -10%,#1e3a8a 0%,#0b1224 45%,#0b1224 100%);color:#e8eefc;padding:64px 0 56px;position:relative;overflow:hidden}
+  .hero::after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:34px 34px;mask-image:radial-gradient(600px 300px at 20% 0%,#000,transparent)}
+  .hero .wrap{position:relative}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:.76rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#9db4ff;border:1px solid rgba(157,180,255,.35);padding:6px 12px;border-radius:999px}
+  h1.title{font-size:clamp(1.7rem,4vw,2.7rem);line-height:1.1;letter-spacing:-.03em;margin:18px 0 10px;color:#fff}
+  .subtitle{color:#b9c6e6;max-width:760px;font-size:1.05rem}
+  .hero-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:34px}
+  .hero-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:var(--radius);padding:20px}
+  .hero-card h3{margin:0 0 8px;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:#9db4ff}
+  .hero-card p{margin:0;color:#dbe4f7;font-size:.95rem}
+  .tagline{margin-top:26px;display:flex;gap:10px;flex-wrap:wrap}
+  .chip{font-size:.78rem;font-weight:600;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:6px 12px;color:#cdd9f5}
+
+  /* ---------- SECTIONS ---------- */
+  main{padding:10px 0 80px}
+  section{padding:44px 0;border-bottom:1px solid var(--line)}
+  section:last-child{border-bottom:none}
+  .sec-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:8px}
+  .kicker{font-size:.74rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brand)}
+  h2{font-size:clamp(1.3rem,2.6vw,1.8rem);letter-spacing:-.02em;margin:0}
+  .lead{color:var(--muted);max-width:820px;margin:6px 0 26px}
+
+  /* ---------- CARDS / GRID ---------- */
+  .grid{display:grid;gap:16px}
+  .g3{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+  .g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+  .card h3{margin:0 0 6px;font-size:1.02rem}
+  .card p{margin:0;color:var(--muted);font-size:.92rem}
+  .card ul{margin:10px 0 0;padding-left:18px;color:var(--muted);font-size:.9rem}
+  .card li{margin:3px 0}
+
+  /* ---------- METRICS ---------- */
+  .metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:22px}
+  .metric{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
+  .metric .n{font-size:1.9rem;font-weight:800;letter-spacing:-.03em;line-height:1}
+  .metric .l{font-size:.78rem;color:var(--muted);margin-top:6px;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+  .metric.ok .n{color:var(--ok)} .metric.warn .n{color:var(--warn)} .metric.dan .n{color:var(--danger)} .metric.i .n{color:var(--info)}
+
+  .bars{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+  .bars h3{margin:0 0 4px;font-size:1rem}
+  .bars .hint{margin:0 0 16px;color:var(--muted);font-size:.82rem}
+  .bar-row{display:grid;grid-template-columns:120px 1fr 52px;align-items:center;gap:12px;margin:9px 0}
+  .bar-row .lab{font-size:.82rem;font-weight:600;color:#334155;font-family:var(--mono)}
+  .bar-track{background:#eef2f8;border-radius:999px;height:14px;overflow:hidden}
+  .bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--brand),var(--brand-2));transition:width .6s ease}
+  .bar-fill.g{background:linear-gradient(90deg,#22c55e,#16a34a)}
+  .bar-fill.o{background:linear-gradient(90deg,#f59e0b,#d97706)}
+  .bar-fill.r{background:linear-gradient(90deg,#ef4444,#dc2626)}
+  .bar-fill.c{background:linear-gradient(90deg,#06b6d4,#0891b2)}
+  .bar-row .val{font-size:.82rem;font-weight:700;text-align:right;color:#334155;font-family:var(--mono)}
+
+  /* ---------- TABLES ---------- */
+  .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:var(--panel);box-shadow:var(--shadow)}
+  table{border-collapse:collapse;width:100%;font-size:.86rem;min-width:560px}
+  th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:#f3f6fc;font-size:.74rem;text-transform:uppercase;letter-spacing:.06em;color:#475569;font-weight:700;position:sticky;top:0}
+  tr:last-child td{border-bottom:none}
+  td code,th code{font-family:var(--mono);font-size:.82rem;background:#eef2f9;padding:1px 6px;border-radius:6px}
+  .conf{font-weight:700;font-size:.72rem;padding:2px 8px;border-radius:999px;white-space:nowrap}
+  .conf.c1{background:#dcfce7;color:#166534}
+  .conf.c2{background:#fef3c7;color:#92400e}
+  .conf.c3{background:#e2e8f0;color:#475569}
+  .prio{font-weight:800;font-size:.72rem;padding:2px 8px;border-radius:6px}
+  .p0{background:#fee2e2;color:#991b1b}
+  .p1{background:#ffedd5;color:#9a3412}
+  .p2{background:#e0e7ff;color:#3730a3}
+
+  /* ---------- DIAGRAMS ---------- */
+  .diagram{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);margin-top:16px}
+  .diagram .cap{font-size:.78rem;color:var(--muted);margin:0 0 12px;font-weight:600}
+  .mermaid{display:flex;justify-content:center;background:#fbfcfe;border-radius:12px;padding:14px;overflow-x:auto}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.76rem;color:var(--muted);margin-top:10px}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+  .sw{width:26px;height:0;border-top:2px solid var(--brand)}
+  .sw.dash{border-top:2px dashed #94a3b8}
+
+  /* ---------- DECISIONS (MADR) ---------- */
+  .adr{margin-bottom:16px}
+  .adr .status{font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ok);background:#dcfce7;padding:3px 9px;border-radius:999px}
+  .adr h3{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .kv{margin-top:12px;display:grid;gap:10px}
+  .kv .row2{display:grid;grid-template-columns:150px 1fr;gap:10px;font-size:.88rem}
+  .kv .k{font-weight:700;color:#334155}
+  .kv .v{color:var(--muted)}
+  .outcome{border-left:4px solid var(--ok);background:#f0fdf4;padding:12px 14px;border-radius:10px;margin-top:12px;font-size:.9rem}
+  .cons{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+  .cons div{font-size:.85rem;border-radius:10px;padding:12px}
+  .cons .good{background:#f0fdf4;color:#166534}
+  .cons .bad{background:#fef2f2;color:#991b1b}
+  @media(max-width:560px){.cons{grid-template-columns:1fr}.kv .row2{grid-template-columns:1fr}}
+
+  /* ---------- MISC ---------- */
+  .note{background:#eff6ff;border:1px solid #bfdbfe;border-left:4px solid var(--brand);border-radius:10px;padding:14px 16px;font-size:.9rem;color:#1e3a8a;margin:16px 0}
+  .qa{border-bottom:1px dashed var(--line);padding:12px 0}
+  .qa:last-child{border-bottom:none}
+  .qa .q{font-weight:700;color:#1e293b;font-size:.94rem}
+  .qa .a{color:var(--muted);font-size:.9rem;margin-top:4px}
+  .pillrow{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+  .pill{font-size:.76rem;font-weight:600;border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 11px;color:#334155}
+  footer{background:#0b1224;color:#9db4ff;padding:34px 0;font-size:.82rem}
+  footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+  /* ---------- PRINT ---------- */
+  @media print{
+    header.nav{position:static}
+    .hero{background:#0b1224 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    section{break-inside:avoid}
+    .card,.bars,.table-wrap,.diagram,.metric{box-shadow:none}
+    a{color:var(--ink)}
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <div class="brand"><span class="dot"></span> Caja Negra · System Design</div>
+    <nav class="links">
+      <a href="#resumen">Resumen</a>
+      <a href="#metricas">Datos</a>
+      <a href="#problema">Problema</a>
+      <a href="#arquitectura">Arquitectura</a>
+      <a href="#decisiones">Decisiones</a>
+      <a href="#medicion">Medición</a>
+      <a href="#hipotesis">Hipótesis</a>
+      <a href="#defensa">Defensa</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <span class="eyebrow">FRONTIER Bogotá 2026 · Reto 2 · Hito 12:00</span>
+    <h1 class="title">Reemplazo autónomo de un servicio legado de caja negra</h1>
+    <p class="subtitle">Un servicio lleva 10 años en producción y nadie sabe cómo funciona. Vamos a descubrir su comportamiento observándolo y construir una réplica que responda exactamente igual — incluyendo los errores — sin llamarlo nunca en ejecución.</p>
+
+    <div class="hero-grid">
+      <div class="hero-card">
+        <h3>¿Qué resolvemos?</h3>
+        <p>Reemplazar un sistema sin código ni documentación por una réplica determinista que se comporte idéntico, byte a byte, frente a casos que no conocemos.</p>
+      </div>
+      <div class="hero-card">
+        <h3>¿Cómo?</h3>
+        <p>Probing guiado por hipótesis (active learning) para inferir la regla real, y un servidor HTTP nativo en memoria que emula comandos, estados y errores.</p>
+      </div>
+      <div class="hero-card">
+        <h3>¿Cómo sabemos que funciona?</h3>
+        <p>Comparación diferencial <em>oráculo vs. réplica</em>, batería adversarial y paridad exacta de status y cuerpo en cada caso observado.</p>
+      </div>
+    </div>
+
+    <div class="tagline">
+      <span class="chip">🎯 Fidelidad 100% status + body</span>
+      <span class="chip">🧠 Active learning</span>
+      <span class="chip">⚙️ Node.js ESM · cero dependencias</span>
+      <span class="chip">🔄 Reset atómico</span>
+      <span class="chip">🛡️ Sin overfitting</span>
+    </div>
+  </div>
+</div>
+
+<main>
+<div class="wrap">
+
+  <!-- ============ RESUMEN ============ -->
+  <section id="resumen">
+    <div class="sec-head"><span class="kicker">Explicación</span><h2>Resumen ejecutivo</h2></div>
+    <p class="lead">Lectura en 30 segundos para cualquier persona; el detalle técnico viene después.</p>
+    <div class="grid g3">
+      <div class="card">
+        <h3>El problema</h3>
+        <p>Existe un servicio cuyo comportamiento interno es desconocido. Solo observamos <code>INPUT → CAJA → OUTPUT</code>. Hay que reconstruir la regla, no memorizar ejemplos.</p>
+      </div>
+      <div class="card">
+        <h3>La solución</h3>
+        <p>Un <strong>harness de descubrimiento</strong> que hace preguntas inteligentes al original, y un <strong>entrypoint HTTP</strong> que responde igual usando una máquina de estados en memoria.</p>
+      </div>
+      <div class="card">
+        <h3>La evidencia</h3>
+        <p>Cada comportamiento inferido cita una línea del log; cada respuesta se compara contra el original. Nada se afirma sin prueba registrada.</p>
+      </div>
+    </div>
+    <div class="note"><strong>Principio rector:</strong> una función que reproduce los ejemplos conocidos no necesariamente reproduce la regla real. Diseñamos para <em>generalizar</em>, no para aprobar el set visible.</div>
+  </section>
+
+  <!-- ============ MÉTRICAS ============ -->
+  <section id="metricas">
+    <div class="sec-head"><span class="kicker">Datos observados</span><h2>Estadísticas del comportamiento</h2></div>
+    <p class="lead">Análisis de los 20 ejemplos públicos (<code>pruebas/ejemplos.jsonl</code>). Las reglas de visualización siguen <em>Data-to-Viz</em>: barras ordenadas en lugar de diagramas circulares, valores anotados y n visible.</p>
+
+    <div class="metrics">
+      <div class="metric"><div class="n">20</div><div class="l">Ejemplos analizados</div></div>
+      <div class="metric ok"><div class="n">13</div><div class="l">Respuestas 2xx</div></div>
+      <div class="metric dan"><div class="n">7</div><div class="l">Respuestas de error</div></div>
+      <div class="metric i"><div class="n">6</div><div class="l">Comandos conocidos</div></div>
+      <div class="metric warn"><div class="n">1</div><div class="l">Ruta de negocio usada</div></div>
+    </div>
+
+    <div class="grid g2">
+      <div class="bars">
+        <h3>Distribución de status HTTP</h3>
+        <p class="hint">n = 20 · barras ordenadas por frecuencia</p>
+        <div class="bar-row"><span class="lab">200 OK</span><div class="bar-track"><div class="bar-fill g" style="width:55%"></div></div><span class="val">11</span></div>
+        <div class="bar-row"><span class="lab">400 Bad</span><div class="bar-track"><div class="bar-fill r" style="width:20%"></div></div><span class="val">4</span></div>
+        <div class="bar-row"><span class="lab">201 Created</span><div class="bar-track"><div class="bar-fill c" style="width:10%"></div></div><span class="val">2</span></div>
+        <div class="bar-row"><span class="lab">422 Unproc.</span><div class="bar-track"><div class="bar-fill o" style="width:10%"></div></div><span class="val">2</span></div>
+        <div class="bar-row"><span class="lab">404 Not Found</span><div class="bar-track"><div class="bar-fill r" style="width:5%"></div></div><span class="val">1</span></div>
+      </div>
+
+      <div class="bars">
+        <h3>Familias de código de error</h3>
+        <p class="hint">n = 7 errores · E2xx validación · E3xx comando · E4xx recurso · E5xx negocio</p>
+        <div class="bar-row"><span class="lab">E2xx</span><div class="bar-track"><div class="bar-fill r" style="width:29%"></div></div><span class="val">2</span></div>
+        <div class="bar-row"><span class="lab">E3xx</span><div class="bar-track"><div class="bar-fill o" style="width:29%"></div></div><span class="val">2</span></div>
+        <div class="bar-row"><span class="lab">E5xx</span><div class="bar-track"><div class="bar-fill o" style="width:29%"></div></div><span class="val">2</span></div>
+        <div class="bar-row"><span class="lab">E4xx</span><div class="bar-track"><div class="bar-fill c" style="width:14%"></div></div><span class="val">1</span></div>
+      </div>
+    </div>
+
+    <div class="bars" style="margin-top:16px">
+      <h3>Comandos observados</h3>
+      <p class="hint">n = 20 mensajes · la comparación del comando es case-insensitive (<code>CONSULTa</code> fue aceptado)</p>
+      <div class="bar-row"><span class="lab">CONSULTA</span><div class="bar-track"><div class="bar-fill" style="width:25%"></div></div><span class="val">5</span></div>
+      <div class="bar-row"><span class="lab">ALTA</span><div class="bar-track"><div class="bar-fill" style="width:20%"></div></div><span class="val">4</span></div>
+      <div class="bar-row"><span class="lab">TRANSFER</span><div class="bar-track"><div class="bar-fill" style="width:20%"></div></div><span class="val">4</span></div>
+      <div class="bar-row"><span class="lab">DEPOSITO</span><div class="bar-track"><div class="bar-fill" style="width:15%"></div></div><span class="val">3</span></div>
+      <div class="bar-row"><span class="lab">ANULA</span><div class="bar-track"><div class="bar-fill" style="width:10%"></div></div><span class="val">2</span></div>
+      <div class="bar-row"><span class="lab">PING</span><div class="bar-track"><div class="bar-fill" style="width:5%"></div></div><span class="val">1</span></div>
+      <div class="bar-row"><span class="lab">desconocido</span><div class="bar-track"><div class="bar-fill r" style="width:5%"></div></div><span class="val">1</span></div>
+    </div>
+
+    <div class="note" style="margin-top:18px">Estas cifras son el <strong>estado actual</strong> tras analizar los 20 ejemplos. El dashboard está preparado para recalcularse con los datos de probing en vivo antes del hito de las 20:00.</div>
+  </section>
+
+  <!-- ============ PROBLEMA ============ -->
+  <section id="problema">
+    <div class="sec-head"><span class="kicker">System Design · Entendimiento</span><h2>Problema, límites y supuestos</h2></div>
+    <p class="lead">Estructura inspirada en <em>arc42</em> §1–3 (objetivos, restricciones, contexto) y en el criterio "Entendimiento del problema" de la rúbrica.</p>
+
+    <div class="grid g3">
+      <div class="card">
+        <h3>Objetivo</h3>
+        <p>Producir una réplica autónoma, determinista y disponible por internet que responda exactamente igual que el original —mismos status y cuerpos— a un set oculto de 100 tests.</p>
+      </div>
+      <div class="card">
+        <h3>Inputs / Outputs</h3>
+        <ul>
+          <li><strong>In:</strong> <code>POST /msg</code> con <code>{"m":"CMD;arg;...;ctrl"}</code> + Bearer token.</li>
+          <li><strong>Out:</strong> status HTTP exacto + cuerpo JSON/texto exacto.</li>
+          <li><strong>Control:</strong> <code>GET /health</code>, <code>POST /__reset</code>.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Restricciones explícitas</h3>
+        <ul>
+          <li>El reemplazo <strong>no puede llamar</strong> al original ni a otro reemplazo.</li>
+          <li>5 s por paso; 10 req/s y 8.000/día por token.</li>
+          <li>Repo público sin material privado del organizador.</li>
+          <li>Fuzzers propios permitidos y esperados.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Restricciones implícitas</h3>
+        <ul>
+          <li>Un solo proceso ⇒ estado por instancia.</li>
+          <li>El servicio puede cambiar durante el día (incidente 15:30).</li>
+          <li>Sin token o con token ajeno ⇒ debe comportarse como el original.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Supuestos</h3>
+        <ul>
+          <li>Comportamiento modelable como <strong>máquina de estados determinista</strong>.</li>
+          <li>Comandos con argumentos posicionales separados por <code>;</code>.</li>
+          <li>El último campo de control valida integridad del mensaje.</li>
+          <li>Estado efímero: <code>/__reset</code> lo vuelve a cero.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Out-of-scope y por qué</h3>
+        <ul>
+          <li>Persistencia duradera: el contrato exige reset instantáneo, no durabilidad.</li>
+          <li>Proxy al original: lo prohíbe la regla (set = 0).</li>
+          <li>UI/visualización en el runtime: no aporta al puntaje de paridad.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="grid g2" style="margin-top:16px">
+      <div class="card">
+        <h3>Edge cases priorizados</h3>
+        <div class="pillrow">
+          <span class="pill">Cuerpo vacío / no-JSON</span><span class="pill">command case-insensitive</span>
+          <span class="pill">aridad inválida (E302)</span><span class="pill">control mal formado (E201)</span>
+          <span class="pill">control inválido (E202)</span><span class="pill">cuenta inexistente (E401)</span>
+          <span class="pill">límite excedido (E506)</span><span class="pill">saldo insuficiente (E507)</span>
+          <span class="pill">operación ya anulada</span><span class="pill">rutas inexistentes</span>
+          <span class="pill">payload grande</span><span class="pill">codificación inválida</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Failure modes</h3>
+        <ul>
+          <li><strong>Overfitting</strong> a los 20 ejemplos → falla casos nuevos.</li>
+          <li><strong>Supuesto de orden</strong> de validación erróneo → error equivocado.</li>
+          <li><strong>Estado compartido</strong> entre tests sin reset → cascada de fallos.</li>
+          <li><strong>Schema change</strong> por incidente → respuestas desalineadas.</li>
+          <li><strong>Latencia</strong> &gt; 5 s por paso → timeouts contados como fallo.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ARQUITECTURA ============ -->
+  <section id="arquitectura">
+    <div class="sec-head"><span class="kicker">System Design · Arquitectura</span><h2>Arquitectura del sistema (C4)</h2></div>
+    <p class="lead">Dos niveles del modelo C4 (c4model.com): contexto y contenedores/componentes. Cada elemento está nombrado, con tecnología y flechas etiquetadas según el checklist de revisión de C4.</p>
+
+    <div class="diagram">
+      <p class="cap">C4 · Nivel 1 — Contexto del sistema</p>
+      <div class="mermaid">
+flowchart TD
+    Judge["👤 Evaluador / Juez<br/><i>Persona</i>"]:::person
+    subgraph SYS["🎯 Reemplazo Autónomo de Caja Negra<br/><i>Software System</i>"]
+        EP["HTTP Entrypoint<br/>GET /health · POST /__reset · POST /msg · /*"]:::system
+    end
+    Oracle["📦 Servicio Original (Caja Negra)<br/><i>External System</i>"]:::external
+    Judge -->|"HTTPS + Bearer token, JSON en 5 s"| SYS
+    SYS -.->|"comparación offline (prohibido en runtime)"| Oracle
+    classDef person fill:#e0e7ff,stroke:#4338ca,color:#1e1b4b;
+    classDef system fill:#dbeafe,stroke:#2563eb,color:#1e3a8a;
+    classDef external fill:#f1f5f9,stroke:#64748b,color:#334155,stroke-dasharray:4 3;
+      </div>
+      <div class="legend">
+        <span><i class="sw"></i> llamada síncrona</span>
+        <span><i class="sw dash"></i> flujo solo en desarrollo</span>
+      </div>
+    </div>
+
+    <div class="diagram">
+      <p class="cap">C4 · Nivel 2 — Contenedores y componentes</p>
+      <div class="mermaid">
+flowchart TB
+    subgraph PROD["☁️ ENTRYPOINT DE PRODUCCIÓN (Node.js ESM · zero-dependency)"]
+        Router["Router HTTP<br/><i>Component</i> · node:http<br/>método · ruta · límites por confirmar"]
+        Health["GET /health<br/><i>Component</i>"]
+        Reset["POST /__reset<br/><i>Component</i> · Bearer → reset"]
+        Engine["Motor de Dominio<br/><i>Component</i> · replica.mjs<br/>PING·ALTA·CONSULTA·DEPOSITO·TRANSFER·ANULA"]
+        Store[("Almacén en Memoria<br/>cuentas · saldos · operaciones")]
+        Router --> Health
+        Router --> Reset
+        Router -->|"POST /msg y /*"| Engine
+        Reset -->|"snapshot a estado 0"| Store
+        Engine <-->|"lee / escribe"| Store
+    end
+    subgraph DISC["🧪 HARNESS DE DESCUBRIMIENTO (offline)"]
+        Fuzzer["Prober guiado<br/><i>Component</i> · fuzzer.mjs"]
+        Oracle2["Oráculo (original)"]
+        Comparator["Comparador de paridad"]
+        SpecLog["SPEC.md / LOG.md"]
+        Fuzzer -->|"probe JSON"| Oracle2
+        Fuzzer -.->|"shadow replay"| Engine
+        Oracle2 --> Comparator
+        Engine -.-> Comparator
+        Comparator --> SpecLog
+    end
+    Judge2["👤 Evaluador"]:::person
+    Judge2 -->|"HTTPS + Bearer"| Router
+    classDef person fill:#e0e7ff,stroke:#4338ca,color:#1e1b4b;
+      </div>
+      <div class="legend">
+        <span><i class="sw"></i> tráfico de producción</span>
+        <span><i class="sw dash"></i> descubrimiento offline</span>
+      </div>
+    </div>
+
+    <div class="grid g3" style="margin-top:18px">
+      <div class="card">
+        <h3>Router HTTP</h3>
+        <p>Intercepta todo y despacha <code>/health</code>, <code>/__reset</code> y <code>/msg</code>; el resto va al <em>fallback</em> que replica al original. Valida método y ruta. Los límites de payload y la política UTF-8 están <strong>por confirmar</strong> (supuesto S1).</p>
+      </div>
+      <div class="card">
+        <h3>Controles de evaluación</h3>
+        <p><code>/health</code> responde 200 sin estado. <code>/__reset</code> exige el token correcto; con token inválido o ausente se comporta como el original (no revela el mecanismo).</p>
+      </div>
+      <div class="card">
+        <h3>Motor de dominio + Store</h3>
+        <p>Máquina de estados determinista en RAM. El reset hace snapshot instantáneo a estado cero (&lt; 1 ms), garantizando aislamiento entre tests del juez.</p>
+      </div>
+    </div>
+
+    <div class="grid g2" style="margin-top:16px">
+      <div class="card">
+        <h3>Vista de runtime (flujo de un test)</h3>
+        <p><code>POST /__reset</code> → estado 0 → <code>POST /msg</code> (secuencia de 1 a 12 request) → validación → transición → respuesta exacta. Si un paso tarda &gt; 5 s ⇒ fallo.</p>
+      </div>
+      <div class="card">
+        <h3>Vista de despliegue</h3>
+        <p>Proceso único Node.js expuesto por HTTPS. <strong>Un proceso = un estado</strong>: si la plataforma escala a N instancias, cada una mantiene su propio estado (limitación conocida documentada).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DECISIONES ============ -->
+  <section id="decisiones">
+    <div class="sec-head"><span class="kicker">System Design · Trade-offs</span><h2>Decisiones de arquitectura (MADR)</h2></div>
+    <p class="lead">Formato MADR 4.0 (adr.github.io): contexto, opciones, resultado, consecuencias y confirmación. Cada decisión dice qué se descartó, por qué, qué se gana y qué se sacrifica.</p>
+
+    <div class="card adr">
+      <h3><span class="status">Aceptada</span> ADR-0001 · Runtime Node.js ESM sin dependencias</h3>
+      <div class="kv">
+        <div class="row2"><span class="k">Contexto</span><span class="v">Necesitamos máxima reproducibilidad y arranque rápido en cualquier host de evaluación.</span></div>
+        <div class="row2"><span class="k">Drivers</span><span class="v">Reproducibilidad · superficie de ataque · tiempo de arranque</span></div>
+        <div class="row2"><span class="k">Opciones</span><span class="v">(A) Fastify/Express + TypeScript + Zod · (B) Node.js nativo ESM, cero deps</span></div>
+      </div>
+      <div class="outcome">Elegimos <strong>(B) Node.js nativo</strong>: elimina fallos del árbol de dependencias y garantiza un despliegue idéntico en cualquier entorno.</div>
+      <div class="cons">
+        <div class="good">✔ Ganamos: determinismo, portabilidad, arranque &lt; 50 ms, cero drift de versiones.</div>
+        <div class="bad">✖ Sacrificamos: abstracciones de routing/validación de alto nivel que debemos escribir a mano.</div>
+      </div>
+      <div class="row2" style="margin-top:12px"><span class="k">Cuándo cambiar</span><span class="v">Si se requiere &gt; 25.000 req/s con serialización dinámica compleja, migraríamos a Fastify.</span></div>
+      <div class="row2"><span class="k">Confirmación</span><span class="v">Clean-room run: <code>npm ci &amp;&amp; npm test &amp;&amp; npm start</code> en un entorno limpio.</span></div>
+    </div>
+
+    <div class="card adr">
+      <h3><span class="status">Aceptada</span> ADR-0002 · Probing guiado por hipótesis (active learning)</h3>
+      <div class="kv">
+        <div class="row2"><span class="k">Contexto</span><span class="v">El presupuesto de consultas es limitado (10 req/s, 8.000/día).</span></div>
+        <div class="row2"><span class="k">Drivers</span><span class="v">Máxima ganancia de información por probe · trazabilidad exigida por la rúbrica</span></div>
+        <div class="row2"><span class="k">Opciones</span><span class="v">(A) Fuzzing aleatorio masivo · (B) Probes discriminativos guiados por hipótesis</span></div>
+      </div>
+      <div class="outcome">Elegimos <strong>(B) active learning</strong>: cada probe intenta separar hipótesis rivales y queda registrado en el LOG.</div>
+      <div class="cons">
+        <div class="good">✔ Ganamos: precisión semántica, evidencia citable y SPEC/LOG que exige el reto.</div>
+        <div class="bad">✖ Sacrificamos: velocidad bruta para encontrar edge cases puramente sintácticos temprano.</div>
+      </div>
+      <div class="row2" style="margin-top:12px"><span class="k">Cuándo cambiar</span><span class="v">Añadiríamos mutadores aleatorios si aparecen campos de texto libre o estructuras profundas.</span></div>
+      <div class="row2"><span class="k">Confirmación</span><span class="v">Cada línea del LOG cita hipótesis antes/después y la decisión tomada.</span></div>
+    </div>
+
+    <div class="card adr">
+      <h3><span class="status">Aceptada</span> ADR-0003 · Estado en memoria con reset atómico</h3>
+      <div class="kv">
+        <div class="row2"><span class="k">Contexto</span><span class="v">El juez llama a <code>/__reset</code> antes de cada uno de los 100 tests.</span></div>
+        <div class="row2"><span class="k">Drivers</span><span class="v">Aislamiento entre tests · latencia de reset · simplicidad de despliegue</span></div>
+        <div class="row2"><span class="k">Opciones</span><span class="v">(A) SQLite/Redis · (B) Store en RAM con snapshot</span></div>
+      </div>
+      <div class="outcome">Elegimos <strong>(B) memoria + snapshot</strong>: reset en &lt; 1 ms sin I/O de disco.</div>
+      <div class="cons">
+        <div class="good">✔ Ganamos: reset instantáneo y despliegue trivial en cualquier host.</div>
+        <div class="bad">✖ Sacrificamos: durabilidad ante reinicio forzado del proceso.</div>
+      </div>
+      <div class="row2" style="margin-top:12px"><span class="k">Cuándo cambiar</span><span class="v">Si el evaluador probara crash-recovery y supervivencia a reinicio, usaríamos SQLite/Redis.</span></div>
+      <div class="row2"><span class="k">Confirmación</span><span class="v">Test de contrato: reset con token válido ⇒ 200; sin token ⇒ comportamiento del original.</span></div>
+    </div>
+
+    <div class="card adr">
+      <h3><span class="status">Aceptada</span> ADR-0004 · Adapter de esquema para tolerar el incidente</h3>
+      <div class="kv">
+        <div class="row2"><span class="k">Contexto</span><span class="v">El servicio puede cambiar de formato durante el día (incidente 15:30).</span></div>
+        <div class="row2"><span class="k">Drivers</span><span class="v">Blast radius mínimo · regresión garantizada</span></div>
+        <div class="row2"><span class="k">Opciones</span><span class="v">(A) Reescribir el motor ante el cambio · (B) Aislar un adapter de normalización</span></div>
+      </div>
+      <div class="outcome">Elegimos <strong>(B)</strong>: el cambio se aísla en un adaptador único, dejando intacto lo que ya funcionaba.</div>
+      <div class="cons">
+        <div class="good">✔ Ganamos: patch mínimo y trazable, sin reescrituras amplias.</div>
+        <div class="bad">✖ Sacrificamos: una capa de indirección que hay que mantener.</div>
+      </div>
+      <div class="row2" style="margin-top:12px"><span class="k">Cuándo cambiar</span><span class="v">Si el cambio invalidara el modelo de dominio completo, no solo el formato de respuesta.</span></div>
+      <div class="row2"><span class="k">Confirmación</span><span class="v">Test de regresión congelado antes del cambio + test del nuevo caso.</span></div>
+    </div>
+  </section>
+
+  <!-- ============ MEDICIÓN ============ -->
+  <section id="medicion">
+    <div class="sec-head"><span class="kicker">System Design · Plan para medir</span><h2>Baseline, métricas y matriz de pruebas</h2></div>
+    <p class="lead">Definimos cómo sabremos si funciona <em>antes</em> de construirlo. Sin métricas no hay defensa posible.</p>
+
+    <div class="grid g3">
+      <div class="card"><h3>Baseline</h3><p>Reproducir los 20 ejemplos tras <code>/__reset</code>: 20/20 paridad de status y cuerpo. Punto de partida medible.</p></div>
+      <div class="card"><h3>Métricas</h3><ul><li>Paridad funcional (status + body)</li><li>Latencia por paso &lt; 5 s</li><li>Reset &lt; 1 ms</li><li>Casos adversariales superados</li></ul></div>
+      <div class="card"><h3>Criterios de éxito</h3><ul><li>100% en ejemplos conocidos</li><li>0 regresiones tras el incidente</li><li>Reset idempotente y aislado</li><li>Contrato de entrypoint válido</li></ul></div>
+    </div>
+
+    <div class="table-wrap" style="margin-top:16px">
+      <table>
+        <thead><tr><th>Test</th><th>Qué intenta romper</th><th>Resultado esperado</th><th>Prioridad</th></tr></thead>
+        <tbody>
+          <tr><td>Happy path</td><td>Flujo PING → ALTA → DEPOSITO → CONSULTA</td><td>Status y saldos exactos</td><td><span class="prio p0">P0</span></td></tr>
+          <tr><td>Secuencia vacía</td><td>Sin mensajes / <code>/msg</code> vacío</td><td>Mismo error de validación que el original</td><td><span class="prio p0">P0</span></td></tr>
+          <tr><td>Comando desconocido</td><td><code>SALDOS;...</code></td><td>400 E301 (case-insensitive)</td><td><span class="prio p0">P0</span></td></tr>
+          <tr><td>Aridad inválida</td><td>Demasiados/pocos <code>;</code></td><td>400 E302</td><td><span class="prio p0">P0</span></td></tr>
+          <tr><td>Control mal formado</td><td>Campo de control no numérico</td><td>400 E201 / E202</td><td><span class="prio p0">P0</span></td></tr>
+          <tr><td>Cuenta inexistente</td><td><code>CONSULTA;AC-9999</code></td><td>404 E401</td><td><span class="prio p0">P0</span></td></tr>
+          <tr><td>Límite excedido</td><td>Transferencia sobre umbral</td><td>422 E506</td><td><span class="prio p1">P1</span></td></tr>
+          <tr><td>Saldo insuficiente</td><td>Transferir más que el saldo</td><td>422 E507</td><td><span class="prio p1">P1</span></td></tr>
+          <tr><td>Anulación doble</td><td><code>ANULA</code> sobre op. ya anulada</td><td><code>{ok:false,motivo:"ya anulada"}</code></td><td><span class="prio p1">P1</span></td></tr>
+          <tr><td>Rutas inexistentes</td><td>GET en <code>/msg</code>, ruta desconocida</td><td>Mismo 404/405 que el original</td><td><span class="prio p1">P1</span></td></tr>
+          <tr><td>Payload grande</td><td>payload grande / codificación inválida</td><td>Rechazo con código exacto</td><td><span class="prio p1">P1</span></td></tr>
+          <tr><td>Reset adversarial</td><td><code>/__reset</code> sin token</td><td>Comportamiento del original (no revela mecanismo)</td><td><span class="prio p0">P0</span></td></tr>
+          <tr><td>Regresión del incidente</td><td>Caso que cambió a las 15:30</td><td>Adaptado sin romper lo anterior</td><td><span class="prio p0">P0</span></td></tr>
+          <tr><td>Latencia</td><td>Cada paso bajo carga</td><td>&lt; 5 s siempre</td><td><span class="prio p2">P2</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ HIPÓTESIS ============ -->
+  <section id="hipotesis">
+    <div class="sec-head"><span class="kicker">Ejecución · Cacería de pruebas ocultas</span><h2>Hipótesis de tests ocultos y confianza</h2></div>
+    <p class="lead">Reglas inferidas separadas por nivel de evidencia: <span class="conf c1">confirmado</span> probado y repetible · <span class="conf c2">probable</span> observado una vez o inferido · <span class="conf c3">supuesto</span> default del reemplazo.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>ID</th><th>Comportamiento inferido</th><th>Evidencia (ejemplo)</th><th>Confianza</th></tr></thead>
+        <tbody>
+          <tr><td>C1</td><td><code>PING</code> responde <code>{pong:true}</code> sin estado</td><td>#1</td><td><span class="conf c1">confirmado</span></td></tr>
+          <tr><td>C2</td><td>El comando se compara case-insensitive</td><td>#11 (<code>CONSULTa</code>)</td><td><span class="conf c1">confirmado</span></td></tr>
+          <tr><td>C3</td><td><code>ALTA</code> crea cuenta y devuelve ID incremental <code>AC-####</code></td><td>#3, #4</td><td><span class="conf c1">confirmado</span></td></tr>
+          <tr><td>C4</td><td>El control de integridad se valida antes de actuar</td><td>#2 (E202), #17 (E201)</td><td><span class="conf c2">probable</span></td></tr>
+          <tr><td>C5</td><td><code>DEPOSITO</code> acredita y devuelve <code>operacionId</code></td><td>#6, #18, #19</td><td><span class="conf c1">confirmado</span></td></tr>
+          <tr><td>C6</td><td><code>TRANSFER</code> mueve saldo entre cuentas</td><td>#7, #8</td><td><span class="conf c1">confirmado</span></td></tr>
+          <tr><td>C7</td><td>Existe límite de transferencia (E506) y de saldo (E507)</td><td>#9, #16</td><td><span class="conf c1">confirmado</span></td></tr>
+          <tr><td>C8</td><td><code>ANULA</code> es idempotente y avisa si ya estaba anulada</td><td>#13, #14</td><td><span class="conf c1">confirmado</span></td></tr>
+          <tr><td>C9</td><td>Comando desconocido ⇒ 400 E301 con mensaje literal</td><td>#12</td><td><span class="conf c1">confirmado</span></td></tr>
+          <tr><td>C10</td><td>Aridad fuera de rango ⇒ 400 E302</td><td>#20</td><td><span class="conf c1">confirmado</span></td></tr>
+          <tr><td>H1</td><td>El control es un dígito de verificación (checksum) sobre el payload</td><td>#2, #17</td><td><span class="conf c2">probable</span></td></tr>
+          <tr><td>H2</td><td>El orden de validación es: forma → control → recurso → reglas de negocio</td><td>#15 vs #9</td><td><span class="conf c2">probable</span></td></tr>
+          <tr><td>H3</td><td>Los IDs de cuenta/operación son por proceso y se reinician con reset</td><td>#3, #6</td><td><span class="conf c2">probable</span></td></tr>
+          <tr><td>S1</td><td>Payload grande / codificación inválida ⇒ error de entrada estable</td><td>contrato</td><td><span class="conf c3">supuesto</span></td></tr>
+          <tr><td>S2</td><td>Ruta inexistente ⇒ mismo 404 que el original</td><td>contrato</td><td><span class="conf c3">supuesto</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note">Estrategia anti-overfitting: por cada regla "confirmada" generamos probes donde <strong>dos hipótesis rivales predicen resultados distintos</strong>, y elegimos el probe con mayor ganancia de información.</div>
+  </section>
+
+  <!-- ============ PLAN ============ -->
+  <section id="plan">
+    <div class="sec-head"><span class="kicker">Implementación</span><h2>Plan de trabajo y preguntas abiertas</h2></div>
+    <div class="grid g2">
+      <div class="card">
+        <h3>Plan de implementación (P0 → P2)</h3>
+        <ul>
+          <li><strong>P0</strong> Servidor + contrato: <code>/health</code>, <code>/__reset</code>, router universal.</li>
+          <li><strong>P0</strong> Motor de dominio + store con reset atómico.</li>
+          <li><strong>P0</strong> Fuzzer propio y tabla de probes guiada por hipótesis.</li>
+          <li><strong>P1</strong> Batería adversarial y hardening de errores.</li>
+          <li><strong>P1</strong> Incidente 15:30: detectar, aislar, patch mínimo, regresión.</li>
+          <li><strong>P2</strong> README reproducible + video 2 min.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Preguntas abiertas</h3>
+        <ul>
+          <li>¿El control es checksum o validación posicional? ¿Su algoritmo?</li>
+          <li>¿Cuál es el umbral exacto del E506?</li>
+          <li>¿Qué persiste tras un error parcial (atomicidad por mensaje)?</li>
+          <li>¿Qué cambia exactamente a las 15:30 y qué supuesto invalida?</li>
+          <li>¿El rate-limit (10/s) devuelve un cuerpo propio que debamos emular?</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DEFENSA ============ -->
+  <section id="defensa">
+    <div class="sec-head"><span class="kicker">Profundidad técnica</span><h2>Defensa técnica (preview del debrief)</h2></div>
+    <p class="lead">Respuestas preparadas para el juez, siguiendo el patrón: <em>"Elegimos X porque A y B; descartamos Y porque C; el trade-off es D; si cambiara E elegiríamos Y."</em></p>
+
+    <div class="qa"><div class="q">¿Por qué esta arquitectura?</div><div class="a">Porque separa descubrimiento (offline) de ejecución (online) y permite que el reemplazo sea totalmente autónomo, sin llamar al original en runtime.</div></div>
+    <div class="qa"><div class="q">¿Qué alternativa rechazaron?</div><div class="a">Un proxy que reenviara al original: lo prohíbe la regla y pondría el set en 0. También un fuzzer ciego, que no modela semántica de estados.</div></div>
+    <div class="qa"><div class="q">¿Cuál es la parte más débil?</div><div class="a">La inferencia del campo de control y del orden de validación, donde un supuesto erróneo produce el código de error equivocado.</div></div>
+    <div class="qa"><div class="q">¿Qué rompería primero a escala 10x?</div><div class="a">El estado en memoria si se levantan múltiples instancias: cada una tendría su propio estado. Con más tiempo, una capa de estado compartido con lease.</div></div>
+    <div class="qa"><div class="q">¿Cómo saben que funciona?</div><div class="a">Comparación diferencial oráculo vs. réplica sobre los 20 ejemplos y la batería adversarial, con paridad exacta de status y cuerpo.</div></div>
+    <div class="qa"><div class="q">¿Qué asume el diseño?</div><div class="a">Que el comportamiento es una máquina de estados determinista, con comandos posicionales y estado reiniciable.</div></div>
+    <div class="qa"><div class="q">¿Qué pasa si falla una dependencia?</div><div class="a">El runtime no tiene dependencias externas; si el oráculo cae, el descubrimiento se detiene pero la réplica sigue sirviendo lo ya inferido.</div></div>
+    <div class="qa"><div class="q">¿Qué generó la IA y qué cambiaron ustedes?</div><div class="a">La IA propuso estructura y candidatos de fórmula; validamos/rechazamos con probes y corregimos el orden de validación que la versión generada calculaba mal.</div></div>
+    <div class="qa"><div class="q">¿Qué mejorarían con más tiempo?</div><div class="a">1) Reducir el mayor riesgo de correctness (control/validación). 2) Robustez de estado a multi-instancia. 3) Operabilidad: métricas y health más ricos.</div></div>
+    <div class="qa"><div class="q">¿Por qué debería generalizar a casos ocultos?</div><div class="a">Porque modelamos la <em>regla</em> y no los ejemplos: cada comportamiento se falsó contra hipótesis rivales antes de fijarse.</div></div>
+  </section>
+
+</div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div><strong>FRONTIER Bogotá 2026 · Reto 2 — Caja Negra</strong><br/>Entregable System Design (hito 12:00).</div>
+    <div>Estándares aplicados: C4 model · ADR/MADR 4.0 · arc42 · Diátaxis · Data-to-Viz</div>
+  </div>
+</footer>
+
+<script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: "base",
+    securityLevel: "loose",
+    fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, sans-serif",
+    themeVariables: {
+      primaryColor: "#dbeafe",
+      primaryTextColor: "#1e3a8a",
+      primaryBorderColor: "#2563eb",
+      lineColor: "#94a3b8",
+      secondaryColor: "#ede9fe",
+      tertiaryColor: "#f1f5f9",
+      fontSize: "14px"
+    },
+    flowchart: { curve: "basis", htmlLabels: true }
+  });
+</script>
+
+</body>
+</html>
