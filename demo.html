@@ -1,0 +1,1653 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>caja-negra://demo — FRONTIER Bogotá 2026</title>
+<meta name="description" content="Consola interactiva de validación, checkpoints del hackathon y ejecutor en vivo de batería de pruebas contra Cloudflare Workers." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=VT323&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --bg: #070908;
+    --bg2: #0c100e;
+    --panel: #0e1411;
+    --ink: #d7f5c8;
+    --dim: #7d9a78;
+    --line: #1e3a28;
+    --green: #39ff14;
+    --amber: #ffb000;
+    --cyan: #7ee7ff;
+    --red: #ff5c57;
+    --ok: #39ff14;
+    --warn: #ffb000;
+    --danger: #ff5c57;
+    --info: #7ee7ff;
+    --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --display: "VT323", var(--mono);
+  }
+
+  body[data-theme="amber"] {
+    --ink: #ffe7b8;
+    --dim: #b89a62;
+    --line: #3a2c12;
+    --green: #ffb000;
+    --panel: #141008;
+    --bg: #0c0a06;
+    --bg2: #141008;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 14.5px;
+    line-height: 1.55;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Scanlines Overlay */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 80;
+    background: repeating-linear-gradient(to bottom, rgba(0,0,0,.16) 0 1px, transparent 1px 3px);
+    mix-blend-mode: multiply;
+    opacity: .55;
+  }
+
+  a { color: var(--cyan); text-decoration: none; }
+  a:hover { color: var(--green); text-decoration: underline; }
+  a:focus-visible, button:focus-visible { outline: 1px dashed var(--green); outline-offset: 3px; }
+  code { font-family: inherit; color: var(--amber); background: transparent; }
+
+  .shell { max-width: 1200px; margin: 0 auto; padding: 0 18px 72px; }
+
+  /* Top Terminal Window Bar */
+  header.termbar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: rgba(7,9,8,.94);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .win {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--line);
+    font-size: 12px;
+    color: var(--dim);
+    flex-wrap: wrap;
+  }
+
+  .dots { display: flex; gap: 6px; }
+  .dots i { width: 10px; height: 10px; border-radius: 50%; display: block; background: #3a3a3a; }
+  .dots i:nth-child(1) { background: var(--red); }
+  .dots i:nth-child(2) { background: #ffbd2e; }
+  .dots i:nth-child(3) { background: #28c840; }
+
+  .prompt { font-weight: 500; color: var(--dim); }
+  .prompt strong { color: var(--ink); font-weight: 600; }
+  .win .spacer { flex: 1; }
+
+  .term-btn {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--dim);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .08em;
+    padding: 3px 8px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all .15s;
+  }
+  .term-btn:hover { color: var(--green); border-color: var(--green); }
+
+  .nav-bar {
+    display: flex;
+    gap: 8px;
+    padding: 6px 16px;
+    align-items: center;
+    flex-wrap: wrap;
+    font-size: 12px;
+  }
+
+  .nav-tag {
+    color: var(--dim);
+    padding: 2px 6px;
+    border: 1px solid var(--line);
+    font-size: 11px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .nav-tag.live { color: var(--green); border-color: var(--green); }
+  .pulse-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); }
+
+  .term-select {
+    background: #090d0a;
+    border: 1px solid var(--line);
+    color: var(--cyan);
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 2px 6px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  /* ASCII Banner */
+  pre.banner {
+    margin: 16px auto 12px;
+    padding: 14px 16px;
+    width: fit-content;
+    max-width: 100%;
+    background: #0d1610;
+    border: 1px solid var(--line);
+    color: var(--green);
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1;
+    overflow: visible;
+    letter-spacing: 0;
+    position: relative;
+  }
+  pre.banner.hit { animation: boxshake .32s linear; }
+  @keyframes boxshake {
+    0%, 100% { transform: translate(0, 0); }
+    20% { transform: translate(-5px, 3px) rotate(-0.4deg); }
+    45% { transform: translate(6px, -3px) rotate(0.5deg); }
+    70% { transform: translate(-3px, 2px); }
+  }
+  pre.banner .weapon {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 64px;
+    height: 64px;
+    margin: 0;
+    pointer-events: none;
+    z-index: 6;
+    filter: drop-shadow(0 0 6px rgba(255, 176, 0, .55));
+    transition: transform .7s cubic-bezier(.15, .85, .2, 1), opacity .35s;
+    will-change: transform;
+  }
+  pre.banner .weapon svg { display: block; width: 64px; height: 64px; }
+  pre.banner .impact {
+    position: absolute;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--red);
+    letter-spacing: .12em;
+    pointer-events: none;
+    z-index: 7;
+    text-shadow: 0 0 8px var(--red);
+    animation: pop .7s ease forwards;
+  }
+  @keyframes pop {
+    0% { opacity: 0; transform: scale(.6); }
+    25% { opacity: 1; transform: scale(1.15); }
+    100% { opacity: 0; transform: scale(1) translateY(-10px); }
+  }
+  pre.banner .brow { display: block; height: 1.05em; line-height: 1.05; white-space: nowrap; }
+  pre.banner .ch {
+    display: inline-block;
+    width: 0.62em;
+    overflow: hidden;
+    text-align: center;
+    vertical-align: top;
+  }
+  pre.banner .ch.crack { color: var(--red); text-shadow: 0 0 6px var(--red); }
+  pre.banner .ch.heal { color: var(--amber); }
+  @media (prefers-reduced-motion: reduce) {
+    pre.banner .ch.crack, pre.banner .ch.heal { color: inherit; text-shadow: none; }
+  }
+
+  /* Big Display Titles */
+  h1, h2 {
+    font-family: var(--display);
+    font-weight: 400;
+    letter-spacing: .02em;
+    line-height: .9;
+    text-transform: uppercase;
+    margin: 6px 0 12px;
+    color: var(--ink);
+  }
+  h2 { font-size: clamp(2rem, 5vw, 3.2rem); }
+  h3 {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin: 0 0 8px;
+  }
+
+  /* Metrics Block (VT323 Pixel Counters) */
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  @media (max-width: 768px) {
+    .metrics { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .metric {
+    border: 1px solid var(--line);
+    padding: 12px;
+    background: #0a0e0b;
+  }
+  .metric .n {
+    font-family: var(--display);
+    font-size: 3.2rem;
+    line-height: .85;
+    color: var(--green);
+    text-shadow: 0 0 10px rgba(57,255,20,.25);
+  }
+  .metric.dan .n { color: var(--red); text-shadow: none; }
+  .metric.warn .n { color: var(--amber); text-shadow: none; }
+  .metric.i .n { color: var(--cyan); text-shadow: none; }
+  .metric .l {
+    margin-top: 8px;
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+
+  /* 2-Column Grid Layout */
+  .grid-layout {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  @media (max-width: 992px) {
+    .grid-layout { grid-template-columns: 1fr; }
+  }
+
+  /* Terminal Box / Card */
+  .box {
+    border: 1px solid var(--line);
+    background: var(--panel);
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .box.highlight {
+    border-color: #2b573a;
+    background: #090e0b;
+  }
+
+  /* Phosphor Repeating Bar Track */
+  .bar-track {
+    height: 12px;
+    background: #07110c;
+    border: 1px solid #16301c;
+    margin: 6px 0 14px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    width: 0%;
+    height: 100%;
+    background: repeating-linear-gradient(90deg, var(--green) 0 7px, transparent 7px 9px);
+    box-shadow: 0 0 8px rgba(57,255,20,.35);
+    transition: width .4s ease;
+  }
+
+  /* Checkpoints Checklist */
+  .chk-group { margin-bottom: 14px; border: 1px solid #162a1e; padding: 10px; background: #080c09; }
+  .chk-header { font-size: 11px; color: var(--cyan); font-weight: 600; text-transform: uppercase; margin-bottom: 8px; display: flex; justify-content: space-between; }
+
+  .chk-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 12.5px;
+    color: var(--ink);
+    margin: 6px 0;
+    cursor: pointer;
+    user-select: none;
+  }
+  .chk-item:hover { color: var(--green); }
+
+  .chk-box {
+    font-family: var(--mono);
+    color: var(--dim);
+    font-weight: 700;
+  }
+  .chk-item.checked .chk-box { color: var(--green); text-shadow: 0 0 6px rgba(57,255,20,.4); }
+
+  /* Buttons in Terminal Style */
+  .btn-run {
+    background: #0f2415;
+    border: 1px solid var(--green);
+    color: var(--green);
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: .08em;
+    padding: 10px 18px;
+    cursor: pointer;
+    text-transform: uppercase;
+    box-shadow: 0 0 10px rgba(57,255,20,.2);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all .15s;
+  }
+  .btn-run:hover {
+    background: var(--green);
+    color: #070908;
+    box-shadow: 0 0 16px rgba(57,255,20,.5);
+  }
+
+  .btn-secondary {
+    background: #0a0e0b;
+    border: 1px solid var(--line);
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 9px 14px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all .15s;
+  }
+  .btn-secondary:hover {
+    border-color: var(--cyan);
+    color: var(--cyan);
+  }
+
+  /* Test Stack Cards */
+  .test-list {
+    max-height: 520px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-right: 4px;
+  }
+
+  .test-row {
+    border: 1px solid var(--line);
+    background: #090d0a;
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 12.5px;
+    transition: all .15s;
+  }
+  .test-row:hover { border-color: #2b573a; background: #0c120e; }
+
+  .test-row-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .test-meta { display: flex; align-items: center; gap: 8px; }
+  .test-badge-status {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .06em;
+    padding: 1px 6px;
+    border: 1px solid var(--line);
+    text-transform: uppercase;
+  }
+  .status-pending { color: var(--dim); border-color: var(--line); }
+  .status-running { color: var(--amber); border-color: var(--amber); box-shadow: 0 0 8px rgba(255,176,0,.3); }
+  .status-pass { color: var(--green); border-color: var(--green); box-shadow: 0 0 6px rgba(57,255,20,.25); }
+  .status-fail { color: var(--red); border-color: var(--red); box-shadow: 0 0 6px rgba(255,92,87,.25); }
+
+  .test-details {
+    display: none;
+    margin-top: 6px;
+    padding: 8px;
+    background: #060907;
+    border: 1px dashed var(--line);
+    font-size: 11.5px;
+    color: var(--dim);
+  }
+  .test-details.open { display: block; }
+  .test-details pre { margin: 0; color: var(--ink); font-family: var(--mono); white-space: pre-wrap; word-break: break-all; }
+
+  /* Terminal Log Console */
+  .log-console {
+    background: #040605;
+    border: 1px solid var(--line);
+    padding: 12px;
+    font-family: var(--mono);
+    font-size: 12px;
+    height: 180px;
+    overflow-y: auto;
+    color: var(--dim);
+    margin-top: 12px;
+  }
+  .log-console .entry { margin: 2px 0; }
+  .log-console .entry.ok { color: var(--green); }
+  .log-console .entry.warn { color: var(--amber); }
+  .log-console .entry.err { color: var(--red); }
+  .log-console .entry.info { color: var(--cyan); }
+
+  /* Manual Input */
+  .term-input {
+    width: 100%;
+    background: #050806;
+    border: 1px solid var(--line);
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 8px 10px;
+    outline: none;
+  }
+  .term-input:focus { border-color: var(--green); }
+
+  /* Bottom Footer */
+  footer.term-footer {
+    border-top: 1px solid var(--line);
+    padding: 16px 0;
+    margin-top: 28px;
+    font-size: 12px;
+    color: var(--dim);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .probe-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; }
+  .probe { border: 1px solid var(--line); padding: 10px; background: #08100b; }
+  .probe.bad { border-color: #3d1c1c; background: #0e0808; }
+  .probe.cyan { border-color: #173a45; background: #071216; }
+  .probe b { display: block; font-size: 12px; margin-bottom: 4px; }
+  .probe p { margin: 0; font-size: 12.5px; color: var(--dim); }
+  .play { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 820px) { .play { grid-template-columns: 1fr; } }
+  /* ===== Runner ===== */
+  .runner { margin-bottom: 20px; }
+  .run-status-bar { margin-bottom: 10px; }
+  .run-status {
+    font-family: var(--display);
+    font-size: clamp(2rem, 6vw, 3.4rem);
+    line-height: .9;
+    color: var(--green);
+    text-shadow: 0 0 12px rgba(57,255,20,.3);
+    letter-spacing: .02em;
+  }
+  .run-status.running { color: var(--amber); text-shadow: 0 0 12px rgba(255,176,0,.35); }
+  .run-status.fail { color: var(--red); text-shadow: 0 0 10px rgba(255,92,87,.3); }
+  .run-status-title { font-size: 12.5px; color: var(--ink); margin-top: 6px; min-height: 1.2em; }
+  .runner-controls { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin: 14px 0; }
+  .speed-label { font-size: 11px; color: var(--dim); display: inline-flex; align-items: center; gap: 6px; }
+  .runner-filters { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+  .custom-cmd { border: 1px dashed var(--line); background: #080c09; padding: 10px 12px; margin-bottom: 14px; }
+  .custom-cmd > summary { cursor: pointer; font-size: 12px; color: var(--cyan); letter-spacing: .06em; text-transform: uppercase; font-weight: 600; }
+  .custom-cmd-label { display: block; font-size: 11.5px; color: var(--dim); margin: 10px 0 6px; }
+  .custom-cmd-row { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .custom-cmd-row .term-input { flex: 1 1 220px; }
+  .custom-cmd-out { margin-top: 8px; background: #040605; border: 1px solid var(--line); padding: 8px 10px; min-height: 52px; font-size: 12px; }
+  .runner-panes { display: grid; grid-template-columns: 1.05fr .95fr; gap: 16px; }
+  .pane { min-width: 0; }
+  .pane-title { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--amber); font-weight: 600; margin-bottom: 8px; }
+  .runner-panes .test-list { max-height: 460px; }
+  .runner-panes .log-console { height: 460px; margin-top: 0; }
+  .test-row.active {
+    border-color: var(--amber);
+    background: #141008;
+    box-shadow: inset 3px 0 0 var(--amber), 0 0 10px rgba(255,176,0,.15);
+  }
+  /* Checklist colapsable */
+  details.checklist { padding: 14px 16px; }
+  details.checklist > summary {
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--amber);
+  }
+  details.checklist > summary::-webkit-details-marker { display: none; }
+  details.checklist > summary::before { content: '▸ '; color: var(--amber); }
+  details.checklist[open] > summary::before { content: '▾ '; }
+  details.checklist .chk-group:first-of-type { margin-top: 14px; }
+
+  @media (max-width: 768px) {
+    html, body { overflow-x: hidden; }
+    .runner-panes { grid-template-columns: 1fr; }
+    .runner-panes .test-list { max-height: 340px; }
+    .runner-panes .log-console { height: 260px; }
+    .run-status { font-size: 2.3rem; }
+    .custom-cmd-row .term-input { flex: 1 1 100%; }
+    body { font-size: 13px; }
+    .shell { padding: 0 10px 40px; }
+    .win { gap: 8px; padding: 8px 10px; }
+    .prompt {
+      flex: 1;
+      min-width: 0;
+      font-size: 10px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    #clock { display: none; }
+    .nav-bar { padding: 8px 10px; gap: 6px; }
+    .nav-bar .spacer { display: none; }
+    .nav-bar .term-btn {
+      flex: 1 1 calc(50% - 6px);
+      text-align: center;
+      padding: 10px 6px;
+      font-size: 10px;
+    }
+    pre.banner {
+      font-size: min(7px, calc((100vw - 36px) / 58));
+      padding: 8px 4px;
+      width: 100%;
+      margin: 10px 0;
+      overflow: hidden;
+    }
+    pre.banner .weapon,
+    pre.banner .weapon svg { width: 36px; height: 36px; }
+    pre.banner .impact { font-size: 10px; }
+    .metrics { gap: 6px; }
+    .metric { padding: 8px; }
+    .metric .n { font-size: 2rem; }
+    .metric .l { font-size: 9px; letter-spacing: .04em; }
+    .box { padding: 12px; }
+    .log-console { height: 240px; font-size: 11px; }
+    .play { display: block; }
+    .term-input { width: 100%; min-width: 0; flex: 1 1 120px; }
+    .box .play > div > div[style*="display:flex"] { flex-wrap: wrap; }
+    footer.term-footer { font-size: 10px; gap: 6px; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- Top Terminal Window Bar -->
+  <header class="termbar">
+    <div class="win">
+      <div class="dots"><i></i><i></i><i></i></div>
+      <div class="prompt">movingparticle@caja-negra:<strong>~/reto-2/DEMO_RUNNER</strong></div>
+      <span class="spacer"></span>
+      <span id="clock" style="font-family: var(--mono); color: var(--amber);">--:--:--</span>
+      <button id="themeBtn" class="term-btn" onclick="toggleTheme()">theme --amber</button>
+    </div>
+
+    <div class="nav-bar">
+      <span class="spacer"></span>
+
+      <a href="https://reto-caja-negra.pages.dev/" target="_blank" rel="noopener noreferrer" class="term-btn" title="Documento de diseño, otra página">$ design_doc</a>
+      <a href="https://reto-caja-negra.pages.dev/architecture" target="_blank" rel="noopener noreferrer" class="term-btn">$ c4_arch</a>
+      <a href="LOG.html" target="_blank" rel="noopener noreferrer" class="term-btn">$ logs</a>
+    </div>
+  </header>
+
+  <div class="shell">
+
+    <pre class="banner" id="liveBanner" aria-label="DEMO EN VIVO — Reto 2 · Caja Negra">
+      .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+    /                                                                                       \
+  /                                                                                         \
+/                                                                                           \
++-------------------------------------------------------------------------------------------+
+|                                                                                           |
+|                           ██████╗ ███████╗███╗   ███╗ ██████╗                             |
+|                           ██╔══██╗██╔════╝████╗ ████║██╔═══██╗                            |
+|                           ██║  ██║█████╗  ██╔████╔██║██║   ██║                            |
+|                           ██║  ██║██╔══╝  ██║╚██╔╝██║██║   ██║                            |
+|                           ██████╔╝███████╗██║ ╚═╝ ██║╚██████╔╝                            |
+|                           ╚═════╝ ╚══════╝╚═╝     ╚═╝ ╚═════╝                             |
+|                                                                                           |
++-------------------------------------------------------------------------------------------+
+RETO 2 · CAJA NEGRA · DEMO EN VIVO                                                           
+* ENTRYPOINT: https://caja-negra-reemplazo.parsec-ai-labs.workers.dev                        
+* PROTOCOLO:  ISO 7064 Mod 97-10 · alfanumérico 1-based · Durable Objects · paridad 20/20    
+    </pre>
+
+    <!-- Metrics Row (VT323 Display) -->
+    <div class="metrics">
+      <div class="metric">
+        <div class="n" id="statTotal">24</div>
+        <div class="l">Total Pruebas</div>
+      </div>
+      <div class="metric">
+        <div class="n" id="statPass">0</div>
+        <div class="l">Pasaron (Pass)</div>
+      </div>
+      <div class="metric dan">
+        <div class="n" id="statFail">0</div>
+        <div class="l">Fallaron (Fail)</div>
+      </div>
+      <div class="metric i">
+        <div class="n" id="statLatency">—</div>
+        <div class="l">Latencia Promedio</div>
+      </div>
+      <div class="metric warn">
+        <div class="n" id="statRate">0%</div>
+        <div class="l">Tasa de Paridad</div>
+      </div>
+    </div>
+
+    <!-- ============ RUNNER ============ -->
+    <div class="runner" id="runner">
+      <div class="box highlight">
+
+        <!-- Barra de estado grande -->
+        <div class="run-status-bar">
+          <div class="run-status" id="runNow">LISTO</div>
+          <div class="run-status-title" id="runNowTitle">Presiona «EJECUTAR BATERÍA» para correr las 24 pruebas.</div>
+        </div>
+        <div class="bar-track"><div class="bar-fill" id="runProgressFill"></div></div>
+
+        <!-- Controles -->
+        <div class="runner-controls">
+          <button class="btn-run" id="btnRunAll" onclick="runAllTests()"><span>></span> EJECUTAR BATERÍA (24)</button>
+          <button class="btn-secondary" onclick="executeReset()"><span>></span> POST /__reset</button>
+          <button class="btn-secondary" onclick="executeHealthCheck()"><span>></span> GET /health</button>
+          <button class="btn-secondary" onclick="resetTestState()"><span>></span> CLEAR</button>
+        </div>
+
+        <!-- Comando personalizado (integrado) -->
+        <details class="custom-cmd" open>
+          <summary>$ comando_personalizado</summary>
+          <div style="margin:10px 0 4px; padding:9px 11px; border-left:3px solid var(--green); background:#0a1410; font-size:12px; line-height:1.55; color:var(--ink);">
+            <strong style="color:var(--green);">¿Qué es esto?</strong> Un <em>probador manual</em> de un solo mensaje contra el worker real (no forma parte de la batería de 95 casos):<br>
+            <span style="color:var(--dim);">1)</span> Escribe un mensaje del protocolo <code>CMD;arg;…</code> (ej. <code>ALTA;Carlos</code>).<br>
+            <span style="color:var(--dim);">2)</span> Pulsa <code>$ calc_iso97</code> → le calcula y agrega el <strong>dígito de control ISO 7064</strong> (queda tipo <code>ALTA;Carlos;42</code>). Si no lo pulsas, <code>ENVIAR</code> lo agrega solo (con la casilla de abajo activada).<br>
+            <span style="color:var(--dim);">3)</span> Pulsa <code>> ENVIAR</code> → lo manda de verdad (<code>POST /msg</code>) y abajo verás la <strong>respuesta cruda</strong>: código HTTP + JSON del worker.
+            <div style="margin-top:7px; border-top:1px dashed #1c3326; padding-top:7px;">
+              <strong style="color:var(--cyan);">Comandos que puedes escribir</strong> (escribe solo el comando; el control lo agrega el botón):
+              <div style="margin-top:5px; line-height:1.9;">
+                <code>PING</code> → prueba de vida <span style="color:var(--dim);">(responde pong)</span><br>
+                <code>ALTA;Nombre</code> → crea cuenta <span style="color:var(--dim);">(devuelve AC-0001, AC-0002…)</span><br>
+                <code>CONSULTA;AC-0001</code> → muestra el saldo de una cuenta<br>
+                <code>DEPOSITO;AC-0001;50000</code> → abona un monto<br>
+                <code>TRANSFER;AC-0001;AC-0002;1000</code> → mueve saldo <span style="color:var(--dim);">(máx 50000)</span><br>
+                <code>ANULA;OP-0001</code> → revierte una operación<br>
+                <code>HALT;1</code> → detiene el servicio <span style="color:var(--dim);">(503; se recupera con POST /__reset)</span>
+              </div>
+            </div>
+          </div>
+          <label class="custom-cmd-label">Comando a probar (ej. <code>ALTA;Carlos</code> o <code>DEPOSITO;AC-0001;50000</code>):</label>
+          <div class="custom-cmd-row">
+            <input type="text" id="manualInput" class="term-input" value="ALTA;Carlos" />
+            <button class="term-btn" onclick="calcManualChecksum()" title="Calcula el control ISO 7064">$ calc_iso97</button>
+            <button class="btn-run" onclick="sendManualMessage()"><span>></span> ENVIAR</button>
+          </div>
+          <label style="display:inline-flex; align-items:center; gap:6px; font-size:11.5px; color:var(--dim); margin-top:8px; cursor:pointer;">
+            <input type="checkbox" id="autoCtrl" checked />
+            Auto-calcular el control si falta (desmárcalo para probar controles malos a propósito)
+          </label>
+          <div style="margin-top:9px; font-size:11px; color:var(--dim);">Ejemplos (clic para cargar y luego ENVIAR):</div>
+          <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:6px;">
+            <button class="term-btn" onclick="fillManual('PING')">PING</button>
+            <button class="term-btn" onclick="fillManual('ALTA;Carlos')">ALTA;Carlos</button>
+            <button class="term-btn" onclick="fillManual('CONSULTA;AC-0001')">CONSULTA;AC-0001</button>
+            <button class="term-btn" onclick="fillManual('DEPOSITO;AC-0001;50000')">DEPOSITO;AC-0001;50000</button>
+            <button class="term-btn" onclick="fillManual('TRANSFER;AC-0001;AC-0002;1000')">TRANSFER;AC-0001;AC-0002;1000</button>
+            <button class="term-btn" onclick="fillManual('ANULA;OP-0001')">ANULA;OP-0001</button>
+            <button class="term-btn" onclick="fillManual('HALT;AC-0001')">HALT;AC-0001</button>
+          </div>
+          <div id="manualHint" style="font-size:11px; color:var(--amber); margin-top:6px;"></div>
+          <div class="custom-cmd-out" id="manualOutput"><span style="color:var(--dim);">Esperando comando...</span></div>
+        </details>
+
+        <!-- Filtros -->
+        <div class="runner-filters">
+          <button class="term-btn" style="color:var(--green); border-color:var(--green);" id="flt_all" onclick="setFilter('all', this)">$ todas</button>
+          <button class="term-btn" id="flt_protocol" onclick="setFilter('protocol', this)">$ protocolo</button>
+          <button class="term-btn" id="flt_input" onclick="setFilter('input', this)">$ entrada</button>
+          <button class="term-btn" id="flt_integrity" onclick="setFilter('integrity', this)">$ integridad</button>
+          <button class="term-btn" id="flt_business" onclick="setFilter('business', this)">$ negocio</button>
+          <button class="term-btn" id="flt_incident" onclick="setFilter('incident', this)">$ incidente</button>
+        </div>
+
+        <!-- Paneles: lista de pruebas + terminal -->
+        <div class="runner-panes">
+          <div class="pane">
+            <div class="pane-title">Pruebas</div>
+            <div class="test-list" id="testList"><!-- Poblado por JS --></div>
+          </div>
+          <div class="pane">
+            <div class="pane-title">Terminal</div>
+            <div class="log-console" id="logConsole">
+              <div class="entry info">[INIT] Consola conectada a https://caja-negra-reemplazo.parsec-ai-labs.workers.dev</div>
+              <div class="entry ok">[AUTH] Bearer token activo. Presiona EJECUTAR BATERÍA.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ============ CHECKLIST (colapsable) ============ -->
+    <details class="box checklist" id="checklistBox">
+      <summary>
+        <span>Checkpoints · rúbrica</span>
+        <strong id="checklistPercent" style="color:var(--green)">0%</strong>
+      </summary>
+      <div class="bar-track" style="margin-top:10px;">
+        <div class="bar-fill" id="checklistProgressFill"></div>
+      </div>
+
+      <!-- Bloque 1: System Design (30%) -->
+      <div class="chk-group">
+        <div class="chk-header">
+          <span>System Design</span>
+          <span>30%</span>
+        </div>
+        <div class="chk-item" onclick="toggleChk('chk_1_1')">
+          <span class="chk-box" id="box_chk_1_1">[ ]</span>
+          <span class="desc">Entendimiento del problema y supuestos</span>
+        </div>
+        <div class="chk-item" onclick="toggleChk('chk_1_2')">
+          <span class="chk-box" id="box_chk_1_2">[ ]</span>
+          <span class="desc">Especificación formal del protocolo (SPEC.md)</span>
+        </div>
+        <div class="chk-item" onclick="toggleChk('chk_1_3')">
+          <span class="chk-box" id="box_chk_1_3">[ ]</span>
+          <span class="desc">Arquitectura Worker + Durable Object</span>
+        </div>
+        <div class="chk-item" onclick="toggleChk('chk_1_4')">
+          <span class="chk-box" id="box_chk_1_4">[ ]</span>
+          <span class="desc">Bitácora de experimentos y descarte (LOG.md)</span>
+        </div>
+      </div>
+
+      <!-- Bloque 2: Ejecución (40%) -->
+      <div class="chk-group">
+        <div class="chk-header">
+          <span>Ejecución & paridad</span>
+          <span>40%</span>
+        </div>
+        <div class="chk-item" onclick="toggleChk('chk_2_1')">
+          <span class="chk-box" id="box_chk_2_1">[ ]</span>
+          <span class="desc">Entrypoint en producción (GET /health 200)</span>
+        </div>
+        <div class="chk-item" onclick="toggleChk('chk_2_2')">
+          <span class="chk-box" id="box_chk_2_2">[ ]</span>
+          <span class="desc">Reset de estado limpio (POST /__reset)</span>
+        </div>
+        <div class="chk-item" onclick="toggleChk('chk_2_3')">
+          <span class="chk-box" id="box_chk_2_3">[ ]</span>
+          <span class="desc">6 Comandos bancarios deterministas</span>
+        </div>
+        <div class="chk-item" onclick="toggleChk('chk_2_4')">
+          <span class="chk-box" id="box_chk_2_4">[ ]</span>
+          <span class="desc">100% paridad en los 20 ejemplos públicos</span>
+        </div>
+        <div class="chk-item" onclick="toggleChk('chk_2_5')">
+          <span class="chk-box" id="box_chk_2_5">[ ]</span>
+          <span class="desc">Protección DoS (body > 8 KiB → 413 E101)</span>
+        </div>
+      </div>
+
+      <!-- Bloque 3: Profundidad Técnica (15%) -->
+      <div class="chk-group">
+        <div class="chk-header">
+          <span>Profundidad técnica</span>
+          <span>15%</span>
+        </div>
+        <div class="chk-item" onclick="toggleChk('chk_3_1')">
+          <span class="chk-box" id="box_chk_3_1">[ ]</span>
+          <span class="desc">Algoritmo ISO 7064 Mod 97-10 exacto</span>
+        </div>
+        <div class="chk-item" onclick="toggleChk('chk_3_2')">
+          <span class="chk-box" id="box_chk_3_2">[ ]</span>
+          <span class="desc">Protección contra timing attacks en auth</span>
+        </div>
+        <div class="chk-item" onclick="toggleChk('chk_3_3')">
+          <span class="chk-box" id="box_chk_3_3">[ ]</span>
+          <span class="desc">Cabecera monotónica secuencial X-Req</span>
+        </div>
+        <div class="chk-item" onclick="toggleChk('chk_3_4')">
+          <span class="chk-box" id="box_chk_3_4">[ ]</span>
+          <span class="desc">Reemplazo 100% autónomo (sin dependencias)</span>
+        </div>
+      </div>
+
+      <!-- Bloque 4: Demo Day (15%) -->
+      <div class="chk-group">
+        <div class="chk-header">
+          <span>Demo Day & Video</span>
+          <span>15%</span>
+        </div>
+        <div class="chk-item" onclick="toggleChk('chk_4_1')">
+          <span class="chk-box" id="box_chk_4_1">[ ]</span>
+          <span class="desc">Consola interactiva ejecutando en vivo</span>
+        </div>
+        <div class="chk-item" onclick="toggleChk('chk_4_2')">
+          <span class="chk-box" id="box_chk_4_2">[ ]</span>
+          <span class="desc">Repo reproducible con README y scripts</span>
+        </div>
+        <div class="chk-item" onclick="toggleChk('chk_4_3')">
+          <span class="chk-box" id="box_chk_4_3">[ ]</span>
+          <span class="desc">Grabación de video de 2 minutos lista</span>
+        </div>
+        <div class="chk-item" onclick="toggleChk('chk_4_4')">
+          <span class="chk-box" id="box_chk_4_4">[ ]</span>
+          <span class="desc">Defensa técnica preparada ante el jurado</span>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:6px; margin-top:10px;">
+        <button class="term-btn" onclick="checkAll(true)">$ check --all</button>
+        <button class="term-btn" onclick="checkAll(false)">$ uncheck --all</button>
+      </div>
+    </details>
+
+    <footer class="term-footer">
+      <div>FRONTIER Bogotá 2026 // Reto 2 · demo en vivo // reemplazo autónomo</div>
+      <div>caja-negra-reemplazo.parsec-ai-labs.workers.dev</div>
+    </footer>
+
+  </div>
+
+  <!-- CORE LOGIC SCRIPT -->
+  <script>
+    const LIVE_URL = 'https://caja-negra-reemplazo.parsec-ai-labs.workers.dev';
+    const TOKENS = {
+      team: 'ftr_904403fa4633e37c63c98b305a14ccbd',
+      tutor: 'tutor_key_904403fa4633e37c63c98b305a14ccbd',
+      invalid: 'invalid_token_99999999999999999',
+      none: ''
+    };
+
+    let currentAuth = 'team';
+    let currentFilter = 'all';
+    let testResults = {};
+    let isRunning = false;
+
+    // Theme Switcher
+    function toggleTheme() {
+      const b = document.body;
+      const isAmber = b.getAttribute('data-theme') === 'amber';
+      if (isAmber) {
+        b.removeAttribute('data-theme');
+        document.getElementById('themeBtn').innerText = 'theme --amber';
+      } else {
+        b.setAttribute('data-theme', 'amber');
+        document.getElementById('themeBtn').innerText = 'theme --green';
+      }
+    }
+
+    // Live Clock & Incident 15:30 Countdown
+    function updateClock() {
+      const d = new Date();
+      document.getElementById('clock').innerText = d.toTimeString().split(' ')[0];
+
+      // Target: 15:30:00 (COT)
+      const target = new Date();
+      target.setHours(15, 30, 0, 0);
+      const diffMs = target - d;
+      const countEl = document.getElementById('demoCountdown');
+      const statusEl = document.getElementById('demoIncidentStatus');
+
+      if (countEl) {
+        if (diffMs > 0) {
+          const totalSec = Math.floor(diffMs / 1000);
+          const m = Math.floor(totalSec / 60);
+          const s = totalSec % 60;
+          countEl.innerText = `-${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+          if (m < 5) countEl.style.color = 'var(--red)';
+        } else {
+          const pastSec = Math.floor(Math.abs(diffMs) / 1000);
+          const m = Math.floor(pastSec / 60);
+          const s = pastSec % 60;
+          countEl.innerText = `+${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+          countEl.style.color = 'var(--red)';
+          if (statusEl) {
+            statusEl.innerText = 'VENTANA ACTIVA (15:30 - 16:00)';
+            statusEl.style.color = 'var(--red)';
+          }
+        }
+      }
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    function requestDesktopNotification() {
+      if ('Notification' in window) {
+        Notification.requestPermission().then(perm => {
+          if (perm === 'granted') {
+            log('ok', '✓ Notificaciones de escritorio de Windows activadas.');
+            try { new Notification('🛡️ RADAR ACTIVO', { body: 'Te avisaremos si ocurre el incidente de las 15:30.' }); } catch (e) {}
+          }
+        });
+      }
+    }
+
+    async function checkIncidentNow() {
+      const res = await callWorker('/msg', 'POST', { m: 'PING;64' });
+      if (res.ok && res.status === 200 && res.body && res.body.pong === true) {
+        log('ok', `[INCIDENTE] Worker en línea (200 OK, ${res.latency}ms). Sin anomalías en PING.`);
+      } else {
+        const reason = `Status: ${res.status}, Body: ${JSON.stringify(res.body)}`;
+        log('err', `[INCIDENTE 🚨] ¡Anomalía detectada! ${reason}`);
+        const statusEl = document.getElementById('demoIncidentStatus');
+        if (statusEl) {
+          statusEl.innerText = '¡ALERTA DE INCIDENTE DETECTADA!';
+          statusEl.style.color = 'var(--red)';
+        }
+        if ('Notification' in window && Notification.permission === 'granted') {
+          try {
+            new Notification('🚨 ¡INCIDENTE DETECTADO EN PRODUCCIÓN!', {
+              body: reason,
+              requireInteraction: true
+            });
+          } catch (e) {}
+        }
+      }
+    }
+    let incidentTimer = null;
+    function startIncidentWatch() {
+      if (incidentTimer) return;
+      incidentTimer = setInterval(checkIncidentNow, 10000);
+    }
+    function stopIncidentWatch() {
+      if (!incidentTimer) return;
+      clearInterval(incidentTimer);
+      incidentTimer = null;
+    }
+
+    // 24 Test Suite Definitions
+    let TEST_SUITE = [
+      { id: 'auth_1', category: 'auth', title: 'Seguridad: petición anónima sin token', method: 'GET', path: '/health', forceAuth: 'none', payload: null, expectedStatus: 401, expectedBody: { error: 'E001', mensaje: 'no autorizado' } },
+      { id: 'auth_2', category: 'auth', title: 'Seguridad: token inválido o falso', method: 'POST', path: '/msg', forceAuth: 'invalid', payload: { m: 'PING;64' }, expectedStatus: 401, expectedBody: { error: 'E001', mensaje: 'no autorizado' } },
+      { id: 'ex_1', category: 'official', title: '#01 PING (Health Check Latencia)', method: 'POST', path: '/msg', payload: { m: 'PING;64' }, expectedStatus: 200, expectedBody: { pong: true } },
+      { id: 'ex_2', category: 'official', title: '#02 ALTA con control inválido (E202)', method: 'POST', path: '/msg', payload: { m: 'ALTA;Lucia;83' }, expectedStatus: 400, expectedBody: { error: 'E202', mensaje: 'control inválido' } },
+      { id: 'ex_3', category: 'official', title: '#03 ALTA cuenta Lucía (AC-0001)', method: 'POST', path: '/msg', payload: { m: 'ALTA;Lucia;82' }, expectedStatus: 201, expectedBody: { cuentaId: 'AC-0001' } },
+      { id: 'ex_4', category: 'official', title: '#04 ALTA Cuenta Mateo (AC-0002)', method: 'POST', path: '/msg', payload: { m: 'ALTA;Mateo;3' }, expectedStatus: 201, expectedBody: { cuentaId: 'AC-0002' } },
+      { id: 'ex_5', category: 'official', title: '#05 CONSULTA Saldo Inicial AC-0001 ($0)', method: 'POST', path: '/msg', payload: { m: 'CONSULTA;AC-0001;14' }, expectedStatus: 200, expectedBody: { cuenta_id: 'AC-0001', saldo: '0.00' } },
+      { id: 'ex_6', category: 'official', title: '#06 DEPOSITO en AC-0001 ($250.000)', method: 'POST', path: '/msg', payload: { m: 'DEPOSITO;AC-0001;250000;86' }, expectedStatus: 200, expectedBody: { status: 'recieved', operacionId: 'OP-0001' } },
+      { id: 'ex_7', category: 'official', title: '#07 TRANSFER AC-0001 ? AC-0002 ($40.000)', method: 'POST', path: '/msg', payload: { m: 'TRANSFER;AC-0001;AC-0002;40000;86' }, expectedStatus: 200, expectedBody: { status: 'recieved', operacionId: 'OP-0002' } },
+      { id: 'ex_8', category: 'official', title: '#08 CONSULTA Saldo Destino AC-0002 ($400)', method: 'POST', path: '/msg', payload: { m: 'CONSULTA;AC-0002;11' }, expectedStatus: 200, expectedBody: { cuenta_id: 'AC-0002', saldo: '400.00' } },
+      { id: 'ex_9', category: 'official', title: '#09 TRANSFER excede límite $50k (E506)', method: 'POST', path: '/msg', payload: { m: 'TRANSFER;AC-0001;AC-0002;120000;55' }, expectedStatus: 422, expectedBody: { error: 'E506', mensaje: 'límite excedido' } },
+      { id: 'ex_10', category: 'official', title: '#10 TRANSFER límite exacto $50k (OP-0003)', method: 'POST', path: '/msg', payload: { m: 'TRANSFER;AC-0001;AC-0002;50000;59' }, expectedStatus: 200, expectedBody: { status: 'recieved', operacionId: 'OP-0003' } },
+      { id: 'ex_11', category: 'official', title: '#11 CONSULTA Case-Insensitive ("CONSULTa")', method: 'POST', path: '/msg', payload: { m: 'CONSULTa;AC-0001;14' }, expectedStatus: 200, expectedBody: { cuenta_id: 'AC-0001', saldo: '1600.00' } },
+      { id: 'ex_12', category: 'official', title: '#12 Comando Desconocido ("SALDOS")', method: 'POST', path: '/msg', payload: { m: 'SALDOS;AC-0001;38' }, expectedStatus: 400, expectedBody: { error: 'E301', mensaje: 'comando desconocido ' } },
+      { id: 'ex_13', category: 'official', title: '#13 ANULA operación OP-0003 (rollback)', method: 'POST', path: '/msg', payload: { m: 'ANULA;OP-0003;66' }, expectedStatus: 200, expectedBody: { ok: true, anulada: 'OP-0003' } },
+      { id: 'ex_14', category: 'official', title: '#14 ANULA doble anulación (idempotencia)', method: 'POST', path: '/msg', payload: { m: 'ANULA;OP-0003;66' }, expectedStatus: 200, expectedBody: { ok: false, motivo: 'ya anulada' } },
+      { id: 'ex_15', category: 'official', title: '#15 CONSULTA Cuenta Inexistente AC-0009', method: 'POST', path: '/msg', payload: { m: 'CONSULTA;AC-0009;87' }, expectedStatus: 404, expectedBody: { error: 'E401', mensaje: 'cuenta inexistente' } },
+      { id: 'ex_16', category: 'official', title: '#16 TRANSFER con Saldo Insuficiente (E507)', method: 'POST', path: '/msg', payload: { m: 'TRANSFER;AC-0002;AC-0001;50000;23' }, expectedStatus: 422, expectedBody: { error: 'E507', mensaje: 'saldo insuficiente' } },
+      { id: 'ex_17', category: 'official', title: '#17 DEPOSITO con Control Mal Formado (E201)', method: 'POST', path: '/msg', payload: { m: 'DEPOSITO;AC-0002;700;5X' }, expectedStatus: 400, expectedBody: { error: 'E201', mensaje: 'control mal formado' } },
+      { id: 'ex_18', category: 'official', title: '#18 DEPOSITO monto pequeño $700 (OP-0004)', method: 'POST', path: '/msg', payload: { m: 'DEPOSITO;AC-0002;700;35' }, expectedStatus: 200, expectedBody: { status: 'recieved', operacionId: 'OP-0004' } },
+      { id: 'ex_19', category: 'official', title: '#19 CONSULTA Saldo Acumulado AC-0002', method: 'POST', path: '/msg', payload: { m: 'CONSULTA;AC-0002;11' }, expectedStatus: 200, expectedBody: { cuenta_id: 'AC-0002', saldo: '407.00' } },
+      { id: 'ex_20', category: 'official', title: '#20 ALTA con aridad inválida (E302)', method: 'POST', path: '/msg', payload: { m: 'ALTA;Lucia;Gomez;11' }, expectedStatus: 400, expectedBody: { error: 'E302', mensaje: 'aridad inválida' } },
+      { id: 'adv_1', category: 'adversarial', title: 'Ataque DoS: Payload > 8 KiB (E101)', method: 'POST', path: '/msg', payload: { m: 'PING;' + 'A'.repeat(8500) + ';10' }, expectedStatus: 413, expectedBody: { error: 'E101', mensaje: 'cuerpo demasiado grande' } },
+      { id: 'adv_2', category: 'adversarial', title: 'Ruta Desconocida no Mapeada (E404)', method: 'GET', path: '/unmapped-endpoint', payload: null, expectedStatus: 404, expectedBody: { error: 'E404', mensaje: 'ruta desconocida' } }
+    ];
+
+    // Suite ampliada cargada desde demo-suite.json (capturada del oráculo).
+    function stableStr(v) {
+      if (v === null || typeof v !== 'object') return JSON.stringify(v);
+      if (Array.isArray(v)) return '[' + v.map(stableStr).join(',') + ']';
+      return '{' + Object.keys(v).sort().map(k => JSON.stringify(k) + ':' + stableStr(v[k])).join(',') + '}';
+    }
+
+    function normalizeSuite(raw) {
+      return raw.map(t => {
+        const steps = (t.steps && t.steps.length) ? t.steps : [{
+          method: t.method, path: t.path, auth: t.forceAuth || 'team',
+          body: t.payload || undefined,
+          expStatus: t.expectedStatus, expBody: t.expectedBody
+        }];
+        const first = steps[0] || {};
+        let payload = 'none';
+        if (first.body !== undefined) payload = first.body;
+        else if (first.m !== undefined) payload = { m: first.m };
+        else if (first.raw !== undefined) payload = '(raw) ' + first.raw;
+        return {
+          id: t.id, category: t.category || 'official', title: t.title, steps,
+          display: {
+            method: first.method || 'POST',
+            path: first.path || '/msg',
+            payload,
+            expectedStatus: first.expStatus,
+            expectedBody: first.expBody,
+            steps: steps.length
+          }
+        };
+      });
+    }
+
+    async function loadSuite() {
+      try {
+        const res = await fetch('demo-suite.json', { cache: 'no-store' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        TEST_SUITE = normalizeSuite(await res.json());
+        log('ok', `[SUITE] ${TEST_SUITE.length} casos cargados desde demo-suite.json`);
+      } catch (e) {
+        TEST_SUITE = normalizeSuite(TEST_SUITE);
+        log('warn', `[SUITE] demo-suite.json no disponible (${e.message}); usando suite embebida.`);
+      }
+      document.getElementById('btnRunAll').innerHTML = `<span>></span> EJECUTAR BATERÍA (${TEST_SUITE.length})`;
+      refreshFilterLabels();
+    }
+
+    function refreshFilterLabels() {
+      const counts = { all: TEST_SUITE.length };
+      TEST_SUITE.forEach(t => { counts[t.category] = (counts[t.category] || 0) + 1; });
+      const set = (id, label) => { const el = document.getElementById(id); if (el) el.innerText = label; };
+      set('flt_all', `$ todas (${TEST_SUITE.length})`);
+      set('flt_protocol', `$ protocolo (${counts.protocol || 0})`);
+      set('flt_input', `$ entrada (${counts.input || 0})`);
+      set('flt_integrity', `$ integridad (${counts.integrity || 0})`);
+      set('flt_business', `$ negocio (${counts.business || 0})`);
+      set('flt_incident', `$ incidente (${counts.incident || 0})`);
+    }
+
+
+    function calculateControl(payload) {
+      let rem = 0n;
+      const upper = payload.toUpperCase();
+      for (let i = 0; i < upper.length; i++) {
+        const code = upper.charCodeAt(i);
+        if (code >= 65 && code <= 90) {
+          const val = code - 64;
+          if (val >= 10) {
+            rem = (rem * 100n + BigInt(val)) % 97n;
+          } else {
+            rem = (rem * 10n + BigInt(val)) % 97n;
+          }
+        } else if (code >= 48 && code <= 57) {
+          const val = code - 48;
+          rem = (rem * 10n + BigInt(val)) % 97n;
+        }
+      }
+      return Number(98n - ((rem * 3n) % 97n));
+    }
+
+    // Logging Utility
+    function log(type, text) {
+      const c = document.getElementById('logConsole');
+      const time = new Date().toTimeString().split(' ')[0];
+      const div = document.createElement('div');
+      div.className = `entry ${type}`;
+      div.innerText = `[${time}] ${text}`;
+      c.appendChild(div);
+      c.scrollTop = c.scrollHeight;
+    }
+
+    function handleAuthChange(val) {
+      currentAuth = val;
+      log('info', `[AUTH] Cambiado a modo: ${val.toUpperCase()}`);
+    }
+
+    function getActiveToken(force) {
+      if (force) return TOKENS[force];
+      return TOKENS[currentAuth];
+    }
+
+    // HTTP Dispatcher
+    async function callWorker(path, method = 'GET', data = null, forceAuth = null) {
+      const token = getActiveToken(forceAuth);
+      const headers = { 'User-Agent': 'Frontier-Terminal-Runner/2.0' };
+      if (token) headers['Authorization'] = 'Bearer ' + token;
+      if (data !== null) headers['Content-Type'] = 'application/json';
+
+      const opts = { method, headers };
+      if (data !== null) opts.body = JSON.stringify(data);
+
+      const start = performance.now();
+      try {
+        const res = await fetch(LIVE_URL + path, opts);
+        const latency = Math.round(performance.now() - start);
+        let body = {};
+        try { body = await res.json(); } catch { body = { raw: await res.text() }; }
+        return { status: res.status, body, latency, ok: true };
+      } catch (err) {
+        const latency = Math.round(performance.now() - start);
+        return { status: 0, body: { error: 'NET_ERR', message: err.message }, latency, ok: false };
+      }
+    }
+
+    // Render Cards in Terminal Style
+    function renderTestList() {
+      const container = document.getElementById('testList');
+      container.innerHTML = '';
+
+      const filtered = TEST_SUITE.filter(t => currentFilter === 'all' || t.category === currentFilter);
+
+      filtered.forEach((t, i) => {
+        const res = testResults[t.id] || { status: 'pending' };
+        const row = document.createElement('div');
+        row.className = 'test-row';
+        if (res.status === 'running') row.className += ' active';
+        row.dataset.test = t.id;
+
+        let badgeClass = 'status-pending';
+        let badgeText = '[ PENDIENTE ]';
+        if (res.status === 'running') { badgeClass = 'status-running'; badgeText = '[ RUNNING ]'; }
+        else if (res.status === 'pass') { badgeClass = 'status-pass'; badgeText = `[ PASS ${res.httpStatus} ]`; }
+        else if (res.status === 'fail') { badgeClass = 'status-fail'; badgeText = `[ FAIL ${res.httpStatus || 'ERR'} ]`; }
+
+        const latText = res.latency ? `<span style="color:var(--dim); font-size:11px;">${res.latency}ms</span>` : '';
+
+        row.innerHTML = `
+          <div class="test-row-main" onclick="toggleDetail('${t.id}')">
+            <div class="test-meta">
+              <span style="color:var(--amber); font-weight:700;">#${String(i+1).padStart(2, '0')}</span>
+              <span style="color:var(--cyan); font-size:11px;">${t.display.method} ${t.display.path}</span>
+              <span style="color:var(--ink);">${t.title}</span>
+              <span style="color:var(--dim); font-size:10px;">[${t.display.steps} paso(s)]</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              ${latText}
+              <span class="test-badge-status ${badgeClass}">${badgeText}</span>
+              <button class="term-btn" onclick="event.stopPropagation(); runSingleTest('${t.id}')">></button>
+            </div>
+          </div>
+          <div class="test-details" id="det_${t.id}">
+            <div style="color:var(--amber); margin-bottom:2px;">> PAYLOAD (paso 1):</div>
+            <pre>${typeof t.display.payload === 'object' ? JSON.stringify(t.display.payload) : t.display.payload}</pre>
+            <div style="color:var(--cyan); margin-top:4px; margin-bottom:2px;">> ESPERADO: ${t.display.expectedStatus} | RECIBIDO: ${res.httpStatus || '—'}</div>
+            <pre>${res.receivedBody ? JSON.stringify(res.receivedBody) : JSON.stringify(t.display.expectedBody) + ' (Esperado)'}</pre>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    function toggleDetail(id) {
+      const d = document.getElementById(`det_${id}`);
+      if (d) d.classList.toggle('open');
+    }
+
+    // Estado grande del runner
+    function setRunStatus(idx, title) {
+      const el = document.getElementById('runNow');
+      const t = document.getElementById('runNowTitle');
+      const fill = document.getElementById('runProgressFill');
+      if (!el) return;
+      el.classList.remove('running', 'fail');
+      if (idx === null) {
+        el.innerText = 'LISTO';
+        if (t) t.innerText = `Presiona «EJECUTAR BATERÍA» para correr los ${TEST_SUITE.length} casos.`;
+        if (fill) fill.style.width = '0%';
+        return;
+      }
+      el.innerText = `RUNNING ${String(idx).padStart(2, '0')}/${TEST_SUITE.length}`;
+      el.classList.add('running');
+      if (t) t.innerText = title || '';
+      if (fill) fill.style.width = `${Math.round((idx / TEST_SUITE.length) * 100)}%`;
+    }
+
+    function setRunStatusDone(passed, failed) {
+      const el = document.getElementById('runNow');
+      const t = document.getElementById('runNowTitle');
+      const fill = document.getElementById('runProgressFill');
+      if (!el) return;
+      el.classList.remove('running');
+      el.classList.toggle('fail', failed > 0);
+      el.innerText = 'BATERÍA COMPLETA';
+      if (t) t.innerText = `${passed}/${TEST_SUITE.length} PASS · ${failed} FAIL`;
+      if (fill) fill.style.width = '100%';
+    }
+
+    function scrollActiveIntoView(id) {
+      const el = document.querySelector(`.test-row[data-test="${id}"]`);
+      if (el) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+
+    function setFilter(f, btn) {
+      currentFilter = f;
+      document.querySelectorAll('#flt_all, #flt_protocol, #flt_input, #flt_integrity, #flt_business, #flt_incident').forEach(b => {
+        b.style.color = 'var(--dim)';
+        b.style.borderColor = 'var(--line)';
+      });
+      btn.style.color = 'var(--green)';
+      btn.style.borderColor = 'var(--green)';
+      renderTestList();
+    }
+
+    async function runStep(s) {
+      const headers = {};
+      if (s.headers) {
+        Object.assign(headers, s.headers);
+      } else {
+        const a = s.auth || 'team';
+        const token = a === 'none' ? '' : (a === 'invalid' ? TOKENS.invalid : TOKENS.team);
+        if (token) headers['Authorization'] = 'Bearer ' + token;
+      }
+      let body;
+      if (s.raw !== undefined) body = s.raw;
+      else if (s.body !== undefined) body = JSON.stringify(s.body);
+      else if (s.m !== undefined) body = JSON.stringify({ m: s.m });
+      if (body !== undefined && headers['Content-Type'] === undefined) headers['Content-Type'] = 'application/json';
+
+      const opts = { method: s.method || 'POST', headers };
+      if (body !== undefined) opts.body = body;
+
+      const start = performance.now();
+      try {
+        const res = await fetch(LIVE_URL + s.path, opts);
+        const latency = Math.round(performance.now() - start);
+        let parsed = {};
+        try { parsed = await res.json(); } catch { parsed = await res.text(); }
+        return { status: res.status, body: parsed, latency, ok: true };
+      } catch (err) {
+        return { status: 0, body: { error: 'NET_ERR', message: err.message }, latency: Math.round(performance.now() - start), ok: false };
+      }
+    }
+
+    async function runTestSteps(t) {
+      await runStep({ method: 'POST', path: '/__reset', body: {} });
+      let allPass = true, lastStatus = null, lastBody = null, latency = 0, failedStep = null;
+      for (let si = 0; si < t.steps.length; si++) {
+        const res = await runStep(t.steps[si]);
+        latency += res.latency;
+        lastStatus = res.status;
+        lastBody = res.body;
+        const ok = res.ok && res.status === t.steps[si].expStatus && stableStr(res.body) === stableStr(t.steps[si].expBody);
+        if (!ok) { allPass = false; failedStep = si + 1; break; }
+      }
+      return { status: allPass ? 'pass' : 'fail', httpStatus: lastStatus, receivedBody: lastBody, latency, failedStep, steps: t.steps.length };
+    }
+
+    // Run Single
+    async function runSingleTest(id) {
+      const t = TEST_SUITE.find(x => x.id === id);
+      if (!t) return;
+      testResults[t.id] = { status: 'running' };
+      renderTestList();
+      setRunStatus(TEST_SUITE.indexOf(t) + 1, t.title);
+      scrollActiveIntoView(t.id);
+
+      log('info', `Ejecutando: ${t.title} (${t.display.steps} paso/s)`);
+      const res = await runTestSteps(t);
+      testResults[t.id] = res;
+
+      if (res.status === 'pass') log('ok', `[PASS] ${t.title} -> HTTP ${res.httpStatus} (${res.latency}ms)`);
+      else log('err', `[FAIL] ${t.title} -> paso ${res.failedStep} HTTP ${res.httpStatus}`);
+
+      updateStats();
+      renderTestList();
+    }
+
+    // Run All
+    async function runAllTests() {
+      if (isRunning) return;
+      isRunning = true;
+      const btn = document.getElementById('btnRunAll');
+      btn.disabled = true;
+      btn.style.opacity = '0.5';
+
+      log('info', '=======================================================');
+      log('info', '>>> INICIANDO BATERÍA COMPLETA CONTRA CLOUDFLARE WORKER');
+      stopIncidentWatch();
+      await executeReset(false);
+
+      const delayMs = 50;
+
+      for (let i = 0; i < TEST_SUITE.length; i++) {
+        const t = TEST_SUITE[i];
+        testResults[t.id] = { status: 'running' };
+        renderTestList();
+        setRunStatus(i + 1, t.title);
+        scrollActiveIntoView(t.id);
+
+        const res = await runTestSteps(t);
+        testResults[t.id] = res;
+        if (res.status === 'pass') log('ok', `[${i+1}/${TEST_SUITE.length}] PASS: ${t.title} (${res.latency}ms)`);
+        else log('err', `[${i+1}/${TEST_SUITE.length}] FAIL: ${t.title} (paso ${res.failedStep})`);
+
+        updateStats();
+        renderTestList();
+
+        if (delayMs > 0 && i < TEST_SUITE.length - 1) {
+          await new Promise(r => setTimeout(r, delayMs));
+        }
+      }
+
+      const passed = Object.values(testResults).filter(r => r.status === 'pass').length;
+      const failed = Object.values(testResults).filter(r => r.status === 'fail').length;
+      setRunStatusDone(passed, failed);
+      log('ok', '>>> BATERÍA FINALIZADA');
+      isRunning = false;
+      btn.disabled = false;
+      btn.style.opacity = '1';
+      startIncidentWatch();
+    }
+
+    function resetTestState() {
+      testResults = {};
+      updateStats();
+      renderTestList();
+      setRunStatus(null);
+      log('info', 'Resultados reseteados.');
+    }
+
+    async function executeReset(showLog = true) {
+      if (showLog) log('info', 'Disparando POST /__reset...');
+      const res = await callWorker('/__reset', 'POST', {});
+      if (res.status === 200 && showLog) log('ok', `POST /__reset -> 200 OK (${res.latency}ms) [Estado limpio]`);
+    }
+
+    async function executeHealthCheck() {
+      log('info', 'Disparando GET /health...');
+      const res = await callWorker('/health', 'GET');
+      if (res.status === 200) log('ok', `GET /health -> 200 OK (${res.latency}ms) {"ok":true}`);
+      else log('err', `GET /health -> status ${res.status}`);
+    }
+
+    function updateStats() {
+      const keys = Object.keys(testResults);
+      let passed = 0, failed = 0, totalLat = 0, latCount = 0;
+
+      keys.forEach(k => {
+        const r = testResults[k];
+        if (r.status === 'pass') passed++;
+        if (r.status === 'fail') failed++;
+        if (r.latency) { totalLat += r.latency; latCount++; }
+      });
+
+      document.getElementById('statTotal').innerText = TEST_SUITE.length;
+      document.getElementById('statPass').innerText = passed;
+      document.getElementById('statFail').innerText = failed;
+      document.getElementById('statLatency').innerText = latCount > 0 ? Math.round(totalLat / latCount) + 'ms' : '—';
+      document.getElementById('statRate').innerText = keys.length > 0 ? Math.round((passed / keys.length) * 100) + '%' : '0%';
+    }
+
+    // Manual Playground
+    function fillManual(v) {
+      const input = document.getElementById('manualInput');
+      input.value = v;
+      const hint = document.getElementById('manualHint');
+      if (hint) hint.innerText = '';
+      input.focus();
+      log('info', `Comando cargado: ${v} (pulsa ENVIAR)`);
+    }
+
+    function calcManualChecksum() {
+      const input = document.getElementById('manualInput');
+      let val = input.value.trim();
+      if (!val) return;
+      if (val.includes(';')) {
+        const parts = val.split(';');
+        if (!isNaN(parts[parts.length - 1])) { parts.pop(); val = parts.join(';'); }
+      }
+      const ctrl = calculateControl(val);
+      input.value = `${val};${ctrl}`;
+      const hint = document.getElementById('manualHint');
+      if (hint) hint.innerText = `[ISO 7064 Control = ${ctrl}]`;
+      log('info', `Cálculo ISO 7064 para "${val}" -> Control = ${ctrl}`);
+    }
+
+    async function sendManualMessage() {
+      const input = document.getElementById('manualInput');
+      const out = document.getElementById('manualOutput');
+      let val = input.value.trim();
+      if (!val) {
+        out.innerHTML = '<span style="color:var(--amber);">Escribe un comando primero (ej. ALTA;Carlos).</span>';
+        return;
+      }
+
+      const auto = document.getElementById('autoCtrl');
+      const parts = val.split(';');
+      const last = parts[parts.length - 1];
+      const hasControl = parts.length >= 2 && /^\d{1,2}$/.test(last);
+      if (auto && auto.checked && !hasControl) {
+        const ctrl = calculateControl(val);
+        val = `${val};${ctrl}`;
+        input.value = val;
+        const hint = document.getElementById('manualHint');
+        if (hint) hint.innerText = `[Control ISO 7064 agregado automáticamente = ${ctrl}]`;
+        log('info', `Control ISO 7064 agregado automáticamente: ${ctrl}`);
+      }
+
+      out.innerHTML = '<span style="color:var(--amber);">Enviando...</span>';
+
+      log('info', `Enviando manual: {"m": "${val}"}`);
+      const res = await callWorker('/msg', 'POST', { m: val });
+
+      out.innerHTML = `
+        <div style="color:${res.status < 400 ? 'var(--green)' : 'var(--red)'}; font-weight:700;">
+          HTTP ${res.status} (${res.latency}ms)
+        </div>
+        <pre style="margin:4px 0 0; color:var(--ink);">${JSON.stringify(res.body, null, 2)}</pre>
+      `;
+      if (res.status < 400) log('ok', `Manual -> HTTP ${res.status} (${res.latency}ms)`);
+      else log('warn', `Manual -> HTTP ${res.status} (${res.latency}ms)`);
+    }
+
+    // Checklist Logic
+    const CHK_KEY = 'frontier_terminal_chk_v1';
+    const CHK_IDS = [
+      'chk_1_1', 'chk_1_2', 'chk_1_3', 'chk_1_4',
+      'chk_2_1', 'chk_2_2', 'chk_2_3', 'chk_2_4', 'chk_2_5',
+      'chk_3_1', 'chk_3_2', 'chk_3_3', 'chk_3_4',
+      'chk_4_1', 'chk_4_2', 'chk_4_3', 'chk_4_4'
+    ];
+    let chkState = {};
+
+    function loadChecklist() {
+      try {
+        chkState = JSON.parse(localStorage.getItem(CHK_KEY)) || {};
+      } catch { chkState = {}; }
+
+      CHK_IDS.forEach(id => {
+        if (chkState[id] === undefined) {
+          // Default checked except demo video & pitch
+          chkState[id] = (id !== 'chk_4_3' && id !== 'chk_4_4');
+        }
+        renderChk(id);
+      });
+      updateChkSummary();
+    }
+
+    function toggleChk(id) {
+      chkState[id] = !chkState[id];
+      renderChk(id);
+      updateChkSummary();
+      localStorage.setItem(CHK_KEY, JSON.stringify(chkState));
+    }
+
+    function renderChk(id) {
+      const box = document.getElementById(`box_${id}`);
+      if (!box) return;
+      const checked = chkState[id];
+      box.innerText = checked ? '[X]' : '[ ]';
+      if (checked) box.parentElement.classList.add('checked');
+      else box.parentElement.classList.remove('checked');
+    }
+
+    function updateChkSummary() {
+      const checkedCount = CHK_IDS.filter(id => chkState[id]).length;
+      const pct = Math.round((checkedCount / CHK_IDS.length) * 100);
+      document.getElementById('checklistPercent').innerText = `${pct}% (${checkedCount}/${CHK_IDS.length})`;
+      document.getElementById('checklistProgressFill').style.width = `${pct}%`;
+    }
+
+    function checkAll(val) {
+      CHK_IDS.forEach(id => { chkState[id] = val; renderChk(id); });
+      updateChkSummary();
+      localStorage.setItem(CHK_KEY, JSON.stringify(chkState));
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', async () => {
+      loadChecklist();
+      await loadSuite();
+      renderTestList();
+      setRunStatus(null);
+      updateClock();
+
+      callWorker('/health', 'GET').then(res => {
+        const wt = document.getElementById('workerText');
+        if (wt && res.status === 200) {
+          wt.innerText = `WORKER ONLINE (${res.latency}ms)`;
+        }
+      });
+    });
+  </script>
+
+  <script>
+  (function () {
+    var pre = document.getElementById('liveBanner');
+    if (!pre || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var raw = pre.textContent.replace(/^\n/, '').replace(/\n$/, '');
+    var src = raw.split('\n').map(function (l) { return Array.from(l); });
+    var H = src.length, Ww = src[0].length;
+    pre.textContent = '';
+    var cells = [];
+    for (var r = 0; r < H; r++) {
+      var row = document.createElement('div');
+      row.className = 'brow';
+      var line = [];
+      for (var c = 0; c < Ww; c++) {
+        var s = document.createElement('span');
+        s.className = 'ch';
+        var ch = src[r][c] || ' ';
+        s.textContent = ch === ' ' ? '\u00a0' : ch;
+        s.dataset.o = ch;
+        row.appendChild(s);
+        line.push(s);
+      }
+      pre.appendChild(row);
+      cells.push(line);
+    }
+    function isFrame(ch) {
+      return '.~+/\\|-'.indexOf(ch) !== -1;
+    }
+    function zone(name) {
+      var out = [];
+      for (var r = 0; r < H; r++) {
+        for (var c = 0; c < Ww; c++) {
+          var ch = cells[r][c].dataset.o;
+          if (!isFrame(ch)) continue;
+          var hit = false;
+          if (name === 'tl') hit = r <= 4 && c <= 10;
+          else if (name === 'tr') hit = r <= 4 && c >= Ww - 11;
+          else if (name === 'bl') hit = r >= H - 6 && c <= 8;
+          else if (name === 'br') hit = r >= H - 6 && c >= Ww - 9;
+          else if (name === 'left') hit = c <= 2 && r >= 4 && r <= H - 5;
+          else if (name === 'right') hit = c >= Ww - 3 && r >= 4 && r <= H - 5;
+          else if (name === 'top') hit = r <= 3;
+          else if (name === 'bottom') hit = (ch === '-' || ch === '+') && r >= 4 && r <= H - 4 && r === cells.findIndex(function (row) {
+            return row.some(function (el) { return el.dataset.o === '+' && el === row[0]; }) && r > 4;
+          });
+          if (name === 'bottom') {
+            hit = ch === '-' && r > 4 && cells[r][0].dataset.o === '+' && cells[r][Ww - 1].dataset.o === '+';
+          }
+          if (hit) out.push(cells[r][c]);
+        }
+      }
+      return out;
+    }
+    var CRACK = ['·', ':', '░', '▒', ' '];
+    function wait(ms) { return new Promise(function (res) { setTimeout(res, ms); }); }
+    function show(el, ch, cls) {
+      el.classList.remove('crack', 'heal');
+      if (cls) el.classList.add(cls);
+      el.textContent = (!ch || ch === ' ') ? '\u00a0' : ch;
+    }
+    function restore(el) {
+      var o = el.dataset.o;
+      show(el, o, 'heal');
+      setTimeout(function () { el.classList.remove('heal'); }, 220);
+    }
+    async function crackOnly(list) {
+      var order = list.slice().sort(function () { return Math.random() - 0.5; });
+      for (var i = 0; i < order.length; i++) {
+        show(order[i], CRACK[i % CRACK.length], 'crack');
+        if (i % 2 === 0) await wait(46);
+      }
+    }
+    async function healOnly(list) {
+      for (var j = 0; j < list.length; j++) {
+        restore(list[j]);
+        if (j % 2 === 0) await wait(36);
+      }
+    }
+    var SVG = {
+      hammer: '<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="6" y="8" width="40" height="14" rx="1.5" fill="#ffb000"/><rect x="6" y="8" width="7" height="14" fill="#a86b00"/><rect x="39" y="8" width="7" height="14" fill="#a86b00"/><rect x="10" y="10" width="32" height="2" fill="#ffe7b8" opacity=".7"/><rect x="27" y="22" width="5" height="34" rx="1" fill="#d7f5c8"/><rect x="27" y="22" width="1.4" height="34" fill="#7d9a78"/></svg>',
+      fist: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M16 30c0-3 2-6 5-6h2v-6c0-3 2.4-5 5-5s5 2 5 5v4h2v-7c0-3 2.2-5 5-5s5 2.2 5 5v9h1c3 0 5 2.4 5 5v12c0 8-6 14-14 14H28c-7 0-12-5-12-12V30z" fill="#ffb000"/><path d="M23 24v-6M33 22v-7M43 20v-7" stroke="#3a2c12" stroke-width="1.6" stroke-linecap="round"/><path d="M20 36h22M20 42h18" stroke="#a86b00" stroke-width="1.4" opacity=".8"/></svg>',
+      rocket: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 4c8 8 12 18 12 28v10l-6 6h-12l-6-6V32C20 22 24 12 32 4z" fill="#d7f5c8" stroke="#ffb000" stroke-width="1.6"/><circle cx="32" cy="26" r="5.5" fill="#07110a" stroke="#39ff14" stroke-width="1.6"/><path d="M20 38l-10 12 10-3zM44 38l10 12-10-3z" fill="#ff5c57"/><path d="M28 48l4 10 4-10z" fill="#ffb000"/></svg>',
+      bolt: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M36 4L14 36h14L24 60l28-36H36L40 4z" fill="#ffb000" stroke="#ffe7b8" stroke-width="1"/></svg>',
+      wrench: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M22 10a12 12 0 0 1 16 11l-8 8 7 7 8-8a12 12 0 0 1 11 16L44 32l-6 6L18 58l-8-8 20-20-6-6L14 14a12 12 0 0 1 8-4z" fill="none" stroke="#ffb000" stroke-width="3.2" stroke-linejoin="round"/><circle cx="24" cy="16" r="3" fill="#07110a" stroke="#ffb000" stroke-width="1.6"/></svg>'
+    };
+    var hits = [
+      { name: 'tl', svg: SVG.hammer, label: '[PAF]', sx: -78, sy: -56, rot0: -50, rot1: -12 },
+      { name: 'br', svg: SVG.rocket, label: '[BOOM]', sx: 86, sy: 70, rot0: -35, rot1: -8 },
+      { name: 'top', svg: SVG.bolt, label: '[ZAS]', sx: 0, sy: -64, rot0: 0, rot1: 8 },
+      { name: 'tr', svg: SVG.rocket, label: '[BOOM]', sx: 80, sy: -60, rot0: 42, rot1: 10 },
+      { name: 'bottom', svg: SVG.hammer, label: '[PAF]', sx: 0, sy: 72, rot0: 170, rot1: 188 }
+    ];
+    function anchor(name) {
+      var w = pre.offsetWidth, h = pre.offsetHeight;
+      if (name === 'tl') return { x: 18, y: 10 };
+      if (name === 'tr') return { x: w - 52, y: 8 };
+      if (name === 'right') return { x: w - 28, y: h * 0.42 };
+      if (name === 'left') return { x: 6, y: h * 0.42 };
+      if (name === 'br') return { x: w - 48, y: h - 52 };
+      if (name === 'bl') return { x: 8, y: h - 48 };
+      if (name === 'top') return { x: w * 0.46, y: 4 };
+      return { x: w * 0.42, y: h - 22 };
+    }
+    async function strike(hit, list) {
+      var a = anchor(hit.name);
+      var wpn = document.createElement('div');
+      wpn.className = 'weapon';
+      wpn.innerHTML = hit.svg;
+      var flip = hit.flip ? ' scaleX(-1)' : '';
+      wpn.style.transform = 'translate(' + (a.x + hit.sx) + 'px,' + (a.y + hit.sy) + 'px) rotate(' + hit.rot0 + 'deg)' + flip;
+      pre.appendChild(wpn);
+      await wait(80);
+      wpn.style.transform = 'translate(' + a.x + 'px,' + a.y + 'px) rotate(' + hit.rot1 + 'deg)' + flip;
+      await wait(720);
+      pre.classList.add('hit');
+      var tag = document.createElement('span');
+      tag.className = 'impact';
+      tag.textContent = hit.label;
+      tag.style.left = (a.x + 8) + 'px';
+      tag.style.top = (a.y - 8) + 'px';
+      pre.appendChild(tag);
+      await crackOnly(list);
+      await wait(1100);
+      pre.classList.remove('hit');
+      wpn.style.transform = 'translate(' + (a.x + hit.sx) + 'px,' + (a.y + hit.sy) + 'px) rotate(' + hit.rot0 + 'deg)' + flip;
+      wpn.style.opacity = '0';
+      await healOnly(list);
+      await wait(400);
+      wpn.remove();
+      tag.remove();
+      await wait(1800);
+    }
+    var k = 0;
+    async function loop() {
+      var hit = hits[k % hits.length];
+      k++;
+      var list = zone(hit.name).filter(function (el) { return el.dataset.o && el.dataset.o !== ' '; });
+      if (list.length) await strike(hit, list);
+      else await wait(400);
+      loop();
+    }
+    setTimeout(loop, 900);
+  })();
+  </script>
+</body>
+</html>

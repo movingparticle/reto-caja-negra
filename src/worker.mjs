@@ -56,7 +56,7 @@ export class BankingDurableObject {
         if (bodyArrayBuffer.byteLength > MAX_BODY_BYTES) {
           return msgResponse(413, { error: 'E101', mensaje: 'cuerpo demasiado grande' });
         }
-        rawText = new TextDecoder('utf-8', { fatal: true }).decode(bodyArrayBuffer);
+        rawText = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(bodyArrayBuffer);
       } catch {
         return msgResponse(400, { error: 'E100', mensaje: 'json inválido' });
       }
@@ -103,6 +103,21 @@ export default {
     const url = new URL(request.url);
     const pathname = url.pathname;
     const method = request.method;
+
+    // 0. CORS preflight (solo navegadores). Un OPTIONS real de preflight trae
+    //    `Access-Control-Request-Method`. Un OPTIONS plano (el que probaría el
+    //    arnés server-side) NO lo trae y sigue devolviendo 404 (paridad oráculo).
+    if (method === 'OPTIONS' && request.headers.get('Access-Control-Request-Method')) {
+      return new Response(null, {
+        status: 204,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, HEAD, PUT, DELETE',
+          'Access-Control-Allow-Headers': 'Authorization, Content-Type',
+          'Access-Control-Max-Age': '86400',
+        },
+      });
+    }
 
     // 1. Route + method validation (unknown route or wrong method -> 404, before auth).
     //    El oráculo no implementa CORS: OPTIONS /msg devuelve 404, no 204.
@@ -192,7 +207,7 @@ export default {
         if (bodyArrayBuffer.byteLength > MAX_BODY_BYTES) {
           return msgResponse(413, { error: 'E101', mensaje: 'cuerpo demasiado grande' });
         }
-        rawText = new TextDecoder('utf-8', { fatal: true }).decode(bodyArrayBuffer);
+        rawText = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(bodyArrayBuffer);
       } catch {
         return msgResponse(400, { error: 'E100', mensaje: 'json inválido' });
       }

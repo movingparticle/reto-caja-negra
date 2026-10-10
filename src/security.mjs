@@ -5,7 +5,7 @@
  * 1. Constant-time string verification (timing-attack resistant via constant-time bitwise accumulator).
  * 2. Multi-key authorization (Evaluator Team Token + Tutor/Admin Keys).
  * 3. Body size capping (DoS protection, max 64 KiB).
- * 4. Input sanitization (null byte prevention, non-printable control characters).
+ * 4. Input length cap (control characters are left to the engine; the oracle does not reject them).
  * 5. Security headers (HSTS, nosniff, no-frame, noindex).
  */
 
@@ -79,14 +79,7 @@ export function sanitizeInput(rawMessage) {
     return { valid: false, error: 'E102', message: 'falta m' };
   }
 
-  // Reject oversized strings (e.g. > 16 KiB for a single message string)
   if (rawMessage.length > 16384) {
-    return { valid: false, error: 'E201', message: 'control mal formado' };
-  }
-
-  // Reject null bytes and hazardous control codes (ASCII 0-8, 11, 12, 14-31)
-  // Allows standard tab (9), newline (10), carriage return (13) and printable text
-  if (/[\x00-\x08\x0B\x0C\x0E-\x1F]/.test(rawMessage)) {
     return { valid: false, error: 'E201', message: 'control mal formado' };
   }
 

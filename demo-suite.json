@@ -1,0 +1,3088 @@
+[
+ {
+  "id": "p_health",
+  "category": "protocol",
+  "title": "GET /health con token",
+  "steps": [
+   {
+    "method": "GET",
+    "path": "/health",
+    "auth": "team",
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   }
+  ]
+ },
+ {
+  "id": "p_health_unauth",
+  "category": "protocol",
+  "title": "GET /health sin token -> 401",
+  "steps": [
+   {
+    "method": "GET",
+    "path": "/health",
+    "auth": "none",
+    "expStatus": 401,
+    "expBody": {
+     "error": "E001",
+     "mensaje": "no autorizado"
+    }
+   }
+  ]
+ },
+ {
+  "id": "p_health_wrongmethod",
+  "category": "protocol",
+  "title": "POST /health -> 404",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/health",
+    "auth": "team",
+    "body": {},
+    "expStatus": 404,
+    "expBody": {
+     "error": "E404",
+     "mensaje": "ruta desconocida"
+    }
+   }
+  ]
+ },
+ {
+  "id": "p_msg_get",
+  "category": "protocol",
+  "title": "GET /msg -> 404",
+  "steps": [
+   {
+    "method": "GET",
+    "path": "/msg",
+    "auth": "team",
+    "expStatus": 404,
+    "expBody": {
+     "error": "E404",
+     "mensaje": "ruta desconocida"
+    }
+   }
+  ]
+ },
+ {
+  "id": "p_reset_get",
+  "category": "protocol",
+  "title": "GET /__reset -> 404",
+  "steps": [
+   {
+    "method": "GET",
+    "path": "/__reset",
+    "auth": "team",
+    "expStatus": 404,
+    "expBody": {
+     "error": "E404",
+     "mensaje": "ruta desconocida"
+    }
+   }
+  ]
+ },
+ {
+  "id": "p_options",
+  "category": "protocol",
+  "title": "OPTIONS /msg -> 404",
+  "steps": [
+   {
+    "method": "OPTIONS",
+    "path": "/msg",
+    "auth": "none",
+    "expStatus": 404,
+    "expBody": {
+     "error": "E404",
+     "mensaje": "ruta desconocida"
+    }
+   }
+  ]
+ },
+ {
+  "id": "p_trailing_slash",
+  "category": "protocol",
+  "title": "POST /msg/ -> 404",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg/",
+    "auth": "team",
+    "m": "PING;64",
+    "expStatus": 404,
+    "expBody": {
+     "error": "E404",
+     "mensaje": "ruta desconocida"
+    }
+   }
+  ]
+ },
+ {
+  "id": "p_unknown",
+  "category": "protocol",
+  "title": "GET ruta desconocida -> 404",
+  "steps": [
+   {
+    "method": "GET",
+    "path": "/does-not-exist",
+    "auth": "team",
+    "expStatus": 404,
+    "expBody": {
+     "error": "E404",
+     "mensaje": "ruta desconocida"
+    }
+   }
+  ]
+ },
+ {
+  "id": "p_unknown_unauth",
+  "category": "protocol",
+  "title": "ruta desconocida sin auth -> 404",
+  "steps": [
+   {
+    "method": "GET",
+    "path": "/does-not-exist",
+    "auth": "none",
+    "expStatus": 404,
+    "expBody": {
+     "error": "E404",
+     "mensaje": "ruta desconocida"
+    }
+   }
+  ]
+ },
+ {
+  "id": "p_msg_no_auth",
+  "category": "protocol",
+  "title": "POST /msg sin token -> 401",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "none",
+    "m": "PING;64",
+    "expStatus": 401,
+    "expBody": {
+     "error": "E001",
+     "mensaje": "no autorizado"
+    }
+   }
+  ]
+ },
+ {
+  "id": "p_msg_bad_token",
+  "category": "protocol",
+  "title": "POST /msg token inválido -> 401",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "invalid",
+    "m": "PING;64",
+    "expStatus": 401,
+    "expBody": {
+     "error": "E001",
+     "mensaje": "no autorizado"
+    }
+   }
+  ]
+ },
+ {
+  "id": "p_bearer_lower",
+  "category": "protocol",
+  "title": "bearer minúscula -> 401",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "headers": {
+     "Authorization": "bearer cn-p-abh_bog_wlw9_8r83-QnLthfmAjCo3D6QXyf_Ztb",
+     "Content-Type": "application/json"
+    },
+    "m": "PING;64",
+    "expStatus": 401,
+    "expBody": {
+     "error": "E001",
+     "mensaje": "no autorizado"
+    }
+   }
+  ]
+ },
+ {
+  "id": "p_bearer_2space",
+  "category": "protocol",
+  "title": "Bearer doble espacio -> 401",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "headers": {
+     "Authorization": "Bearer  cn-p-abh_bog_wlw9_8r83-QnLthfmAjCo3D6QXyf_Ztb",
+     "Content-Type": "application/json"
+    },
+    "m": "PING;64",
+    "expStatus": 401,
+    "expBody": {
+     "error": "E001",
+     "mensaje": "no autorizado"
+    }
+   }
+  ]
+ },
+ {
+  "id": "p_query_token",
+  "category": "protocol",
+  "title": "?token= no autoriza -> 401",
+  "steps": [
+   {
+    "method": "GET",
+    "path": "/health?token=cn-p-abh_bog_wlw9_8r83-QnLthfmAjCo3D6QXyf_Ztb",
+    "auth": "none",
+    "expStatus": 401,
+    "expBody": {
+     "error": "E001",
+     "mensaje": "no autorizado"
+    }
+   }
+  ]
+ },
+ {
+  "id": "p_query_key",
+  "category": "protocol",
+  "title": "?key= no autoriza -> 401",
+  "steps": [
+   {
+    "method": "GET",
+    "path": "/health?key=cn-p-abh_bog_wlw9_8r83-QnLthfmAjCo3D6QXyf_Ztb",
+    "auth": "none",
+    "expStatus": 401,
+    "expBody": {
+     "error": "E001",
+     "mensaje": "no autorizado"
+    }
+   }
+  ]
+ },
+ {
+  "id": "p_health_slash",
+  "category": "protocol",
+  "title": "GET /health/ -> 404",
+  "steps": [
+   {
+    "method": "GET",
+    "path": "/health/",
+    "auth": "team",
+    "expStatus": 404,
+    "expBody": {
+     "error": "E404",
+     "mensaje": "ruta desconocida"
+    }
+   }
+  ]
+ },
+ {
+  "id": "p_msg_query",
+  "category": "protocol",
+  "title": "POST /msg?x=1",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg?x=1",
+    "auth": "team",
+    "m": "PING;64",
+    "expStatus": 200,
+    "expBody": {
+     "pong": true
+    }
+   }
+  ]
+ },
+ {
+  "id": "p_ct_missing",
+  "category": "protocol",
+  "title": "Content-Type vacío",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "headers": {
+     "Authorization": "Bearer cn-p-abh_bog_wlw9_8r83-QnLthfmAjCo3D6QXyf_Ztb",
+     "Content-Type": ""
+    },
+    "m": "PING;64",
+    "expStatus": 200,
+    "expBody": {
+     "pong": true
+    }
+   }
+  ]
+ },
+ {
+  "id": "p_ct_text",
+  "category": "protocol",
+  "title": "Content-Type text/plain",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "headers": {
+     "Authorization": "Bearer cn-p-abh_bog_wlw9_8r83-QnLthfmAjCo3D6QXyf_Ztb",
+     "Content-Type": "text/plain"
+    },
+    "m": "PING;64",
+    "expStatus": 200,
+    "expBody": {
+     "pong": true
+    }
+   }
+  ]
+ },
+ {
+  "id": "p_reset_nobody",
+  "category": "protocol",
+  "title": "POST /__reset sin cuerpo",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   }
+  ]
+ },
+ {
+  "id": "p_put",
+  "category": "protocol",
+  "title": "PUT /msg -> 404",
+  "steps": [
+   {
+    "method": "PUT",
+    "path": "/msg",
+    "auth": "team",
+    "m": "PING;64",
+    "expStatus": 404,
+    "expBody": {
+     "error": "E404",
+     "mensaje": "ruta desconocida"
+    }
+   }
+  ]
+ },
+ {
+  "id": "p_delete",
+  "category": "protocol",
+  "title": "DELETE /msg -> 404",
+  "steps": [
+   {
+    "method": "DELETE",
+    "path": "/msg",
+    "auth": "team",
+    "expStatus": 404,
+    "expBody": {
+     "error": "E404",
+     "mensaje": "ruta desconocida"
+    }
+   }
+  ]
+ },
+ {
+  "id": "p_head",
+  "category": "protocol",
+  "title": "HEAD /health",
+  "steps": [
+   {
+    "method": "HEAD",
+    "path": "/health",
+    "auth": "team",
+    "expStatus": 404,
+    "expBody": ""
+   }
+  ]
+ },
+ {
+  "id": "p_double_slash",
+  "category": "protocol",
+  "title": "POST //msg",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "//msg",
+    "auth": "team",
+    "m": "PING;64",
+    "expStatus": 404,
+    "expBody": {
+     "error": "E404",
+     "mensaje": "ruta desconocida"
+    }
+   }
+  ]
+ },
+ {
+  "id": "i_empty",
+  "category": "input",
+  "title": "cuerpo vacío -> E100",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "raw": "",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E100",
+     "mensaje": "json inválido"
+    }
+   }
+  ]
+ },
+ {
+  "id": "i_ws",
+  "category": "input",
+  "title": "solo espacios -> E100",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "raw": "   \n\t  ",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E100",
+     "mensaje": "json inválido"
+    }
+   }
+  ]
+ },
+ {
+  "id": "i_malformed",
+  "category": "input",
+  "title": "JSON malformado -> E100",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "raw": "{\"m\": \"PING;64\"",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E100",
+     "mensaje": "json inválido"
+    }
+   }
+  ]
+ },
+ {
+  "id": "i_string",
+  "category": "input",
+  "title": "JSON string -> E100",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "raw": "\"just a string\"",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E102",
+     "mensaje": "falta m"
+    }
+   }
+  ]
+ },
+ {
+  "id": "i_array",
+  "category": "input",
+  "title": "JSON array -> E100",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "raw": "[1,2,3]",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E102",
+     "mensaje": "falta m"
+    }
+   }
+  ]
+ },
+ {
+  "id": "i_null",
+  "category": "input",
+  "title": "JSON null -> E100",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "raw": "null",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E102",
+     "mensaje": "falta m"
+    }
+   }
+  ]
+ },
+ {
+  "id": "i_number",
+  "category": "input",
+  "title": "JSON número -> E100",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "raw": "12345",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E102",
+     "mensaje": "falta m"
+    }
+   }
+  ]
+ },
+ {
+  "id": "i_bool",
+  "category": "input",
+  "title": "JSON bool -> E100",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "raw": "true",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E102",
+     "mensaje": "falta m"
+    }
+   }
+  ]
+ },
+ {
+  "id": "i_missing_m",
+  "category": "input",
+  "title": "falta m -> E102",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "body": {
+     "other": 1
+    },
+    "expStatus": 400,
+    "expBody": {
+     "error": "E102",
+     "mensaje": "falta m"
+    }
+   }
+  ]
+ },
+ {
+  "id": "i_m_int",
+  "category": "input",
+  "title": "m numérico -> E102",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "body": {
+     "m": 1234
+    },
+    "expStatus": 400,
+    "expBody": {
+     "error": "E102",
+     "mensaje": "falta m"
+    }
+   }
+  ]
+ },
+ {
+  "id": "i_m_null",
+  "category": "input",
+  "title": "m null -> E102",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "body": {
+     "m": null
+    },
+    "expStatus": 400,
+    "expBody": {
+     "error": "E102",
+     "mensaje": "falta m"
+    }
+   }
+  ]
+ },
+ {
+  "id": "i_m_array",
+  "category": "input",
+  "title": "m array -> E102",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "body": {
+     "m": [
+      "PING",
+      "64"
+     ]
+    },
+    "expStatus": 400,
+    "expBody": {
+     "error": "E102",
+     "mensaje": "falta m"
+    }
+   }
+  ]
+ },
+ {
+  "id": "i_m_object",
+  "category": "input",
+  "title": "m objeto -> E102",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "body": {
+     "m": {
+      "c": "PING"
+     }
+    },
+    "expStatus": 400,
+    "expBody": {
+     "error": "E102",
+     "mensaje": "falta m"
+    }
+   }
+  ]
+ },
+ {
+  "id": "i_extra",
+  "category": "input",
+  "title": "campo extra",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "body": {
+     "m": "PING;64",
+     "extra": 1
+    },
+    "expStatus": 200,
+    "expBody": {
+     "pong": true
+    }
+   }
+  ]
+ },
+ {
+  "id": "i_trail_comma",
+  "category": "input",
+  "title": "JSON con coma final -> E100",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "raw": "{\"m\":\"PING;64\",}",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E100",
+     "mensaje": "json inválido"
+    }
+   }
+  ]
+ },
+ {
+  "id": "i_dup_m",
+  "category": "input",
+  "title": "clave m duplicada",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "raw": "{\"m\":\"NOPE;1\",\"m\":\"PING;64\"}",
+    "expStatus": 200,
+    "expBody": {
+     "pong": true
+    }
+   }
+  ]
+ },
+ {
+  "id": "i_bom",
+  "category": "input",
+  "title": "JSON con BOM -> E100",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "raw": "﻿{\"m\": \"PING;64\"}",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E100",
+     "mensaje": "json inválido"
+    }
+   }
+  ]
+ },
+ {
+  "id": "i_ctrl",
+  "category": "input",
+  "title": "carácter de control en m -> E301",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "body": {
+     "m": "PING\u0000;64"
+    },
+    "expStatus": 400,
+    "expBody": {
+     "error": "E301",
+     "mensaje": "comando desconocido ",
+     "sugerencia": "PING"
+    }
+   }
+  ]
+ },
+ {
+  "id": "i_bad_utf8",
+  "category": "input",
+  "title": "UTF-8 inválido -> E100",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "raw": "{\"m\":\"PING;64\"}�",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E100",
+     "mensaje": "json inválido"
+    }
+   }
+  ]
+ },
+ {
+  "id": "c_valid",
+  "category": "integrity",
+  "title": "control válido -> ALTA",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;Lucia;82",
+    "expStatus": 201,
+    "expBody": {
+     "cuentaId": "AC-0001"
+    }
+   }
+  ]
+ },
+ {
+  "id": "c_invalid",
+  "category": "integrity",
+  "title": "control inválido -> E202",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;Lucia;83",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E202",
+     "mensaje": "control inválido"
+    }
+   }
+  ]
+ },
+ {
+  "id": "c_malformed",
+  "category": "integrity",
+  "title": "control mal formado -> E201",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;Lucia;5X",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E201",
+     "mensaje": "control mal formado"
+    }
+   }
+  ]
+ },
+ {
+  "id": "c_missing",
+  "category": "integrity",
+  "title": "falta control -> E103/E202",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E103",
+     "mensaje": "falta control"
+    }
+   }
+  ]
+ },
+ {
+  "id": "c_empty_seg",
+  "category": "integrity",
+  "title": "segmento vacío -> E104",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;;82",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E104",
+     "mensaje": "segmento vacío"
+    }
+   }
+  ]
+ },
+ {
+  "id": "c_lead_zero",
+  "category": "integrity",
+  "title": "control con cero inicial -> E202",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;Mateo;03",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E202",
+     "mensaje": "control inválido"
+    }
+   }
+  ]
+ },
+ {
+  "id": "c_3digits",
+  "category": "integrity",
+  "title": "control de 3 dígitos -> E201",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;Mateo;100",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E201",
+     "mensaje": "control mal formado"
+    }
+   }
+  ]
+ },
+ {
+  "id": "c_zero",
+  "category": "integrity",
+  "title": "control 0",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;Mateo;0",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E202",
+     "mensaje": "control inválido"
+    }
+   }
+  ]
+ },
+ {
+  "id": "c_one",
+  "category": "integrity",
+  "title": "control 1",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;Mateo;1",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E202",
+     "mensaje": "control inválido"
+    }
+   }
+  ]
+ },
+ {
+  "id": "c_ping_nock",
+  "category": "integrity",
+  "title": "PING ignora checksum",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "PING;999",
+    "expStatus": 200,
+    "expBody": {
+     "pong": true
+    }
+   }
+  ]
+ },
+ {
+  "id": "c_ping_wrongck",
+  "category": "integrity",
+  "title": "PING checksum 00",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "PING;00",
+    "expStatus": 200,
+    "expBody": {
+     "pong": true
+    }
+   }
+  ]
+ },
+ {
+  "id": "c_98",
+  "category": "integrity",
+  "title": "control 98 válido",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;N16;98",
+    "expStatus": 201,
+    "expBody": {
+     "cuentaId": "AC-0001"
+    }
+   }
+  ]
+ },
+ {
+  "id": "c_2",
+  "category": "integrity",
+  "title": "control 2 válido",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;N48;2",
+    "expStatus": 201,
+    "expBody": {
+     "cuentaId": "AC-0001"
+    }
+   }
+  ]
+ },
+ {
+  "id": "c_plus",
+  "category": "integrity",
+  "title": "control +14 -> E201",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;A;+14",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E201",
+     "mensaje": "control mal formado"
+    }
+   }
+  ]
+ },
+ {
+  "id": "c_99",
+  "category": "integrity",
+  "title": "control 99 -> E202",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;A;99",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E202",
+     "mensaje": "control inválido"
+    }
+   }
+  ]
+ },
+ {
+  "id": "c_spaces",
+  "category": "integrity",
+  "title": "control con espacio -> E201",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;A;1 4",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E201",
+     "mensaje": "control mal formado"
+    }
+   }
+  ]
+ },
+ {
+  "id": "c_ping_empty",
+  "category": "integrity",
+  "title": "PING; (control vacío)",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "PING;",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E104",
+     "mensaje": "segmento vacío"
+    }
+   }
+  ]
+ },
+ {
+  "id": "c_dbl_semicolon",
+  "category": "integrity",
+  "title": "doble ; -> E104",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;A;;B;23",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E104",
+     "mensaje": "segmento vacío"
+    }
+   }
+  ]
+ },
+ {
+  "id": "c_m_empty",
+  "category": "integrity",
+  "title": "m vacío -> E103",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "body": {
+     "m": ""
+    },
+    "expStatus": 400,
+    "expBody": {
+     "error": "E103",
+     "mensaje": "falta control"
+    }
+   }
+  ]
+ },
+ {
+  "id": "b_flow",
+  "category": "business",
+  "title": "flujo completo ALTA/DEPOSITO/TRANSFER/ANULA",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;Alice;54",
+    "expStatus": 201,
+    "expBody": {
+     "cuentaId": "AC-0001"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;Bob;24",
+    "expStatus": 201,
+    "expBody": {
+     "cuentaId": "AC-0002"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "DEPOSITO;AC-0001;500;46",
+    "expStatus": 200,
+    "expBody": {
+     "status": "recieved",
+     "operacionId": "OP-0001"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "TRANSFER;AC-0001;AC-0002;400;94",
+    "expStatus": 200,
+    "expBody": {
+     "status": "recieved",
+     "operacionId": "OP-0002"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "CONSULTA;AC-0001;14",
+    "expStatus": 200,
+    "expBody": {
+     "cuenta_id": "AC-0001",
+     "saldo": "1.00"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "CONSULTA;AC-0002;11",
+    "expStatus": 200,
+    "expBody": {
+     "cuenta_id": "AC-0002",
+     "saldo": "4.00"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ANULA;OP-0001;72",
+    "expStatus": 200,
+    "expBody": {
+     "ok": true,
+     "anulada": "OP-0001"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "CONSULTA;AC-0001;14",
+    "expStatus": 200,
+    "expBody": {
+     "cuenta_id": "AC-0001",
+     "saldo": "-4.00"
+    }
+   }
+  ]
+ },
+ {
+  "id": "b_tx_limit_ok",
+  "category": "business",
+  "title": "TRANSFER límite exacto 50000",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;A;62",
+    "expStatus": 201,
+    "expBody": {
+     "cuentaId": "AC-0001"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;B;59",
+    "expStatus": 201,
+    "expBody": {
+     "cuentaId": "AC-0002"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "DEPOSITO;AC-0001;50000;39",
+    "expStatus": 200,
+    "expBody": {
+     "status": "recieved",
+     "operacionId": "OP-0001"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "TRANSFER;AC-0001;AC-0002;50000;59",
+    "expStatus": 200,
+    "expBody": {
+     "status": "recieved",
+     "operacionId": "OP-0002"
+    }
+   }
+  ]
+ },
+ {
+  "id": "b_tx_over",
+  "category": "business",
+  "title": "TRANSFER sobre límite -> E506",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;A;62",
+    "expStatus": 201,
+    "expBody": {
+     "cuentaId": "AC-0001"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;B;59",
+    "expStatus": 201,
+    "expBody": {
+     "cuentaId": "AC-0002"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "DEPOSITO;AC-0001;200000;27",
+    "expStatus": 200,
+    "expBody": {
+     "status": "recieved",
+     "operacionId": "OP-0001"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "TRANSFER;AC-0001;AC-0002;50001;56",
+    "expStatus": 422,
+    "expBody": {
+     "error": "E506",
+     "mensaje": "límite excedido"
+    }
+   }
+  ]
+ },
+ {
+  "id": "b_dep_big",
+  "category": "business",
+  "title": "DEPOSITO monto grande",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;A;62",
+    "expStatus": 201,
+    "expBody": {
+     "cuentaId": "AC-0001"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "DEPOSITO;AC-0001;9999999999;4",
+    "expStatus": 200,
+    "expBody": {
+     "status": "recieved",
+     "operacionId": "OP-0001"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "CONSULTA;AC-0001;14",
+    "expStatus": 200,
+    "expBody": {
+     "cuenta_id": "AC-0001",
+     "saldo": "99999999.99"
+    }
+   }
+  ]
+ },
+ {
+  "id": "b_precedence",
+  "category": "business",
+  "title": "precedencia E303>E304>E401",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "TRANSFER;AC-0001;AC-0001;0;74",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E303",
+     "mensaje": "monto inválido"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "TRANSFER;AC-0001;AC-0001;150000;55",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E304",
+     "mensaje": "origen y destino iguales"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "TRANSFER;AC-9999;AC-8888;150000;62",
+    "expStatus": 404,
+    "expBody": {
+     "error": "E401",
+     "mensaje": "cuenta inexistente"
+    }
+   }
+  ]
+ },
+ {
+  "id": "b_neg_balance",
+  "category": "business",
+  "title": "saldo negativo por ANULA",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;A;62",
+    "expStatus": 201,
+    "expBody": {
+     "cuentaId": "AC-0001"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;B;59",
+    "expStatus": 201,
+    "expBody": {
+     "cuentaId": "AC-0002"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;C;56",
+    "expStatus": 201,
+    "expBody": {
+     "cuentaId": "AC-0003"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "DEPOSITO;AC-0001;1000;35",
+    "expStatus": 200,
+    "expBody": {
+     "status": "recieved",
+     "operacionId": "OP-0001"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "TRANSFER;AC-0001;AC-0002;1000;37",
+    "expStatus": 200,
+    "expBody": {
+     "status": "recieved",
+     "operacionId": "OP-0002"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "TRANSFER;AC-0002;AC-0003;1000;57",
+    "expStatus": 200,
+    "expBody": {
+     "status": "recieved",
+     "operacionId": "OP-0003"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ANULA;OP-0002;69",
+    "expStatus": 200,
+    "expBody": {
+     "ok": true,
+     "anulada": "OP-0002"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "CONSULTA;AC-0002;11",
+    "expStatus": 200,
+    "expBody": {
+     "cuenta_id": "AC-0002",
+     "saldo": "-10.00"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "TRANSFER;AC-0002;AC-0001;100;12",
+    "expStatus": 422,
+    "expBody": {
+     "error": "E507",
+     "mensaje": "saldo insuficiente"
+    }
+   }
+  ]
+ },
+ {
+  "id": "b_unknown_cmd",
+  "category": "business",
+  "title": "comando desconocido -> E301",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "FOO;123;42",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E301",
+     "mensaje": "comando desconocido "
+    }
+   }
+  ]
+ },
+ {
+  "id": "b_arity",
+  "category": "business",
+  "title": "aridad inválida",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;85",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E302",
+     "mensaje": "aridad inválida"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "PING;x;21",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E302",
+     "mensaje": "aridad inválida"
+    }
+   }
+  ]
+ },
+ {
+  "id": "b_lower_account",
+  "category": "business",
+  "title": "id de cuenta en minúsculas -> E401",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;A;62",
+    "expStatus": 201,
+    "expBody": {
+     "cuentaId": "AC-0001"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "CONSULTA;ac-0001;14",
+    "expStatus": 404,
+    "expBody": {
+     "error": "E401",
+     "mensaje": "cuenta inexistente"
+    }
+   }
+  ]
+ },
+ {
+  "id": "b_dup_names",
+  "category": "business",
+  "title": "nombres duplicados",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;Dup;38",
+    "expStatus": 201,
+    "expBody": {
+     "cuentaId": "AC-0001"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;Dup;38",
+    "expStatus": 201,
+    "expBody": {
+     "cuentaId": "AC-0002"
+    }
+   }
+  ]
+ },
+ {
+  "id": "b_ids_kept",
+  "category": "business",
+  "title": "IDs no consumidos por fallo",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;A;62",
+    "expStatus": 201,
+    "expBody": {
+     "cuentaId": "AC-0001"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "DEPOSITO;AC-0001;0;31",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E303",
+     "mensaje": "monto inválido"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;B;59",
+    "expStatus": 201,
+    "expBody": {
+     "cuentaId": "AC-0002"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "DEPOSITO;AC-0001;10;77",
+    "expStatus": 200,
+    "expBody": {
+     "status": "recieved",
+     "operacionId": "OP-0001"
+    }
+   }
+  ]
+ },
+ {
+  "id": "b_unicode",
+  "category": "business",
+  "title": "nombre unicode",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;José-Ñ;61",
+    "expStatus": 201,
+    "expBody": {
+     "cuentaId": "AC-0001"
+    }
+   }
+  ]
+ },
+ {
+  "id": "b_monto_plus",
+  "category": "business",
+  "title": "monto +5 -> E303",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;A;62",
+    "expStatus": 201,
+    "expBody": {
+     "cuentaId": "AC-0001"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "DEPOSITO;AC-0001;+5;16",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E303",
+     "mensaje": "monto inválido"
+    }
+   }
+  ]
+ },
+ {
+  "id": "b_monto_space",
+  "category": "business",
+  "title": "monto con espacio -> E303",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;A;62",
+    "expStatus": 201,
+    "expBody": {
+     "cuentaId": "AC-0001"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "DEPOSITO;AC-0001; 5;16",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E303",
+     "mensaje": "monto inválido"
+    }
+   }
+  ]
+ },
+ {
+  "id": "b_lead_space_cmd",
+  "category": "business",
+  "title": "comando con espacio inicial",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": " ALTA;A;62",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E301",
+     "mensaje": "comando desconocido ",
+     "sugerencia": "ALTA"
+    }
+   }
+  ]
+ },
+ {
+  "id": "b_trail_space_cmd",
+  "category": "business",
+  "title": "comando con espacio final",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;A ;62",
+    "expStatus": 201,
+    "expBody": {
+     "cuentaId": "AC-0001"
+    }
+   }
+  ]
+ },
+ {
+  "id": "b_lower_cmd",
+  "category": "business",
+  "title": "comando en minúsculas (pInG)",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "pInG;64",
+    "expStatus": 200,
+    "expBody": {
+     "pong": true
+    }
+   }
+  ]
+ },
+ {
+  "id": "b_eq_balance",
+  "category": "business",
+  "title": "transferir todo el saldo",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;A;62",
+    "expStatus": 201,
+    "expBody": {
+     "cuentaId": "AC-0001"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;B;59",
+    "expStatus": 201,
+    "expBody": {
+     "cuentaId": "AC-0002"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "DEPOSITO;AC-0001;1000;35",
+    "expStatus": 200,
+    "expBody": {
+     "status": "recieved",
+     "operacionId": "OP-0001"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "TRANSFER;AC-0001;AC-0002;1000;37",
+    "expStatus": 200,
+    "expBody": {
+     "status": "recieved",
+     "operacionId": "OP-0002"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "CONSULTA;AC-0001;14",
+    "expStatus": 200,
+    "expBody": {
+     "cuenta_id": "AC-0001",
+     "saldo": "0.00"
+    }
+   }
+  ]
+ },
+ {
+  "id": "b_anula_after_spend",
+  "category": "business",
+  "title": "ANULA tras gastar (saldo negativo)",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;A;62",
+    "expStatus": 201,
+    "expBody": {
+     "cuentaId": "AC-0001"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;B;59",
+    "expStatus": 201,
+    "expBody": {
+     "cuentaId": "AC-0002"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "DEPOSITO;AC-0001;1000;35",
+    "expStatus": 200,
+    "expBody": {
+     "status": "recieved",
+     "operacionId": "OP-0001"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "TRANSFER;AC-0001;AC-0002;1000;37",
+    "expStatus": 200,
+    "expBody": {
+     "status": "recieved",
+     "operacionId": "OP-0002"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "TRANSFER;AC-0002;AC-0001;1000;14",
+    "expStatus": 200,
+    "expBody": {
+     "status": "recieved",
+     "operacionId": "OP-0003"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ANULA;OP-0002;69",
+    "expStatus": 200,
+    "expBody": {
+     "ok": true,
+     "anulada": "OP-0002"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "CONSULTA;AC-0001;14",
+    "expStatus": 200,
+    "expBody": {
+     "cuenta_id": "AC-0001",
+     "saldo": "20.00"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "CONSULTA;AC-0002;11",
+    "expStatus": 200,
+    "expBody": {
+     "cuenta_id": "AC-0002",
+     "saldo": "-10.00"
+    }
+   }
+  ]
+ },
+ {
+  "id": "b_bad_ids",
+  "category": "business",
+  "title": "IDs no canónicos -> E401",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;A;62",
+    "expStatus": 201,
+    "expBody": {
+     "cuentaId": "AC-0001"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "CONSULTA;AC-1;5",
+    "expStatus": 404,
+    "expBody": {
+     "error": "E401",
+     "mensaje": "cuenta inexistente"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "CONSULTA;AC-00001;61",
+    "expStatus": 404,
+    "expBody": {
+     "error": "E401",
+     "mensaje": "cuenta inexistente"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "CONSULTA;ac-0001;14",
+    "expStatus": 404,
+    "expBody": {
+     "error": "E401",
+     "mensaje": "cuenta inexistente"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "DEPOSITO;ac-0001;10;77",
+    "expStatus": 404,
+    "expBody": {
+     "error": "E401",
+     "mensaje": "cuenta inexistente"
+    }
+   }
+  ]
+ },
+ {
+  "id": "b_e402",
+  "category": "business",
+  "title": "ANULA operación inexistente -> E402",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ANULA;OP-9999;51",
+    "expStatus": 404,
+    "expBody": {
+     "error": "E402",
+     "mensaje": "operación inexistente"
+    }
+   }
+  ]
+ },
+ {
+  "id": "inc_e510_timing",
+  "category": "incident",
+  "title": "E510 tras 3 fallos + intentos",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;A;62",
+    "expStatus": 201,
+    "expBody": {
+     "cuentaId": "AC-0001"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;B;59",
+    "expStatus": 201,
+    "expBody": {
+     "cuentaId": "AC-0002"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "DEPOSITO;AC-0001;100;82",
+    "expStatus": 200,
+    "expBody": {
+     "status": "recieved",
+     "operacionId": "OP-0001"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "TRANSFER;AC-0001;AC-0002;50001;56",
+    "expStatus": 422,
+    "expBody": {
+     "error": "E506",
+     "mensaje": "límite excedido"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "TRANSFER;AC-0001;AC-0002;50001;56",
+    "expStatus": 422,
+    "expBody": {
+     "error": "E506",
+     "mensaje": "límite excedido"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "TRANSFER;AC-0001;AC-0002;50001;56",
+    "expStatus": 422,
+    "expBody": {
+     "error": "E506",
+     "mensaje": "límite excedido"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "TRANSFER;AC-0001;AC-0002;50001;56",
+    "expStatus": 423,
+    "expBody": {
+     "error": "E510",
+     "mensaje": "cuenta bloqueada",
+     "intentos": 1
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "TRANSFER;AC-0001;AC-0002;1;41",
+    "expStatus": 423,
+    "expBody": {
+     "error": "E510",
+     "mensaje": "cuenta bloqueada",
+     "intentos": 2
+    }
+   }
+  ]
+ },
+ {
+  "id": "inc_blocked_ops",
+  "category": "incident",
+  "title": "DEPOSITO desbloquea cuenta",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;A;62",
+    "expStatus": 201,
+    "expBody": {
+     "cuentaId": "AC-0001"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;B;59",
+    "expStatus": 201,
+    "expBody": {
+     "cuentaId": "AC-0002"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "DEPOSITO;AC-0001;100;82",
+    "expStatus": 200,
+    "expBody": {
+     "status": "recieved",
+     "operacionId": "OP-0001"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "TRANSFER;AC-0001;AC-0002;50001;56",
+    "expStatus": 422,
+    "expBody": {
+     "error": "E506",
+     "mensaje": "límite excedido"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "TRANSFER;AC-0001;AC-0002;50001;56",
+    "expStatus": 422,
+    "expBody": {
+     "error": "E506",
+     "mensaje": "límite excedido"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "TRANSFER;AC-0001;AC-0002;50001;56",
+    "expStatus": 422,
+    "expBody": {
+     "error": "E506",
+     "mensaje": "límite excedido"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "CONSULTA;AC-0001;14",
+    "expStatus": 200,
+    "expBody": {
+     "cuenta_id": "AC-0001",
+     "saldo": "1.00"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "DEPOSITO;AC-0001;50;54",
+    "expStatus": 200,
+    "expBody": {
+     "status": "recieved",
+     "operacionId": "OP-0002"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "CONSULTA;AC-0001;14",
+    "expStatus": 200,
+    "expBody": {
+     "cuenta_id": "AC-0001",
+     "saldo": "1.50"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "TRANSFER;AC-0001;AC-0002;50001;56",
+    "expStatus": 422,
+    "expBody": {
+     "error": "E506",
+     "mensaje": "límite excedido"
+    }
+   }
+  ]
+ },
+ {
+  "id": "inc_consulta_mid",
+  "category": "incident",
+  "title": "CONSULTA entre fallos no resetea",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;A;62",
+    "expStatus": 201,
+    "expBody": {
+     "cuentaId": "AC-0001"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;B;59",
+    "expStatus": 201,
+    "expBody": {
+     "cuentaId": "AC-0002"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "DEPOSITO;AC-0001;100;82",
+    "expStatus": 200,
+    "expBody": {
+     "status": "recieved",
+     "operacionId": "OP-0001"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "TRANSFER;AC-0001;AC-0002;50001;56",
+    "expStatus": 422,
+    "expBody": {
+     "error": "E506",
+     "mensaje": "límite excedido"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "CONSULTA;AC-0001;14",
+    "expStatus": 200,
+    "expBody": {
+     "cuenta_id": "AC-0001",
+     "saldo": "1.00"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "TRANSFER;AC-0001;AC-0002;50001;56",
+    "expStatus": 422,
+    "expBody": {
+     "error": "E506",
+     "mensaje": "límite excedido"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "TRANSFER;AC-0001;AC-0002;50001;56",
+    "expStatus": 422,
+    "expBody": {
+     "error": "E506",
+     "mensaje": "límite excedido"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "TRANSFER;AC-0001;AC-0002;50001;56",
+    "expStatus": 423,
+    "expBody": {
+     "error": "E510",
+     "mensaje": "cuenta bloqueada",
+     "intentos": 1
+    }
+   }
+  ]
+ },
+ {
+  "id": "inc_e507_counts",
+  "category": "incident",
+  "title": "E507 también cuenta para bloqueo",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;A;62",
+    "expStatus": 201,
+    "expBody": {
+     "cuentaId": "AC-0001"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;B;59",
+    "expStatus": 201,
+    "expBody": {
+     "cuentaId": "AC-0002"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "TRANSFER;AC-0001;AC-0002;1;41",
+    "expStatus": 422,
+    "expBody": {
+     "error": "E507",
+     "mensaje": "saldo insuficiente"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "TRANSFER;AC-0001;AC-0002;1;41",
+    "expStatus": 422,
+    "expBody": {
+     "error": "E507",
+     "mensaje": "saldo insuficiente"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "TRANSFER;AC-0001;AC-0002;1;41",
+    "expStatus": 422,
+    "expBody": {
+     "error": "E507",
+     "mensaje": "saldo insuficiente"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "TRANSFER;AC-0001;AC-0002;1;41",
+    "expStatus": 423,
+    "expBody": {
+     "error": "E510",
+     "mensaje": "cuenta bloqueada",
+     "intentos": 1
+    }
+   }
+  ]
+ },
+ {
+  "id": "inc_success_resets",
+  "category": "incident",
+  "title": "TRANSFER exitosa resetea fallos",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;A;62",
+    "expStatus": 201,
+    "expBody": {
+     "cuentaId": "AC-0001"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTA;B;59",
+    "expStatus": 201,
+    "expBody": {
+     "cuentaId": "AC-0002"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "DEPOSITO;AC-0001;200;73",
+    "expStatus": 200,
+    "expBody": {
+     "status": "recieved",
+     "operacionId": "OP-0001"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "TRANSFER;AC-0001;AC-0002;50001;56",
+    "expStatus": 422,
+    "expBody": {
+     "error": "E506",
+     "mensaje": "límite excedido"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "TRANSFER;AC-0001;AC-0002;50001;56",
+    "expStatus": 422,
+    "expBody": {
+     "error": "E506",
+     "mensaje": "límite excedido"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "TRANSFER;AC-0001;AC-0002;100;24",
+    "expStatus": 200,
+    "expBody": {
+     "status": "recieved",
+     "operacionId": "OP-0002"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "TRANSFER;AC-0001;AC-0002;50001;56",
+    "expStatus": 422,
+    "expBody": {
+     "error": "E506",
+     "mensaje": "límite excedido"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "TRANSFER;AC-0001;AC-0002;50001;56",
+    "expStatus": 422,
+    "expBody": {
+     "error": "E506",
+     "mensaje": "límite excedido"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "TRANSFER;AC-0001;AC-0002;50001;56",
+    "expStatus": 422,
+    "expBody": {
+     "error": "E506",
+     "mensaje": "límite excedido"
+    }
+   }
+  ]
+ },
+ {
+  "id": "inc_halt_arity",
+  "category": "incident",
+  "title": "HALT aridad inválida",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "HALT;71",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E302",
+     "mensaje": "aridad inválida"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "HALT;1;2;78",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E302",
+     "mensaje": "aridad inválida"
+    }
+   }
+  ]
+ },
+ {
+  "id": "inc_halt_warn",
+  "category": "incident",
+  "title": "HALT sin confirmar -> E520",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "HALT;AC-0001;82",
+    "expStatus": 409,
+    "expBody": {
+     "error": "E520",
+     "mensaje": "operación destructiva: detiene el servicio; reenvía con confirmación"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "PING;64",
+    "expStatus": 200,
+    "expBody": {
+     "pong": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   }
+  ]
+ },
+ {
+  "id": "inc_halt_state",
+  "category": "incident",
+  "title": "HALT;1 -> 503 E599 hasta reset",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "PING;64",
+    "expStatus": 200,
+    "expBody": {
+     "pong": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "HALT;1;19",
+    "expStatus": 503,
+    "expBody": {
+     "error": "E599",
+     "mensaje": "service halted"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "PING;64",
+    "expStatus": 503,
+    "expBody": {
+     "error": "E599",
+     "mensaje": "service halted"
+    }
+   },
+   {
+    "method": "GET",
+    "path": "/health",
+    "auth": "team",
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "PING;64",
+    "expStatus": 200,
+    "expBody": {
+     "pong": true
+    }
+   }
+  ]
+ },
+ {
+  "id": "inc_halt_variants",
+  "category": "incident",
+  "title": "HALT;01 / HALT;1 (espacio)",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "HALT;01;14",
+    "expStatus": 409,
+    "expBody": {
+     "error": "E520",
+     "mensaje": "operación destructiva: detiene el servicio; reenvía con confirmación"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "HALT;1 ;19",
+    "expStatus": 409,
+    "expBody": {
+     "error": "E520",
+     "mensaje": "operación destructiva: detiene el servicio; reenvía con confirmación"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "HALT;1",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E202",
+     "mensaje": "control inválido"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "PING;64",
+    "expStatus": 200,
+    "expBody": {
+     "pong": true
+    }
+   }
+  ]
+ },
+ {
+  "id": "inc_sugg_near",
+  "category": "incident",
+  "title": "sugerencia Levenshtein (ALTAX)",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "ALTAX;A;52",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E301",
+     "mensaje": "comando desconocido ",
+     "sugerencia": "ALTA"
+    }
+   }
+  ]
+ },
+ {
+  "id": "inc_sugg_far",
+  "category": "incident",
+  "title": "sin sugerencia (FOO)",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "FOO;1;70",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E301",
+     "mensaje": "comando desconocido "
+    }
+   }
+  ]
+ },
+ {
+  "id": "inc_sugg_halt",
+  "category": "incident",
+  "title": "sugerencia HALT (AALT)",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/__reset",
+    "auth": "team",
+    "body": {},
+    "expStatus": 200,
+    "expBody": {
+     "ok": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/msg",
+    "auth": "team",
+    "m": "AALT;A;4",
+    "expStatus": 400,
+    "expBody": {
+     "error": "E301",
+     "mensaje": "comando desconocido ",
+     "sugerencia": "HALT"
+    }
+   }
+  ]
+ }
+]

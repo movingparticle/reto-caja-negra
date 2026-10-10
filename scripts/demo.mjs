@@ -4,13 +4,29 @@
 //   node scripts/demo.mjs
 //   BASE=http://localhost:3000 TOKEN=mi_token node scripts/demo.mjs
 //
-// Por defecto ataca el entrypoint de producción y usa el token del equipo.
+// Por defecto ataca el entrypoint de producción y usa el token de pruebas.
 // Cada línea imprime: STATUS  <m>  <cuerpo exacto>  — listo para mostrar en vivo.
 
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { calculateControl } from "../src/checksum.mjs";
 
+function getFallbackToken() {
+  try {
+    const dir = path.dirname(fileURLToPath(import.meta.url));
+    const raw = fs.readFileSync(path.resolve(dir, "../.dev.vars"), "utf-8");
+    for (const l of raw.split("\n")) {
+      if (l.startsWith("ALLOWED_TOKENS=")) {
+        return l.split("=")[1].split(",")[0].replace(/["']/g, "").trim();
+      }
+    }
+  } catch {}
+  return "ftr_904403fa4633e37c63c98b305a14ccbd";
+}
+
 const BASE = process.env.BASE || "https://caja-negra-reemplazo.parsec-ai-labs.workers.dev";
-const TOKEN = process.env.TOKEN || process.env.TEAM_TOKEN || "ftr_904403fa4633e37c63c98b305a14ccbd";
+const TOKEN = process.env.TOKEN || process.env.TEAM_TOKEN || getFallbackToken();
 
 const headers = { Authorization: `Bearer ${TOKEN}`, "Content-Type": "application/json" };
 

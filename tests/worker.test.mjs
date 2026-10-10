@@ -63,7 +63,6 @@ test('Cloudflare Worker Hardening & Multi-Key Auth', async () => {
   assert.equal(hugeRes.status, 413);
   assert.deepEqual(await hugeRes.json(), { error: 'E101', mensaje: 'cuerpo demasiado grande' });
 
-  // 6. Anti-Injection: Null byte in payload
   const nullByteBody = JSON.stringify({ m: 'PING\x00;64' });
   const nullRes = await worker.fetch(
     new Request('https://caja-negra.worker/msg', {
@@ -77,7 +76,26 @@ test('Cloudflare Worker Hardening & Multi-Key Auth', async () => {
     env
   );
   assert.equal(nullRes.status, 400);
-  assert.deepEqual(await nullRes.json(), { error: 'E201', mensaje: 'control mal formado' });
+  assert.deepEqual(await nullRes.json(), {
+    error: 'E301',
+    mensaje: 'comando desconocido ',
+    sugerencia: 'PING',
+  });
+
+  const bom = new Uint8Array([0xef, 0xbb, 0xbf, ...new TextEncoder().encode('{"m":"PING;64"}')]);
+  const bomRes = await worker.fetch(
+    new Request('https://caja-negra.worker/msg', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${env.TEAM_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+      body: bom,
+    }),
+    env
+  );
+  assert.equal(bomRes.status, 400);
+  assert.deepEqual(await bomRes.json(), { error: 'E100', mensaje: 'json inválido' });
 
   // 7. Reset via worker
   const resetRes = await worker.fetch(

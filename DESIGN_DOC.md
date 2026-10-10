@@ -1,8 +1,7 @@
 # SYSTEM DESIGN — Reemplazo Autónomo de Caja Negra
 > **Evento:** FRONTIER Bogotá 2026 — Reto 2
-> **Estado:** solución implementada, desplegada y verificada
 > **Entrypoint público:** `https://caja-negra-reemplazo.parsec-ai-labs.workers.dev`
-> **Vista navegable:** [`DESIGN_DOC.html`](DESIGN_DOC.html) · **Arquitectura:** [`architecture.html`](architecture.html) · [`architecture.mmd`](architecture.mmd) · **Decisiones:** [`docs/decisions/`](docs/decisions/README.md)
+> **Demo interactiva (consola):** [`https://caja-negra-demo.pages.dev/`](https://caja-negra-demo.pages.dev/) (o [`demo.html`](demo.html)) · **Vista navegable:** [`DESIGN_DOC.html`](DESIGN_DOC.html) · **Arquitectura:** [`architecture.html`](architecture.html) · [`architecture.mmd`](architecture.mmd) · **Decisiones:** [`docs/decisions/`](docs/decisions/README.md)
 
 ---
 

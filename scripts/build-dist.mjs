@@ -15,6 +15,8 @@ mkdirSync(DIST_DIR, { recursive: true });
 // Files to copy directly to dist
 const rootFiles = [
   'index.html',
+  'demo.html',
+  'demo-suite.json',
   'design-doc.html',
   'DESIGN_DOC.html',
   'architecture.html',

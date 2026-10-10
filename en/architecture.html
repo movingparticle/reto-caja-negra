@@ -64,6 +64,9 @@
   }
   nav.cmds a::before{content:"$ ";color:var(--green)}
   nav.cmds a:hover,nav.cmds a:focus{color:var(--ink);border-color:var(--line);text-decoration:none;background:#101612}
+  .m-demo{display:none}
+  .nav-fold>summary{display:none;list-style:none}
+  .nav-fold>summary::-webkit-details-marker{display:none}
 
   .hero{padding:28px 0 8px}
   .prompt{color:var(--green);margin:0 0 10px;font-size:13px}
@@ -273,13 +276,47 @@
     body{background:#fff;color:#111}
     a{color:#111}
   }
-  @media(max-width:640px){
-    .help{display:none}
-    .metrics{grid-template-columns:1fr 1fr}
-    .bar-row{grid-template-columns:92px 1fr 28px}
-    .kv .row2{grid-template-columns:1fr}
-     pre.banner{font-size:7px}
-   }
+   @media(max-width:640px){
+     header.termbar{z-index:90;position:sticky;top:0}
+     .help,.live-demo,.who,.loc{display:none}
+     .win{flex-wrap:wrap;row-gap:6px;padding:8px 10px}
+     .win > *{min-width:0}
+     .win > span:not(.right):not(.dots):not(.who){display:none}
+     .win .right{gap:6px}
+     .mbar{display:flex;align-items:center;gap:8px;padding:0 10px 10px}
+     .m-demo{display:inline-flex;color:var(--green)!important;border-color:var(--green)!important}
+     .nav-fold{position:relative;margin-left:auto}
+     .nav-fold>summary{
+       display:flex;align-items:center;gap:8px;cursor:pointer;
+       color:var(--ink);border:1px solid var(--green);
+       background:linear-gradient(180deg,#161e19,#0b100d);
+       font-family:inherit;font-size:11px;padding:6px 10px;letter-spacing:.04em;
+       box-shadow:0 0 12px rgba(57,255,20,.28);
+     }
+     .nav-fold>summary::before{content:"$ ";color:var(--green)}
+     .nav-fold>summary::after{
+       content:"";width:13px;height:10px;flex:none;margin-left:2px;
+       background:
+         linear-gradient(var(--green),var(--green)) 0 0/100% 2px no-repeat,
+         linear-gradient(var(--green),var(--green)) 0 4px/100% 2px no-repeat,
+         linear-gradient(var(--green),var(--green)) 0 8px/100% 2px no-repeat;
+       box-shadow:0 0 8px rgba(57,255,20,.45);
+     }
+     .nav-fold[open]>summary::after{
+       height:2px;background:var(--green);box-shadow:0 0 8px var(--green);
+     }
+     nav.cmds{
+       display:none;position:absolute;right:0;top:calc(100% + 4px);
+       flex-direction:column;flex-wrap:nowrap;gap:2px;min-width:168px;padding:8px;
+       background:#0a0f0c;border:1px solid var(--line);
+       box-shadow:0 12px 28px rgba(0,0,0,.55);z-index:50;
+     }
+     .nav-fold[open] nav.cmds{display:flex}
+     .metrics{grid-template-columns:1fr 1fr}
+     .bar-row{grid-template-columns:92px 1fr 28px}
+     .kv .row2{grid-template-columns:1fr}
+     pre.banner{font-size:clamp(4.2px,2.15vw,7px);padding:10px 6px;overflow:hidden}
+    }
   /* chasis: instrumento, no lamina */
   body{
     background:
@@ -377,21 +414,28 @@
     <b>movingparticle@caja-negra</b> <span class="who" style="color:var(--amber,#ffb000);font-weight:600;letter-spacing:.06em">RODRIGO POLO</span> <a class="loc" href="https://www.google.com/maps/search/?api=1&query=Guayaquil%2C%20Ecuador" target="_blank" rel="noopener" title="Guayaquil, Ecuador — view on Google Maps" style="color:var(--cyan,#7ee7ff);border:1px solid var(--line,#1e3a28);padding:1px 7px;border-radius:3px;font-size:10px;letter-spacing:.08em;text-decoration:none">EC, GYE</a>
     <span>~/reto-2/DESIGN_DOC</span>
     <span class="right">
+      <a class="ghost live-demo" href="https://caja-negra-demo.pages.dev/" title="Back to the live demo" style="color:var(--green,#39ff14);border-color:var(--green,#39ff14)">&#8592; live demo</a>
       <span id="clock">--:--:--</span>
       <a class="ghost" href="../architecture.html" title="Versión en español" hreflang="es" lang="es">ES</a>
       <button class="ghost" type="button" id="theme">theme --amber</button>
     </span>
   </div>
-  <nav class="cmds" aria-label="sections">
-    <a href="index.html#resumen">summary</a>
-    <a href="index.html#metricas">data</a>
-    <a href="index.html#problema">problem</a>
-    <a href="architecture.html">architecture</a>
-    <a href="index.html#decisiones">adr</a>
-    <a href="index.html#medicion">tests</a>
-    <a href="index.html#hipotesis">hypotheses</a>
-    <a href="index.html#defensa">defense</a>
-  </nav>
+  <div class="mbar">
+    <a class="ghost m-demo" href="https://caja-negra-demo.pages.dev/" title="Back to the live demo" style="color:var(--green,#39ff14);border-color:var(--green,#39ff14)">&#8592; live demo</a>
+    <details class="nav-fold" open>
+      <summary>sections</summary>
+      <nav class="cmds" aria-label="sections">
+        <a href="index.html#resumen">summary</a>
+        <a href="index.html#metricas">data</a>
+        <a href="index.html#problema">problem</a>
+        <a href="architecture.html">architecture</a>
+        <a href="index.html#decisiones">adr</a>
+        <a href="index.html#medicion">tests</a>
+        <a href="index.html#hipotesis">hypotheses</a>
+        <a href="index.html#defensa">defense</a>
+      </nav>
+    </details>
+  </div>
 </header>
 
 <div class="shell">
@@ -585,6 +629,14 @@ flowchart TB
     const next = document.body.dataset.theme === "amber" ? "" : "amber";
     document.body.dataset.theme = next;
     btn.textContent = next ? "theme --green" : "theme --amber";
+  });
+  document.querySelectorAll(".nav-fold").forEach((d) => {
+    const mq = window.matchMedia("(max-width: 640px)");
+    const syncNav = () => { if (mq.matches) d.removeAttribute("open"); else d.setAttribute("open", ""); };
+    syncNav();
+    if (mq.addEventListener) mq.addEventListener("change", syncNav); else mq.addListener(syncNav);
+    d.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => { if (mq.matches) d.removeAttribute("open"); }));
+    document.addEventListener("click", (e) => { if (mq.matches && !d.contains(e.target)) d.removeAttribute("open"); });
   });
 
   const jumps = ["resumen","metricas","problema","arquitectura","decisiones","medicion","hipotesis","defensa"];

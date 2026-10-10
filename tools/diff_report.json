@@ -4,20 +4,18 @@
     "family": "protocolo",
     "oracle": [
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "ok": true
         },
         "xreq": null
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "ok": true
         },
         "xreq": null
       }
@@ -379,1544 +377,1496 @@
     "family": "entrada",
     "oracle": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E100",
+          "mensaje": "json inválido"
         },
-        "xreq": null
+        "xreq": "960"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E100",
+          "mensaje": "json inválido"
         },
-        "xreq": null
+        "xreq": "1"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-B-02",
     "family": "entrada",
     "oracle": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E100",
+          "mensaje": "json inválido"
         },
-        "xreq": null
+        "xreq": "961"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E100",
+          "mensaje": "json inválido"
         },
-        "xreq": null
+        "xreq": "2"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-B-03",
     "family": "entrada",
     "oracle": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E100",
+          "mensaje": "json inválido"
         },
-        "xreq": null
+        "xreq": "962"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E100",
+          "mensaje": "json inválido"
         },
-        "xreq": null
+        "xreq": "3"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-B-04",
     "family": "entrada",
     "oracle": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E102",
+          "mensaje": "falta m"
         },
-        "xreq": null
+        "xreq": "963"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E102",
+          "mensaje": "falta m"
         },
-        "xreq": null
+        "xreq": "4"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-B-05",
     "family": "entrada",
     "oracle": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E102",
+          "mensaje": "falta m"
         },
-        "xreq": null
+        "xreq": "964"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E102",
+          "mensaje": "falta m"
         },
-        "xreq": null
+        "xreq": "5"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-B-06",
     "family": "entrada",
     "oracle": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E102",
+          "mensaje": "falta m"
         },
-        "xreq": null
+        "xreq": "965"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E102",
+          "mensaje": "falta m"
         },
-        "xreq": null
+        "xreq": "6"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-B-07",
     "family": "entrada",
     "oracle": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E102",
+          "mensaje": "falta m"
         },
-        "xreq": null
+        "xreq": "966"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E102",
+          "mensaje": "falta m"
         },
-        "xreq": null
+        "xreq": "7"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-B-08",
     "family": "entrada",
     "oracle": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E102",
+          "mensaje": "falta m"
         },
-        "xreq": null
+        "xreq": "967"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E102",
+          "mensaje": "falta m"
         },
-        "xreq": null
+        "xreq": "8"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-B-09",
     "family": "entrada",
     "oracle": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E102",
+          "mensaje": "falta m"
         },
-        "xreq": null
+        "xreq": "968"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E102",
+          "mensaje": "falta m"
         },
-        "xreq": null
+        "xreq": "9"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-B-10",
     "family": "entrada",
     "oracle": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E102",
+          "mensaje": "falta m"
         },
-        "xreq": null
+        "xreq": "969"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E102",
+          "mensaje": "falta m"
         },
-        "xreq": null
+        "xreq": "10"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-B-11",
     "family": "entrada",
     "oracle": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E102",
+          "mensaje": "falta m"
         },
-        "xreq": null
+        "xreq": "970"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E102",
+          "mensaje": "falta m"
         },
-        "xreq": null
+        "xreq": "11"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-B-12",
     "family": "entrada",
     "oracle": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E102",
+          "mensaje": "falta m"
         },
-        "xreq": null
+        "xreq": "971"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E102",
+          "mensaje": "falta m"
         },
-        "xreq": null
+        "xreq": "12"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-B-13",
     "family": "entrada",
     "oracle": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E102",
+          "mensaje": "falta m"
         },
-        "xreq": null
+        "xreq": "972"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E102",
+          "mensaje": "falta m"
         },
-        "xreq": null
+        "xreq": "13"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-B-14",
     "family": "entrada",
     "oracle": [
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "pong": true
         },
-        "xreq": null
+        "xreq": "973"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "pong": true
         },
-        "xreq": null
+        "xreq": "14"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-B-15",
     "family": "entrada",
     "oracle": [
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "pong": true
         },
-        "xreq": null
+        "xreq": "974"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "pong": true
         },
-        "xreq": null
+        "xreq": "15"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-B-16",
     "family": "entrada",
     "oracle": [
       {
-        "status": 401,
+        "status": 413,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E101",
+          "mensaje": "cuerpo demasiado grande"
         },
-        "xreq": null
+        "xreq": "975"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 413,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E101",
+          "mensaje": "cuerpo demasiado grande"
         },
-        "xreq": null
+        "xreq": "16"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-C-01",
     "family": "integridad",
     "oracle": [
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0001"
         },
-        "xreq": null
+        "xreq": "976"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0001"
         },
-        "xreq": null
+        "xreq": "1"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-C-02",
     "family": "integridad",
     "oracle": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E202",
+          "mensaje": "control inválido"
         },
-        "xreq": null
+        "xreq": "977"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E202",
+          "mensaje": "control inválido"
         },
-        "xreq": null
+        "xreq": "2"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-C-03",
     "family": "integridad",
     "oracle": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E201",
+          "mensaje": "control mal formado"
         },
-        "xreq": null
+        "xreq": "978"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E201",
+          "mensaje": "control mal formado"
         },
-        "xreq": null
+        "xreq": "3"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-C-04",
     "family": "integridad",
     "oracle": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E103",
+          "mensaje": "falta control"
         },
-        "xreq": null
+        "xreq": "979"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E103",
+          "mensaje": "falta control"
         },
-        "xreq": null
+        "xreq": "4"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-C-05",
     "family": "integridad",
     "oracle": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E104",
+          "mensaje": "segmento vacío"
         },
-        "xreq": null
+        "xreq": "980"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E104",
+          "mensaje": "segmento vacío"
         },
-        "xreq": null
+        "xreq": "5"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-C-06",
     "family": "integridad",
     "oracle": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E202",
+          "mensaje": "control inválido"
         },
-        "xreq": null
+        "xreq": "981"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E202",
+          "mensaje": "control inválido"
         },
-        "xreq": null
+        "xreq": "6"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-C-07",
     "family": "integridad",
     "oracle": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E201",
+          "mensaje": "control mal formado"
         },
-        "xreq": null
+        "xreq": "982"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E201",
+          "mensaje": "control mal formado"
         },
-        "xreq": null
+        "xreq": "7"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-C-08",
     "family": "integridad",
     "oracle": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E202",
+          "mensaje": "control inválido"
         },
-        "xreq": null
+        "xreq": "983"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E202",
+          "mensaje": "control inválido"
         },
-        "xreq": null
+        "xreq": "8"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-C-09",
     "family": "integridad",
     "oracle": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E202",
+          "mensaje": "control inválido"
         },
-        "xreq": null
+        "xreq": "984"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E202",
+          "mensaje": "control inválido"
         },
-        "xreq": null
+        "xreq": "9"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-C-10",
     "family": "integridad",
     "oracle": [
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "pong": true
         },
-        "xreq": null
+        "xreq": "985"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "pong": true
         },
-        "xreq": null
+        "xreq": "10"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-C-11",
     "family": "integridad",
     "oracle": [
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "pong": true
         },
-        "xreq": null
+        "xreq": "986"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "pong": true
         },
-        "xreq": null
+        "xreq": "11"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-D-01",
     "family": "negocio",
     "oracle": [
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0001"
         },
-        "xreq": null
+        "xreq": "987"
       },
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0002"
         },
-        "xreq": null
+        "xreq": "988"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "status": "recieved",
+          "operacionId": "OP-0001"
         },
-        "xreq": null
+        "xreq": "989"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "status": "recieved",
+          "operacionId": "OP-0002"
         },
-        "xreq": null
+        "xreq": "990"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuenta_id": "AC-0001",
+          "saldo": "1.00"
         },
-        "xreq": null
+        "xreq": "991"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuenta_id": "AC-0002",
+          "saldo": "4.00"
         },
-        "xreq": null
+        "xreq": "992"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "ok": true,
+          "anulada": "OP-0001"
         },
-        "xreq": null
+        "xreq": "993"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuenta_id": "AC-0001",
+          "saldo": "-4.00"
         },
-        "xreq": null
+        "xreq": "994"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0001"
         },
-        "xreq": null
+        "xreq": "1"
       },
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0002"
         },
-        "xreq": null
+        "xreq": "2"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "status": "recieved",
+          "operacionId": "OP-0001"
         },
-        "xreq": null
+        "xreq": "3"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "status": "recieved",
+          "operacionId": "OP-0002"
         },
-        "xreq": null
+        "xreq": "4"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuenta_id": "AC-0001",
+          "saldo": "1.00"
         },
-        "xreq": null
+        "xreq": "5"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuenta_id": "AC-0002",
+          "saldo": "4.00"
         },
-        "xreq": null
+        "xreq": "6"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "ok": true,
+          "anulada": "OP-0001"
         },
-        "xreq": null
+        "xreq": "7"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuenta_id": "AC-0001",
+          "saldo": "-4.00"
         },
-        "xreq": null
+        "xreq": "8"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-D-02",
     "family": "negocio",
     "oracle": [
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0001"
         },
-        "xreq": null
+        "xreq": "995"
       },
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0002"
         },
-        "xreq": null
+        "xreq": "996"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "status": "recieved",
+          "operacionId": "OP-0001"
         },
-        "xreq": null
+        "xreq": "997"
       },
       {
-        "status": 401,
+        "status": 422,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E506",
+          "mensaje": "límite excedido"
         },
-        "xreq": null
+        "xreq": "998"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0001"
         },
-        "xreq": null
+        "xreq": "1"
       },
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0002"
         },
-        "xreq": null
+        "xreq": "2"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "status": "recieved",
+          "operacionId": "OP-0001"
         },
-        "xreq": null
+        "xreq": "3"
       },
       {
-        "status": 401,
+        "status": 422,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E506",
+          "mensaje": "límite excedido"
         },
-        "xreq": null
+        "xreq": "4"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-D-03",
     "family": "negocio",
     "oracle": [
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0001"
         },
-        "xreq": null
+        "xreq": "999"
       },
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0002"
         },
-        "xreq": null
+        "xreq": "1000"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "status": "recieved",
+          "operacionId": "OP-0001"
         },
-        "xreq": null
+        "xreq": "1001"
       },
       {
-        "status": 401,
+        "status": 422,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E506",
+          "mensaje": "límite excedido"
         },
-        "xreq": null
+        "xreq": "1002"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0001"
         },
-        "xreq": null
+        "xreq": "1"
       },
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0002"
         },
-        "xreq": null
+        "xreq": "2"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "status": "recieved",
+          "operacionId": "OP-0001"
         },
-        "xreq": null
+        "xreq": "3"
       },
       {
-        "status": 401,
+        "status": 422,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E506",
+          "mensaje": "límite excedido"
         },
-        "xreq": null
+        "xreq": "4"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-D-04",
     "family": "negocio",
     "oracle": [
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0001"
         },
-        "xreq": null
+        "xreq": "1003"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "status": "recieved",
+          "operacionId": "OP-0001"
         },
-        "xreq": null
+        "xreq": "1004"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuenta_id": "AC-0001",
+          "saldo": "99999999.99"
         },
-        "xreq": null
+        "xreq": "1005"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0001"
         },
-        "xreq": null
+        "xreq": "1"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "status": "recieved",
+          "operacionId": "OP-0001"
         },
-        "xreq": null
+        "xreq": "2"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuenta_id": "AC-0001",
+          "saldo": "99999999.99"
         },
-        "xreq": null
+        "xreq": "3"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-D-05",
     "family": "negocio",
     "oracle": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E303",
+          "mensaje": "monto inválido"
         },
-        "xreq": null
+        "xreq": "1006"
       },
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E304",
+          "mensaje": "origen y destino iguales"
         },
-        "xreq": null
+        "xreq": "1007"
       },
       {
-        "status": 401,
+        "status": 404,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E401",
+          "mensaje": "cuenta inexistente"
         },
-        "xreq": null
+        "xreq": "1008"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E303",
+          "mensaje": "monto inválido"
         },
-        "xreq": null
+        "xreq": "1"
       },
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E304",
+          "mensaje": "origen y destino iguales"
         },
-        "xreq": null
+        "xreq": "2"
       },
       {
-        "status": 401,
+        "status": 404,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E401",
+          "mensaje": "cuenta inexistente"
         },
-        "xreq": null
+        "xreq": "3"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-D-06",
     "family": "negocio",
     "oracle": [
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0001"
         },
-        "xreq": null
+        "xreq": "1009"
       },
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0002"
         },
-        "xreq": null
+        "xreq": "1010"
       },
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0003"
         },
-        "xreq": null
+        "xreq": "1011"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "status": "recieved",
+          "operacionId": "OP-0001"
         },
-        "xreq": null
+        "xreq": "1012"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "status": "recieved",
+          "operacionId": "OP-0002"
         },
-        "xreq": null
+        "xreq": "1013"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "status": "recieved",
+          "operacionId": "OP-0003"
         },
-        "xreq": null
+        "xreq": "1014"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "ok": true,
+          "anulada": "OP-0002"
         },
-        "xreq": null
+        "xreq": "1015"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuenta_id": "AC-0002",
+          "saldo": "-10.00"
         },
-        "xreq": null
+        "xreq": "1016"
       },
       {
-        "status": 401,
+        "status": 422,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E507",
+          "mensaje": "saldo insuficiente"
         },
-        "xreq": null
+        "xreq": "1017"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0001"
         },
-        "xreq": null
+        "xreq": "1"
       },
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0002"
         },
-        "xreq": null
+        "xreq": "2"
       },
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0003"
         },
-        "xreq": null
+        "xreq": "3"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "status": "recieved",
+          "operacionId": "OP-0001"
         },
-        "xreq": null
+        "xreq": "4"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "status": "recieved",
+          "operacionId": "OP-0002"
         },
-        "xreq": null
+        "xreq": "5"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "status": "recieved",
+          "operacionId": "OP-0003"
         },
-        "xreq": null
+        "xreq": "6"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "ok": true,
+          "anulada": "OP-0002"
         },
-        "xreq": null
+        "xreq": "7"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuenta_id": "AC-0002",
+          "saldo": "-10.00"
         },
-        "xreq": null
+        "xreq": "8"
       },
       {
-        "status": 401,
+        "status": 422,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E507",
+          "mensaje": "saldo insuficiente"
         },
-        "xreq": null
+        "xreq": "9"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-D-07",
     "family": "negocio",
     "oracle": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E301",
+          "mensaje": "comando desconocido "
         },
-        "xreq": null
+        "xreq": "1018"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E301",
+          "mensaje": "comando desconocido "
         },
-        "xreq": null
+        "xreq": "1"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-D-08",
     "family": "negocio",
     "oracle": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E302",
+          "mensaje": "aridad inválida"
         },
-        "xreq": null
+        "xreq": "1019"
       },
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E302",
+          "mensaje": "aridad inválida"
         },
-        "xreq": null
+        "xreq": "1020"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E302",
+          "mensaje": "aridad inválida"
         },
-        "xreq": null
+        "xreq": "1"
       },
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E302",
+          "mensaje": "aridad inválida"
         },
-        "xreq": null
+        "xreq": "2"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-D-09",
     "family": "negocio",
     "oracle": [
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0001"
         },
-        "xreq": null
+        "xreq": "1021"
       },
       {
-        "status": 401,
+        "status": 404,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E401",
+          "mensaje": "cuenta inexistente"
         },
-        "xreq": null
+        "xreq": "1022"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0001"
         },
-        "xreq": null
+        "xreq": "1"
       },
       {
-        "status": 401,
+        "status": 404,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E401",
+          "mensaje": "cuenta inexistente"
         },
-        "xreq": null
+        "xreq": "2"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-D-10",
     "family": "negocio",
     "oracle": [
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0001"
         },
-        "xreq": null
+        "xreq": "1023"
       },
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0002"
         },
-        "xreq": null
+        "xreq": "1024"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0001"
         },
-        "xreq": null
+        "xreq": "1"
       },
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0002"
         },
-        "xreq": null
+        "xreq": "2"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-E-01",
     "family": "secuencia",
     "oracle": [
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0001"
         },
-        "xreq": null
+        "xreq": "1025"
       },
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E303",
+          "mensaje": "monto inválido"
         },
-        "xreq": null
+        "xreq": "1026"
       },
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0002"
         },
-        "xreq": null
+        "xreq": "1027"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "status": "recieved",
+          "operacionId": "OP-0001"
         },
-        "xreq": null
+        "xreq": "1028"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0001"
         },
-        "xreq": null
+        "xreq": "1"
       },
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E303",
+          "mensaje": "monto inválido"
         },
-        "xreq": null
+        "xreq": "2"
       },
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0002"
         },
-        "xreq": null
+        "xreq": "3"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "status": "recieved",
+          "operacionId": "OP-0001"
         },
-        "xreq": null
+        "xreq": "4"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-E-02",
     "family": "secuencia",
     "oracle": [
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "pong": true
         },
-        "xreq": null
+        "xreq": "1029"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "pong": true
         },
-        "xreq": null
+        "xreq": "1030"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "pong": true
         },
-        "xreq": null
+        "xreq": "1"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "pong": true
         },
-        "xreq": null
+        "xreq": "1"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-E-03",
     "family": "secuencia",
     "oracle": [
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "pong": true
         },
-        "xreq": null
+        "xreq": "1031"
       },
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E100",
+          "mensaje": "json inválido"
         },
-        "xreq": null
+        "xreq": "1032"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "pong": true
         },
-        "xreq": null
+        "xreq": "1033"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "pong": true
         },
-        "xreq": null
+        "xreq": "1"
       },
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E100",
+          "mensaje": "json inválido"
         },
-        "xreq": null
+        "xreq": "2"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "pong": true
         },
-        "xreq": null
+        "xreq": "3"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-F-01",
@@ -2092,25 +2042,23 @@
     "family": "protocolo",
     "oracle": [
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "pong": true
         },
-        "xreq": null
+        "xreq": "1034"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "pong": true
         },
-        "xreq": null
+        "xreq": "4"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-F-09",
@@ -2142,75 +2090,69 @@
     "family": "protocolo",
     "oracle": [
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "pong": true
         },
-        "xreq": null
+        "xreq": "1035"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "pong": true
         },
-        "xreq": null
+        "xreq": "5"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-F-11",
     "family": "protocolo",
     "oracle": [
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "pong": true
         },
-        "xreq": null
+        "xreq": "1036"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "pong": true
         },
-        "xreq": null
+        "xreq": "6"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-F-12",
     "family": "protocolo",
     "oracle": [
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "pong": true
         },
-        "xreq": null
+        "xreq": "1037"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "pong": true
         },
-        "xreq": null
+        "xreq": "7"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-F-13",
@@ -2242,20 +2184,18 @@
     "family": "protocolo",
     "oracle": [
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "ok": true
         },
         "xreq": null
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "ok": true
         },
         "xreq": null
       }
@@ -2267,853 +2207,829 @@
     "family": "integridad",
     "oracle": [
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0001"
         },
-        "xreq": null
+        "xreq": "1038"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0001"
         },
-        "xreq": null
+        "xreq": "1"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-G-02",
     "family": "integridad",
     "oracle": [
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0001"
         },
-        "xreq": null
+        "xreq": "1039"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0001"
         },
-        "xreq": null
+        "xreq": "1"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-G-03",
     "family": "integridad",
     "oracle": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E201",
+          "mensaje": "control mal formado"
         },
-        "xreq": null
+        "xreq": "1040"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E201",
+          "mensaje": "control mal formado"
         },
-        "xreq": null
+        "xreq": "2"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-G-04",
     "family": "integridad",
     "oracle": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E202",
+          "mensaje": "control inválido"
         },
-        "xreq": null
+        "xreq": "1041"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E202",
+          "mensaje": "control inválido"
         },
-        "xreq": null
+        "xreq": "4"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-G-05",
     "family": "integridad",
     "oracle": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E201",
+          "mensaje": "control mal formado"
         },
-        "xreq": null
+        "xreq": "1042"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E201",
+          "mensaje": "control mal formado"
         },
-        "xreq": null
+        "xreq": "5"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-G-06",
     "family": "integridad",
     "oracle": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E104",
+          "mensaje": "segmento vacío"
         },
-        "xreq": null
+        "xreq": "1043"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E104",
+          "mensaje": "segmento vacío"
         },
-        "xreq": null
+        "xreq": "6"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-G-07",
     "family": "integridad",
     "oracle": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E104",
+          "mensaje": "segmento vacío"
         },
-        "xreq": null
+        "xreq": "1044"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E104",
+          "mensaje": "segmento vacío"
         },
-        "xreq": null
+        "xreq": "7"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-G-08",
     "family": "integridad",
     "oracle": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E103",
+          "mensaje": "falta control"
         },
-        "xreq": null
+        "xreq": "1045"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E103",
+          "mensaje": "falta control"
         },
-        "xreq": null
+        "xreq": "8"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-G-09",
     "family": "negocio",
     "oracle": [
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0001"
         },
-        "xreq": null
+        "xreq": "1046"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0001"
         },
-        "xreq": null
+        "xreq": "1"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-G-10",
     "family": "negocio",
     "oracle": [
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0001"
         },
-        "xreq": null
+        "xreq": "1047"
       },
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E303",
+          "mensaje": "monto inválido"
         },
-        "xreq": null
+        "xreq": "1048"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0001"
         },
-        "xreq": null
+        "xreq": "1"
       },
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E303",
+          "mensaje": "monto inválido"
         },
-        "xreq": null
+        "xreq": "2"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-G-11",
     "family": "negocio",
     "oracle": [
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0001"
         },
-        "xreq": null
+        "xreq": "1049"
       },
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E303",
+          "mensaje": "monto inválido"
         },
-        "xreq": null
+        "xreq": "1050"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0001"
         },
-        "xreq": null
+        "xreq": "1"
       },
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E303",
+          "mensaje": "monto inválido"
         },
-        "xreq": null
+        "xreq": "2"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-G-12",
     "family": "negocio",
     "oracle": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E301",
+          "mensaje": "comando desconocido ",
+          "sugerencia": "ALTA"
         },
-        "xreq": null
+        "xreq": "1051"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E301",
+          "mensaje": "comando desconocido ",
+          "sugerencia": "ALTA"
         },
-        "xreq": null
+        "xreq": "1"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-G-13",
     "family": "negocio",
     "oracle": [
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0001"
         },
-        "xreq": null
+        "xreq": "1052"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0001"
         },
-        "xreq": null
+        "xreq": "1"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-G-14",
     "family": "negocio",
     "oracle": [
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "pong": true
         },
-        "xreq": null
+        "xreq": "1053"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "pong": true
         },
-        "xreq": null
+        "xreq": "1"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-G-15",
     "family": "negocio",
     "oracle": [
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0001"
         },
-        "xreq": null
+        "xreq": "1054"
       },
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0002"
         },
-        "xreq": null
+        "xreq": "1055"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "status": "recieved",
+          "operacionId": "OP-0001"
         },
-        "xreq": null
+        "xreq": "1056"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "status": "recieved",
+          "operacionId": "OP-0002"
         },
-        "xreq": null
+        "xreq": "1057"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuenta_id": "AC-0001",
+          "saldo": "0.00"
         },
-        "xreq": null
+        "xreq": "1058"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0001"
         },
-        "xreq": null
+        "xreq": "1"
       },
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0002"
         },
-        "xreq": null
+        "xreq": "2"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "status": "recieved",
+          "operacionId": "OP-0001"
         },
-        "xreq": null
+        "xreq": "3"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "status": "recieved",
+          "operacionId": "OP-0002"
         },
-        "xreq": null
+        "xreq": "4"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuenta_id": "AC-0001",
+          "saldo": "0.00"
         },
-        "xreq": null
+        "xreq": "5"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-G-16",
     "family": "negocio",
     "oracle": [
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0001"
         },
-        "xreq": null
+        "xreq": "1059"
       },
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0002"
         },
-        "xreq": null
+        "xreq": "1060"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "status": "recieved",
+          "operacionId": "OP-0001"
         },
-        "xreq": null
+        "xreq": "1061"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "status": "recieved",
+          "operacionId": "OP-0002"
         },
-        "xreq": null
+        "xreq": "1062"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "status": "recieved",
+          "operacionId": "OP-0003"
         },
-        "xreq": null
+        "xreq": "1063"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "ok": true,
+          "anulada": "OP-0002"
         },
-        "xreq": null
+        "xreq": "1064"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuenta_id": "AC-0001",
+          "saldo": "20.00"
         },
-        "xreq": null
+        "xreq": "1065"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuenta_id": "AC-0002",
+          "saldo": "-10.00"
         },
-        "xreq": null
+        "xreq": "1066"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0001"
         },
-        "xreq": null
+        "xreq": "4"
       },
       {
-        "status": 401,
+        "status": 201,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuentaId": "AC-0002"
         },
-        "xreq": null
+        "xreq": "8"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "status": "recieved",
+          "operacionId": "OP-0001"
         },
-        "xreq": null
+        "xreq": "11"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "status": "recieved",
+          "operacionId": "OP-0002"
         },
-        "xreq": null
+        "xreq": "13"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "status": "recieved",
+          "operacionId": "OP-0003"
         },
-        "xreq": null
+        "xreq": "14"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "ok": true,
+          "anulada": "OP-0002"
         },
-        "xreq": null
+        "xreq": "15"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuenta_id": "AC-0001",
+          "saldo": "20.00"
         },
-        "xreq": null
+        "xreq": "16"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "cuenta_id": "AC-0002",
+          "saldo": "-10.00"
         },
-        "xreq": null
+        "xreq": "17"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-H-01",
     "family": "halt",
     "oracle": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E302",
+          "mensaje": "aridad inválida"
         },
-        "xreq": null
+        "xreq": "1067"
       },
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E302",
+          "mensaje": "aridad inválida"
         },
-        "xreq": null
+        "xreq": "1068"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E302",
+          "mensaje": "aridad inválida"
         },
-        "xreq": null
+        "xreq": "1"
       },
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E302",
+          "mensaje": "aridad inválida"
         },
-        "xreq": null
+        "xreq": "2"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-H-02",
     "family": "halt",
     "oracle": [
       {
-        "status": 401,
+        "status": 409,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E520",
+          "mensaje": "operación destructiva: detiene el servicio; reenvía con confirmación"
         },
-        "xreq": null
+        "xreq": "1069"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "pong": true
         },
-        "xreq": null
+        "xreq": "1070"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 409,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E520",
+          "mensaje": "operación destructiva: detiene el servicio; reenvía con confirmación"
         },
-        "xreq": null
+        "xreq": "1"
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "pong": true
         },
-        "xreq": null
+        "xreq": "2"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-H-03",
     "family": "halt",
     "oracle": [
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "pong": true
+        },
+        "xreq": "1071"
+      },
+      {
+        "status": 503,
+        "body": {
+          "error": "E599",
+          "mensaje": "service halted"
+        },
+        "xreq": "1072"
+      },
+      {
+        "status": 503,
+        "body": {
+          "error": "E599",
+          "mensaje": "service halted"
+        },
+        "xreq": "1073"
+      },
+      {
+        "status": 200,
+        "body": {
+          "ok": true
         },
         "xreq": null
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "pong": true
         },
-        "xreq": null
-      },
-      {
-        "status": 401,
-        "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
-        },
-        "xreq": null
-      },
-      {
-        "status": 401,
-        "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
-        },
-        "xreq": null
-      },
-      {
-        "status": 401,
-        "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
-        },
-        "xreq": null
+        "xreq": "1074"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "pong": true
+        },
+        "xreq": "1"
+      },
+      {
+        "status": 503,
+        "body": {
+          "error": "E599",
+          "mensaje": "service halted"
+        },
+        "xreq": "2"
+      },
+      {
+        "status": 503,
+        "body": {
+          "error": "E599",
+          "mensaje": "service halted"
+        },
+        "xreq": "3"
+      },
+      {
+        "status": 200,
+        "body": {
+          "ok": true
         },
         "xreq": null
       },
       {
-        "status": 401,
+        "status": 200,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "pong": true
         },
-        "xreq": null
-      },
-      {
-        "status": 401,
-        "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
-        },
-        "xreq": null
-      },
-      {
-        "status": 401,
-        "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
-        },
-        "xreq": null
-      },
-      {
-        "status": 401,
-        "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
-        },
-        "xreq": null
+        "xreq": "1"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-H-04",
     "family": "sugerencia",
     "oracle": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E301",
+          "mensaje": "comando desconocido ",
+          "sugerencia": "ALTA"
         },
-        "xreq": null
+        "xreq": "1075"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E301",
+          "mensaje": "comando desconocido ",
+          "sugerencia": "ALTA"
         },
-        "xreq": null
+        "xreq": "2"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-H-05",
     "family": "sugerencia",
     "oracle": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E301",
+          "mensaje": "comando desconocido "
         },
-        "xreq": null
+        "xreq": "1076"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E301",
+          "mensaje": "comando desconocido "
         },
-        "xreq": null
+        "xreq": "3"
       }
     ],
-    "match": true
+    "match": false
   },
   {
     "id": "P0-H-06",
     "family": "sugerencia",
     "oracle": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E301",
+          "mensaje": "comando desconocido ",
+          "sugerencia": "HALT"
         },
-        "xreq": null
+        "xreq": "1077"
       }
     ],
     "replica": [
       {
-        "status": 401,
+        "status": 400,
         "body": {
-          "error": "E001",
-          "mensaje": "no autorizado"
+          "error": "E301",
+          "mensaje": "comando desconocido ",
+          "sugerencia": "HALT"
         },
-        "xreq": null
+        "xreq": "4"
       }
     ],
-    "match": true
+    "match": false
   }
 ]

@@ -47,6 +47,22 @@ test('OPTIONS /msg devuelve 404 E404 (sin CORS)', async () => {
   assert.deepEqual(r.json, { error: 'E404', mensaje: 'ruta desconocida' });
 });
 
+test('Preflight CORS real (OPTIONS con Access-Control-Request-Method) -> 204', async () => {
+  const res = await worker.fetch(
+    new Request('https://caja-negra.worker/msg', {
+      method: 'OPTIONS',
+      headers: {
+        Origin: 'https://caja-negra-demo.pages.dev',
+        'Access-Control-Request-Method': 'POST',
+        'Access-Control-Request-Headers': 'authorization,content-type',
+      },
+    }),
+    env
+  );
+  assert.equal(res.status, 204);
+  assert.equal(res.headers.get('access-control-allow-origin'), '*');
+});
+
 test('token por query no autoriza (?token= y ?key=) -> 401', async () => {
   for (const q of ['?token=' + env.TEAM_TOKEN, '?key=' + env.TEAM_TOKEN]) {
     const res = await worker.fetch(new Request(`https://caja-negra.worker/health${q}`), env);
