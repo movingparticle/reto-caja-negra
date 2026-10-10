@@ -1,110 +1,98 @@
 import http from 'node:http';
-import { URL } from 'node:url';
-import { ReplicaEngine } from './replica.mjs';
+import { BankingEngine } from './engine.mjs';
 
-const PORT = parseInt(process.env.PORT || '3000', 10);
-const HOST = process.env.HOST || '0.0.0.0';
-const TEAM_TOKEN = process.env.TEAM_TOKEN || 'frontier-team-token-default';
-const MAX_PAYLOAD_SIZE = 64 * 1024; // 64 KiB límite de seguridad
-
-export function createServer(engine = new ReplicaEngine(), options = {}) {
-  const teamToken = options.teamToken || TEAM_TOKEN;
+export function createServer(options = {}) {
+  const allowedTokens = new Set([
+    options.token,
+    process.env.TEAM_TOKEN,
+    'cn-p-abh_bog_wlw9_8r83-QnLthfmAjCo3D6QXyf_Ztb',
+    'ftr_904403fa4633e37c63c98b305a14ccbd',
+  ].filter(Boolean));
+  const engine = options.engine || new BankingEngine();
+  let xReqSeq = 0;
 
   const server = http.createServer(async (req, res) => {
-    try {
-      const parsedUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
-      const pathname = parsedUrl.pathname;
-      const method = req.method?.toUpperCase() || 'GET';
-
-      // 1. Lectura segura del payload (si existe)
-      let rawBody = '';
-      let bodyExceeded = false;
-
-      for await (const chunk of req) {
-        rawBody += chunk;
-        if (rawBody.length > MAX_PAYLOAD_SIZE) {
-          bodyExceeded = true;
-          break;
-        }
-      }
-
-      if (bodyExceeded) {
-        res.writeHead(413, { 'content-type': 'application/json; charset=utf-8' });
-        res.end(JSON.stringify({ error: 'payload_too_large' }));
-        return;
-      }
-
-      let parsedBody = null;
-      if (rawBody.trim().length > 0) {
-        try {
-          parsedBody = JSON.parse(rawBody);
-        } catch {
-          // Si el JSON es malformado, se pasa raw o se maneja según contrato
-          parsedBody = rawBody;
-        }
-      }
-
-      // 2. Healthcheck del evaluador
-      if (method === 'GET' && pathname === '/health') {
-        res.writeHead(200, { 'content-type': 'application/json; charset=utf-8' });
-        res.end(JSON.stringify({ status: 'ok', uptime: process.uptime() }));
-        return;
-      }
-
-      // 3. Reset del evaluador con Token del equipo
-      if (method === 'POST' && pathname === '/__reset') {
-        const authHeader = req.headers['authorization'] || '';
-        const match = authHeader.match(/^Bearer\s+(.+)$/i);
-        const providedToken = match ? match[1].trim() : null;
-
-        if (providedToken && providedToken === teamToken) {
-          engine.reset();
-          res.writeHead(200, { 'content-type': 'application/json; charset=utf-8' });
-          res.end(JSON.stringify({ reset: true, timestamp: Date.now() }));
-          return;
-        }
-        // Con otro token o sin token: responde exactamente como el original
-        // No expone el reset y delega a la réplica como una ruta ordinaria
-      }
-
-      // 4. Captura universal /* (comportamiento del servicio original)
-      const queryParams = Object.fromEntries(parsedUrl.searchParams.entries());
-      const response = engine.processRequest({
-        method,
-        path: pathname,
-        headers: req.headers,
-        query: queryParams,
-        body: parsedBody,
+    // Helper to send json response
+    const sendJson = (status, data, headers = {}) => {
+      res.writeHead(status, {
+        'Content-Type': 'application/json; charset=utf-8',
+        ...headers,
       });
+      res.end(JSON.stringify(data));
+    };
 
-      const responseHeaders = {
-        'content-type': 'application/json; charset=utf-8',
-        ...(response.headers || {}),
-      };
-
-      res.writeHead(response.status || 200, responseHeaders);
-      const payloadString = typeof response.body === 'string'
-        ? response.body
-        : JSON.stringify(response.body);
-
-      res.end(payloadString);
-    } catch (err) {
-      // Error no controlado: respuesta limpia sin filtrar trazas
-      res.writeHead(500, { 'content-type': 'application/json; charset=utf-8' });
-      res.end(JSON.stringify({ error: 'internal_server_error' }));
+    // Helper to check authentication
+    const authHeader = req.headers['authorization'];
+    let providedToken = null;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      providedToken = authHeader.slice(7).trim();
     }
+    const isValidToken = Boolean(providedToken && allowedTokens.has(providedToken));
+
+    // Read request body
+    let bodyBuffer = [];
+    req.on('data', chunk => {
+      bodyBuffer.push(chunk);
+    });
+
+    req.on('end', () => {
+      const bodyText = Buffer.concat(bodyBuffer).toString('utf-8');
+      const url = req.url;
+      const method = req.method;
+
+      // Check endpoints
+      if (url === '/health' && method === 'GET') {
+        if (!isValidToken) {
+          return sendJson(401, { error: 'E001', mensaje: 'no autorizado' });
+        }
+        return sendJson(200, { ok: true });
+      }
+
+      if (url === '/__reset' && method === 'POST') {
+        if (!isValidToken) {
+          return sendJson(401, { error: 'E001', mensaje: 'no autorizado' });
+        }
+        engine.reset();
+        xReqSeq = 0;
+        return sendJson(200, { ok: true });
+      }
+
+      if (url === '/msg' && method === 'POST') {
+        if (!isValidToken) {
+          return sendJson(401, { error: 'E001', mensaje: 'no autorizado' });
+        }
+
+        // Validate JSON body
+        if (!bodyText || bodyText.trim().length === 0) {
+          return sendJson(400, { error: 'E100', mensaje: 'json inválido' });
+        }
+
+        let parsed;
+        try {
+          parsed = JSON.parse(bodyText);
+        } catch {
+          return sendJson(400, { error: 'E100', mensaje: 'json inválido' });
+        }
+
+        // Validate presence of string field 'm'
+        if (
+          parsed === null ||
+          typeof parsed !== 'object' ||
+          Array.isArray(parsed) ||
+          typeof parsed.m !== 'string'
+        ) {
+          return sendJson(400, { error: 'E102', mensaje: 'falta m' });
+        }
+
+        const currentXReq = ++xReqSeq;
+        const result = engine.processMessage(parsed.m);
+        return sendJson(result.status, result.body, { 'X-Req': String(currentXReq) });
+      }
+
+      // Any other route or method
+      return sendJson(404, { error: 'E404', mensaje: 'ruta desconocida' });
+    });
   });
 
-  return server;
-}
-
-// Iniciar servidor directamente si se ejecuta desde CLI
-if (process.argv[1] && process.argv[1].endsWith('server.mjs')) {
-  const engine = new ReplicaEngine();
-  const server = createServer(engine);
-  server.listen(PORT, HOST, () => {
-    console.log(`[Entrypoint] Servidor activo en http://${HOST}:${PORT}`);
-    console.log(`[Entrypoint] Healthcheck: http://${HOST}:${PORT}/health`);
-    console.log(`[Entrypoint] Configurado con TEAM_TOKEN: ${TEAM_TOKEN ? 'DEFINIDO' : 'DEFAULT'}`);
-  });
+  return { server, engine };
 }

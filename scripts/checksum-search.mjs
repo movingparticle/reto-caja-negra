@@ -48,7 +48,7 @@ export function searchChecksums(rows, { maxMod = 1000, offsets = 3 } = {}) {
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const p = process.argv[2] ?? resolve(fileURLToPath(import.meta.url), '../../../frontier-reto-2/pruebas/ejemplos.jsonl');
+  const p = process.argv[2] ?? fileURLToPath(new URL('../pruebas/ejemplos.jsonl', import.meta.url));
   const rows = readFileSync(p, 'utf8').split(/\r?\n/).filter(Boolean).map((l) => JSON.parse(l));
   const r = searchChecksums(rows);
   console.log(`hipótesis probadas: ${r.tested} · controles válidos: ${r.nValid} · inválidos: ${r.nBad} · coincidencias: ${r.matches.length}`);

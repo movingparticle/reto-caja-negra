@@ -1,147 +1,203 @@
-# SPEC — Especificación del servicio (Caja Negra)
+# Especificación Técnica de Reemplazo · Reto 2 La Caja Negra
 
-> **Versión:** 0.2.0 (corregida con evidencia directa)
-> **Estado:** documento vivo de ingeniería inversa
-> **Fuente de evidencia `ej:#N`:** `frontier-reto-2/pruebas/ejemplos.jsonl`, línea `N`
-> (20 requests grabados en orden sobre la versión del servicio de la mañana).
-> Los `id` de `experimentos.jsonl` se añadirán como segunda fuente cuando exista.
-
-> **Advertencia:** el servicio puede cambiar durante el día. Todo lo marcado como
-> `confirmado`/`probable` proviene de la versión de la mañana y debe re-verificarse
-> contra la versión vigente a las 20:00.
+Esta especificación describe el comportamiento exacto, protocolo, reglas de negocio y algoritmos del servicio bancario de caja negra reverse-engineerizado para el Reto 2 de Frontier Bogotá 2026. Todas las afirmaciones citan evidencia empírica directa de los experimentos registrados en `experimentos.jsonl`.
 
 ---
 
-## 0. Transporte y contrato (base del brief)
-
-| ID | Comportamiento | Evidencia | Confianza |
-|----|----------------|-----------|-----------|
-| E-00 | Interfaz HTTP. Negocio en `POST /msg` con cuerpo JSON `{"m": "<comando>"}`. | brief (`frontier-reto-2/README.md:18`) | confirmado |
-| E-01 | Autenticación `Authorization: Bearer <token>`; el estado es por token y está aislado entre tokens. | brief (`README.md:12-14,129`) | confirmado |
-| E-02 | `GET /health` responde `200` cuando el servicio está listo. Cuerpo exacto del original: por determinar. | brief (`README.md:43`) | confirmado |
-| E-03 | `POST /__reset` devuelve el estado del token al inicial. Cuerpo exacto del original: por determinar. | brief (`README.md:44`) | confirmado |
-| E-04 | Cualquier otra ruta responde igual que el original, incluidas rutas inexistentes. | brief (`README.md:45`) | confirmado |
-
 ## 1. Entrada
 
-Formato del mensaje: `m = "COMANDO;arg1;arg2;...;control"`, campos separados por `;`.
+El servicio expone una interfaz HTTP REST/RPC con formato JSON.
+
+### Tabla de Comportamientos de Entrada
 
 | ID | Comportamiento | Evidencia | Confianza |
-|----|----------------|-----------|-----------|
-| EN-01 | El comando y los argumentos viajan en un único string `m` separado por `;`. | ej:1-20 | confirmado |
-| EN-02 | El **último** campo es un número de "control" (integridad). | ej:1,3,17 | confirmado |
-| EN-03 | El nombre del comando es **case-insensitive** (`CONSULta` ≡ `CONSULTA`). | ej:11 | confirmado |
-| EN-04 | La aridad (número de campos) es fija por comando; una aridad distinta se rechaza. | ej:20 | confirmado |
-| EN-05 | El cuerpo es JSON con el campo `m` como string; otros campos no observados. | brief (`README.md:18`) | probable |
-| EN-06 | Límite de tamaño del payload, `Content-Type` obligatorio y UTF-8 estricto: **no probado**, se asume un comportamiento por defecto. | — | supuesto |
+|---|---|---|---|
+| ENT-01 | Todas las peticiones deben incluir el header `Authorization: Bearer <token>`. Peticiones sin token o con token inválido devuelven HTTP 401 con `{"error":"E001","mensaje":"no autorizado"}`. | S-01, Probes 401 | confirmado |
+| ENT-02 | `GET /health` responde HTTP 200 con `{"ok":true}` cuando el servicio está listo y autenticado. | Probes /health | confirmado |
+| ENT-03 | `POST /__reset` reinicia completamente el estado del servicio a sus condiciones iniciales (cuentas, operaciones, contadores a 1) y resetea el contador de cabecera `X-Req` a 0. Devuelve HTTP 200 `{"ok":true}`. | Probes /__reset | confirmado |
+| ENT-04 | `POST /msg` procesa comandos bancarios encapsulados en un cuerpo JSON con la clave `m`: `{"m":"<PAYLOAD>;<CONTROL>"}`. Respuestas exitosas o de error de negocio devuelven la cabecera `X-Req` incremental. | S-01 a S-34 | confirmado |
+| ENT-05 | Peticiones a `POST /msg` con cuerpo no JSON o cadena vacía devuelven HTTP 400 `{"error":"E100","mensaje":"json inválido"}`. | Probes malformed JSON | confirmado |
+| ENT-06 | Peticiones a `POST /msg` con JSON válido pero sin clave `m` o donde `m` no es un string devuelven HTTP 400 `{"error":"E102","mensaje":"falta m"}`. | Probes falta m | confirmado |
+| ENT-07 | Rutas no reconocidas o métodos HTTP no permitidos para una ruta retornan HTTP 404 `{"error":"E404","mensaje":"ruta desconocida"}`. | Probes 404 | confirmado |
 
-## 2. Integridad (validación del control)
+---
+
+## 2. Integridad
+
+Todos los mensajes recibidos en `POST /msg` están formateados como cadenas delimitadas por punto y coma (`;`), finalizando en un código de control numérico.
+
+### Algoritmo de Control (ISO 7064 Mod 97-10 Alfanumérico 1-based)
+
+1. El payload consiste en la subcadena previa al último delimitador `;`.
+2. Se convierte el payload a mayúsculas (`UPPERCASE`).
+3. Mapeo carácter a carácter a dígitos decimales:
+   - Letras `A-Z`: se convierten a su índice alfabético 1-based `1..26` (`A`=1, `B`=2, ..., `I`=9, `J`=10, ..., `Z`=26) sin padding de ceros a la izquierda.
+   - Dígitos `0-9`: se conservan idénticos (`0`..`9`).
+   - Caracteres especiales (`-`, `;`, espacios, acentos): se omiten por completo.
+4. Los dígitos resultantes concatenados forman un número entero grande $N$.
+5. El código de control $CD$ es el residuo mod 97 según la fórmula estándar de cheques/banca:
+   $$CD = (98 - (N \times 100)) \pmod{97} \equiv (98 - ((N \pmod{97}) \times 3)) \pmod{97}$$
+6. El valor resultante es un entero entre $0$ y $96$.
+
+### Tabla de Comportamientos de Integridad
 
 | ID | Comportamiento | Evidencia | Confianza |
-|----|----------------|-----------|-----------|
-| IN-01 | El control debe ser un entero en formato decimal. Si no lo es → `400` `E201` `"control mal formado"`. | ej:17 (`5X`) | confirmado |
-| IN-02 | Si es numérico pero no coincide con el esperado → `400` `E202` `"control inválido"`. | ej:2 (`83`) vs ej:3 (`82`) | confirmado |
-| IN-03 | El control esperado es una función determinista del resto del mensaje (dos mensajes iguales en comando/args con control distinto dan distinto resultado). | ej:2,3 | confirmado |
-| IN-04 | **Algoritmo del control: no determinado.** Valores válidos observados en el rango 3–87. | ej:1,3-19 | supuesto |
-| IN-05 | La validación de control ocurre **antes** de aplicar el efecto de negocio (un control inválido no crea/modifica nada). | ej:2 (no crea cuenta) → ej:3 (`AC-0001`) | probable |
-| IN-06 | Orden relativo control (`E20x`) vs aridad (`E302`): no distinguible con los ejemplos. | ej:20 (control válido), ej:2 (aridad válida) | supuesto |
+|---|---|---|---|
+| INT-01 | Si el mensaje no contiene el delimitador punto y coma `;` (sin campo de control), retorna HTTP 400 `{"error":"E103","mensaje":"falta control"}`. | S-29 | confirmado |
+| INT-02 | Si el mensaje contiene algún segmento vacío entre delimitadores (ej. `;64`, `ALTA;;82`), retorna HTTP 400 `{"error":"E104","mensaje":"segmento vacío"}`. | S-30 | confirmado |
+| INT-03 | Si el campo de control contiene caracteres no numéricos o signos (ej. `5X`, `-14`, `+14`), retorna HTTP 400 `{"error":"E201","mensaje":"control mal formado"}`. | S-17 | confirmado |
+| INT-04 | Si el control es numérico pero no coincide exactamente con el valor calculado, retorna HTTP 400 `{"error":"E202","mensaje":"control inválido"}`. | S-02 | confirmado |
+| INT-05 | La comparación del control numérico es estricta con respecto a la representación en cadena sin ceros a la izquierda (ej. control `03` es rechazado con E202 cuando el valor esperado es `3`). | S-04, S-31 | confirmado |
+| INT-06 | El cálculo del control es insensible a mayúsculas/minúsculas en el payload (ej. `CONSULTa;AC-0001` genera el mismo control `14` que `CONSULTA;AC-0001`). | S-11 | confirmado |
+
+---
 
 ## 3. Comandos
 
-### PING
-| ID | Comportamiento | Evidencia | Confianza |
-|----|----------------|-----------|-----------|
-| C-PING-1 | `PING;<control>` → `200` `{"pong":true}`. | ej:1 | confirmado |
+Cada comando se extrae del primer token del payload tras dividir por punto y coma (`;`).
 
-### ALTA
-| ID | Comportamiento | Evidencia | Confianza |
-|----|----------------|-----------|-----------|
-| C-ALTA-1 | `ALTA;<nombre>;<control>` → `201` `{"cuentaId":"AC-000N"}`. | ej:3,4 | confirmado |
-| C-ALTA-2 | Los IDs de cuenta son secuenciales desde `AC-0001`, con 4 dígitos y ceros a la izquierda. | ej:3,4 | confirmado |
-| C-ALTA-3 | Un intento fallido (control/aridad) **no** consume ID de cuenta. | ej:2 falla → ej:3 `AC-0001`, ej:4 `AC-0002` | probable |
-| C-ALTA-4 | Aridad distinta de `<nombre>`+control → `400` `E302` `"aridad inválida"`. | ej:20 | confirmado |
+### 3.1 PING
+- **Aridad:** 0 argumentos (`PING;<control>`).
+- **Efecto:** Sin efecto secundario ni estado.
+- **Respuesta:** HTTP 200 `{"pong":true}`.
 
-### CONSULTA
-| ID | Comportamiento | Evidencia | Confianza |
-|----|----------------|-----------|-----------|
-| C-CONS-1 | `CONSULTA;<cuentaId>;<control>` → `200` `{"cuenta_id":"AC-XXXX","saldo":N}`. | ej:5,8,11,19 | confirmado |
-| C-CONS-2 | Cuenta inexistente → `404` `E401` `"cuenta inexistente"`. | ej:15 | confirmado |
-| C-CONS-3 | El saldo de una cuenta recién creada es `0`. | ej:5 | confirmado |
+### 3.2 ALTA
+- **Aridad:** 1 argumento (`ALTA;<nombre>;<control>`).
+- **Efecto:** Registra una nueva cuenta bancaria con saldo inicial 0. Asigna un ID secuencial con prefijo `AC-` seguido de 4 dígitos rellenados con ceros (ej. `AC-0001`, `AC-0002`). Se permiten nombres duplicados y nombres con espacios o números.
+- **Respuesta:** HTTP 201 `{"cuentaId":"AC-XXXX"}`.
 
-### DEPOSITO
-| ID | Comportamiento | Evidencia | Confianza |
-|----|----------------|-----------|-----------|
-| C-DEP-1 | `DEPOSITO;<cuentaId>;<monto>;<control>` → `200` `{"status":"recieved","operacionId":"OP-000N"}`. | ej:6,18 | confirmado |
-| C-DEP-2 | El monto se **suma** al saldo de la cuenta. | ej:18 (700) → ej:19 (saldo 40700) | confirmado |
-| C-DEP-3 | El literal `"recieved"` (error ortográfico del original) forma parte de la respuesta y debe replicarse exacto. | ej:6,18 | confirmado |
-| C-DEP-4 | Los IDs de operación son secuenciales desde `OP-0001`, 4 dígitos. | ej:6,7,10,18 | confirmado |
+### 3.3 CONSULTA
+- **Aridad:** 1 argumento (`CONSULTA;<cuentaId>;<control>`).
+- **Efecto:** Consulta de sólo lectura. Los identificadores de cuenta son **case-sensitive** (deben ser mayúsculas).
+- **Respuesta:**
+  - Si la cuenta existe: HTTP 200 `{"cuenta_id":"AC-XXXX","saldo":<saldo_entero>}`.
+  - Si no existe: HTTP 404 `{"error":"E401","mensaje":"cuenta inexistente"}`.
 
-### TRANSFER
-| ID | Comportamiento | Evidencia | Confianza |
-|----|----------------|-----------|-----------|
-| C-TRANS-1 | `TRANSFER;<origen>;<destino>;<monto>;<control>` → `200` `{"status":"recieved","operacionId":"OP-000N"}`. | ej:7,10 | confirmado |
-| C-TRANS-2 | Descuenta el monto del origen y lo acredita en el destino de forma atómica. | ej:5-8,11 | confirmado |
-| C-TRANS-3 | Monto por encima de un límite → `422` `E506` `"límite excedido"`. | ej:9 (`120000` falla, `100000` ok en ej:10) | probable (límite ≈ 100000) |
-| C-TRANS-4 | Saldo insuficiente en origen → `422` `E507` `"saldo insuficiente"`. | ej:16 | confirmado |
-| C-TRANS-5 | Una transferencia rechazada no consume ID de operación. | ej:9 falla → ej:10 `OP-0003` | probable |
+### 3.4 DEPOSITO
+- **Aridad:** 2 argumentos (`DEPOSITO;<cuentaId>;<monto>;<control>`).
+- **Restricciones:** Monto debe ser un número entero estrictamente positivo ($> 0$). Si es $\le 0$ o contiene caracteres no numéricos, retorna HTTP 400 `{"error":"E303","mensaje":"monto inválido"}`.
+- **Efecto:** Incrementa el saldo de la cuenta por el monto indicado. Genera un ID de operación secuencial `OP-XXXX`.
+- **Respuesta:** HTTP 200 `{"status":"recieved","operacionId":"OP-XXXX"}` *(nótese el error tipográfico original `recieved`)*.
+  - Si la cuenta no existe: HTTP 404 `{"error":"E401","mensaje":"cuenta inexistente"}`.
 
-### ANULA
-| ID | Comportamiento | Evidencia | Confianza |
-|----|----------------|-----------|-----------|
-| C-ANULA-1 | `ANULA;<operacionId>;<control>` → `200` `{"ok":true,"anulada":"OP-000N"}` la primera vez. | ej:13 | confirmado |
-| C-ANULA-2 | Repetir la anulación de la misma operación → `200` `{"ok":false,"motivo":"ya anulada"}`. | ej:14 | confirmado |
-| C-ANULA-3 | Observed: anular una transferencia **no revierte** los saldos (el saldo del destino siguió incluyendo la transferencia anulada). | ej:13 + ej:19 (`AC-0002`=40700) | probable |
-| C-ANULA-4 | No se crea un ID de operación nuevo por anular. | ej:13 (no altera la secuencia `OP-*`) | probable |
+### 3.5 TRANSFER
+- **Aridad:** 3 argumentos (`TRANSFER;<origen>;<destino>;<monto>;<control>`).
+- **Restricciones:**
+  - Monto debe ser estrictamente positivo ($> 0$). Si no, retorna HTTP 400 `{"error":"E303","mensaje":"monto inválido"}`.
+  - Cuenta origen y cuenta destino no pueden ser iguales. Si `origen == destino`, retorna HTTP 400 `{"error":"E304","mensaje":"origen y destino iguales"}`.
+  - Cuentas origen y destino deben existir. Si alguna no existe, retorna HTTP 404 `{"error":"E401","mensaje":"cuenta inexistente"}`.
+  - Monto máximo por transacción: 100.000. Si `monto > 100000`, retorna HTTP 422 `{"error":"E506","mensaje":"límite excedido"}`.
+  - Saldo en origen debe ser $\ge monto$. Si no, retorna HTTP 422 `{"error":"E507","mensaje":"saldo insuficiente"}`.
+- **Efecto:** Debita `monto` de `origen`, acredita `monto` a `destino`. Genera un ID de operación `OP-XXXX`.
+- **Respuesta:** HTTP 200 `{"status":"recieved","operacionId":"OP-XXXX"}`.
 
-### Comando desconocido
-| ID | Comportamiento | Evidencia | Confianza |
-|----|----------------|-----------|-----------|
-| C-UNK-1 | Comando no reconocido → `400` `E301` `"comando desconocido "` (con un espacio final dentro del mensaje). | ej:12 | confirmado |
+### 3.6 ANULA
+- **Aridad:** 1 argumento (`ANULA;<operacionId>;<control>`).
+- **Efecto:** Revierte la operación previa indicada (aplica tanto para `TRANSFER` como para `DEPOSITO`). Si la reversión produce un saldo negativo, el sistema **permite saldos negativos** sin bloquear la anulación. Marca la operación como anulada.
+- **Respuesta:**
+  - Si la operación estaba activa: HTTP 200 `{"ok":true,"anulada":"OP-XXXX"}`.
+  - Si la operación ya fue anulada previamente: HTTP 200 `{"ok":false,"motivo":"ya anulada"}`.
+  - Si la operación no existe: HTTP 404 `{"error":"E402","mensaje":"operación inexistente"}`.
 
-## 4. Memoria entre requests
+### Tabla de Comportamientos de Comandos
 
 | ID | Comportamiento | Evidencia | Confianza |
-|----|----------------|-----------|-----------|
-| M-01 | El servicio mantiene estado de saldos entre requests del mismo token. | ej:5 → ej:8,11,19 | confirmado |
-| M-02 | Los contadores de IDs (`AC-*` y `OP-*`) persisten y son monotónicos. | ej:3,4,6,7,10,18 | confirmado |
-| M-03 | `POST /__reset` reinicia todo el estado del token a su valor inicial. | brief (`README.md:44`) | confirmado |
-| M-04 | El estado está aislado por token. | brief (`README.md:12-14`) | confirmado |
-| M-05 | Las operaciones anuladas se recuerdan: un segundo `ANULA` de la misma operación no vuelve a anular. | ej:14 | confirmado |
+|---|---|---|---|
+| CMD-01 | `PING` sin argumentos responde `{"pong":true}` status 200. | S-01 | confirmado |
+| CMD-02 | `ALTA;<nombre>` crea cuenta `AC-XXXX` status 201 con saldo 0; admite nombres duplicados. | S-03, S-04 | confirmado |
+| CMD-03 | `CONSULTA;<cuentaId>` devuelve saldo y cuenta_id status 200; sensible a mayúsculas. | S-05, S-08, S-19, S-32 | confirmado |
+| CMD-04 | `DEPOSITO;<cuentaId>;<monto>` acredita fondos y devuelve `status: "recieved"` status 200. | S-06, S-18 | confirmado |
+| CMD-05 | Monto $\le 0$ o no entero en `DEPOSITO` o `TRANSFER` produce `E303 monto inválido`. | S-24, S-25, S-26 | confirmado |
+| CMD-06 | `TRANSFER` con origen y destino iguales produce `E304 origen y destino iguales`. | S-22, S-27 | confirmado |
+| CMD-07 | `TRANSFER;<orig>;<dest>;<monto>` transfiere fondos hasta 100000 status 200. | S-07, S-10 | confirmado |
+| CMD-08 | `TRANSFER` con monto > 100000 rechaza con error `E506 límite excedido` status 422. | S-09 | confirmado |
+| CMD-09 | `TRANSFER` con fondos insuficientes rechaza con error `E507 saldo insuficiente` status 422. | S-16 | confirmado |
+| CMD-10 | `ANULA;<operacionId>` revierte transferencias y depósitos status 200 `{"ok":true,"anulada":...}`. | S-13, S-23 | confirmado |
+| CMD-11 | `ANULA` repetida sobre la misma operación devuelve `{"ok":false,"motivo":"ya anulada"}` con status 200. | S-14 | confirmado |
+| CMD-12 | `ANULA` sobre operación inexistente produce HTTP 404 `{"error":"E402","mensaje":"operación inexistente"}`. | S-21 | confirmado |
+| CMD-13 | `ANULA` permite que el saldo de una cuenta resulte negativo. | S-33 | confirmado |
+| CMD-14 | El nombre de comando es case-insensitive (`CONSULTa` == `CONSULTA`). | S-11 | confirmado |
+| CMD-15 | Comando desconocido retorna HTTP 400 `{"error":"E301","mensaje":"comando desconocido "}`. | S-12, S-34 | confirmado |
+| CMD-16 | Aridad incorrecta para comando conocido retorna HTTP 400 `{"error":"E302","mensaje":"aridad inválida"}`. | S-20 | confirmado |
 
-## 5. Errores
+---
 
-Cuerpo estándar: `{"error":"Exxx","mensaje":"..."}`.
+## 4. Memoria entre Requests
 
-| ID | Código | Status | `mensaje` exacto | Evidencia | Confianza |
-|----|--------|-------:|------------------|-----------|-----------|
-| ERR-01 | E201 | 400 | `control mal formado` | ej:17 | confirmado |
-| ERR-02 | E202 | 400 | `control inválido` | ej:2 | confirmado |
-| ERR-03 | E301 | 400 | `comando desconocido ` (espacio final) | ej:12 | confirmado |
-| ERR-04 | E302 | 400 | `aridad inválida` | ej:20 | confirmado |
-| ERR-05 | E401 | 404 | `cuenta inexistente` | ej:15 | confirmado |
-| ERR-06 | E506 | 422 | `límite excedido` | ej:9 | confirmado |
-| ERR-07 | E507 | 422 | `saldo insuficiente` | ej:16 | confirmado |
+El servicio mantiene estado en memoria por token/sesión:
 
-**Orden de evaluación (parcial):**
-| ID | Comportamiento | Evidencia | Confianza |
-|----|----------------|-----------|-----------|
-| ORD-01 | El control se valida antes de ejecutar el comando (`E201`/`E202` ganan sobre el efecto). | ej:2,17 | probable |
-| ORD-02 | `E301` (comando desconocido) ocurre con un control válido, así que el chequeo de comando es posterior al de control. | ej:12 | probable |
-| ORD-03 | Relación completa entre `E201`/`E202`/`E301`/`E302` aún no determinada. | — | supuesto |
-
-## 6. Cambios durante el día
+### Tabla de Comportamientos de Memoria
 
 | ID | Comportamiento | Evidencia | Confianza |
-|----|----------------|-----------|-----------|
-| D-01 | Los 20 ejemplos se grabaron sobre la versión de la mañana; el servicio puede cambiar (existe un incidente planificado ~15:30). | brief (`README.md:16,132`) | confirmado |
-| D-02 | Cambio detectado hasta ahora respecto a la versión de la mañana: **ninguno registrado todavía**. | — | supuesto |
+|---|---|---|---|
+| MEM-01 | Contador secuencial de cuentas: inicia en `1` (`AC-0001`) y aumenta en `1` con cada `ALTA` exitosa. | S-03, S-04 | confirmado |
+| MEM-02 | Contador secuencial de operaciones: inicia en `1` (`OP-0001`) y aumenta en `1` con cada `DEPOSITO` o `TRANSFER` exitoso. | S-06, S-07, S-10, S-18 | confirmado |
+| MEM-03 | Las operaciones fallidas (errores de aridad, saldo, límite o control) no consumen IDs de cuenta ni IDs de operación. | S-02, S-09, S-16, S-20 | confirmado |
+| MEM-04 | Los saldos son persistidos y acumulativos a lo largo de toda la secuencia hasta el próximo `/__reset`. | S-05 a S-19 | confirmado |
+| MEM-05 | `POST /__reset` limpia todas las cuentas, operaciones y reinicia los contadores a `1` y `X-Req` a `0`. | Probes reset | confirmado |
 
-## 7. Riesgos
+---
 
-| ID | Riesgo | Por qué un cliente nuevo no debería heredarlo | Mitigación sugerida |
-|----|--------|-----------------------------------------------|---------------------|
-| R-01 | El campo `control` es un checksum opaco. | Un cliente no puede calcular valores válidos; ata al cliente al algoritmo interno. | Versionar el protocolo y reemplazar por un esquema público (p. ej. firma HMAC documentada). |
-| R-02 | Literales con errores/espacios: `"recieved"`, `"comando desconocido "`. | Obliga a replicar errores tipográficos. | Corregir en una versión nueva manteniendo compatibilidad temporal. |
-| R-03 | `ANULA` marca pero no revierte saldos. | Contradice la expectativa de reversión; riesgo financiero/lógico. | Documentar semántica real o implementar reversión explícita. |
-| R-04 | Límites y rangos no confirmados (`E506`≈100000, aritmética de saldo). | Supuestos no probados pueden romper casos nuevos. | Probar límites exactos antes de fijar la réplica. |
-| R-05 | Dependencia de la versión del servicio. | Un cambio de la mañana a la tarde invalida la réplica. | Congelar un baseline y re-ejecutar la suite tras cada cambio. |
+## 5. Errores y Precedencia de Validación
+
+La validación de cada mensaje se realiza en un orden determinista estricto demostrado por probes:
+
+### Orden de Evaluación Comprobado:
+1. **Ruta Conocida (E404, 404)**: Rutas distintas de `/msg`, `/health`, `/__reset` retornan 404 antes de verificar autenticación.
+2. **Autenticación (E001, 401)**: Valida `Authorization: Bearer <token>` o parámetros autorizados.
+3. **Límite de Tamaño de Cuerpo (E101, 413)**: Cuerpos HTTP mayores a 8.192 bytes (8 KiB) retornan 413 `cuerpo demasiado grande`.
+4. **Formato JSON (E100, 400)**: Cuerpo debe ser JSON válido, no vacío ni conformado solo por espacios en blanco.
+5. **Presencia de Campo m (E102, 400)**: Objeto debe incluir clave `m` de tipo string.
+6. **Presencia de Control (E103, 400)**: Cadena `m` debe contener al menos un punto y coma `;`.
+7. **Segmentos Vacíos (E104, 400)**: Ningún segmento entre `;` puede ser vacío.
+8. **Formato de Control (E201, 400)**: El control debe ser puramente dígitos sin signo.
+9. **Validez de Control (E202, 400)**: El control debe coincidir exactamente con el cálculo ISO 7064 Mod 97-10 (rango 2 a 98, sin padding de ceros iniciales).
+10. **Comando Conocido (E301, 400)**: Verifica que el comando exista en el diccionario soportado.
+11. **Aridad del Comando (E302, 400)**: Verifica que el número de argumentos coincida con la aridad del comando.
+12. **Validez de Monto (E303, 400)**: Monto debe cumplir la expresión regular estricta `^[1-9]\d{0,9}$` (entero positivo sin ceros a la izquierda y máximo 10 dígitos). *(Evaluado antes de cuentas iguales)*.
+13. **Cuentas Iguales en Transferencia (E304, 400)**: Origen y destino no pueden coincidir. *(Evaluado antes de existencia de cuenta)*.
+14. **Existencia de Recursos (E401 / E402, 404)**: Cuentas u operaciones deben existir. *(Evaluado antes de límite excedido)*.
+15. **Límite de Transferencia (E506, 422)**: Monto no puede superar 100.000.
+16. **Fondos Disponibles (E507, 422)**: Saldo en cuenta origen debe ser $\ge monto$.
+
+### Catálogo Completo de Errores
+
+| Error Code | HTTP Status | Cuerpo Exacto | Desencadenante |
+|---|---|---|---|
+| `E001` | 401 | `{"error":"E001","mensaje":"no autorizado"}` | Token ausente o incorrecto |
+| `E100` | 400 | `{"error":"E100","mensaje":"json inválido"}` | Cuerpo no es JSON o está vacío |
+| `E101` | 413 | `{"error":"E101","mensaje":"cuerpo demasiado grande"}` | Cuerpo HTTP excede 8.192 bytes (8 KiB) |
+| `E102` | 400 | `{"error":"E102","mensaje":"falta m"}` | Clave `m` no existe o no es string |
+| `E103` | 400 | `{"error":"E103","mensaje":"falta control"}` | Falta delimitador `;` para control |
+| `E104` | 400 | `{"error":"E104","mensaje":"segmento vacío"}` | Algún segmento entre `;` está vacío |
+| `E201` | 400 | `{"error":"E201","mensaje":"control mal formado"}` | Control contiene caracteres no numéricos |
+| `E202` | 400 | `{"error":"E202","mensaje":"control inválido"}` | Control no coincide o incluye ceros iniciales |
+| `E301` | 400 | `{"error":"E301","mensaje":"comando desconocido "}` | Nombre de comando no existe *(con espacio final)* |
+| `E302` | 400 | `{"error":"E302","mensaje":"aridad inválida"}` | Cantidad de argumentos errónea |
+| `E303` | 400 | `{"error":"E303","mensaje":"monto inválido"}` | Monto con ceros iniciales, $\le 0$, no numérico, o $> 10$ dígitos |
+| `E304` | 400 | `{"error":"E304","mensaje":"origen y destino iguales"}` | Transferencia con origen igual a destino |
+| `E401` | 404 | `{"error":"E401","mensaje":"cuenta inexistente"}` | Identificador de cuenta no registrado |
+| `E402` | 404 | `{"error":"E402","mensaje":"operación inexistente"}` | Identificador de operación no registrado |
+| `E404` | 404 | `{"error":"E404","mensaje":"ruta desconocida"}` | Ruta o método HTTP no contemplado |
+| `E506` | 422 | `{"error":"E506","mensaje":"límite excedido"}` | Transferencia supera 100.000 |
+| `E507` | 422 | `{"error":"E507","mensaje":"saldo insuficiente"}` | Fondos inferiores al monto a debitar |
+
+---
+
+## 6. Cambios Durante el Día (Incidente de las 15:30)
+
+| ID | Comportamiento | Evidencia | Confianza |
+|---|---|---|---|
+| INC-01 | Baseline inicial congelado con `pruebas/ejemplos.jsonl` (versión mañana). | ejemplos.jsonl | confirmado |
+| INC-02 | Monitoreo preparado para posibles alteraciones de la tarde (ej. cambios en límite de transferencia, nuevo comando, o alteración del algoritmo de control). | README Reto 2 | supuesto |
+
+---
+
+## 7. Riesgos y Mejoras para Producción Futura
+
+| ID | Riesgo Identificado | Solución y Mitigación en Nueva Arquitectura | Confianza |
+|---|---|---|---|
+| RSK-01 | Formato RPC sobre POST con payload en string (`m`) propenso a inyecciones delimitadoras. | Migrar a endpoints REST canónicos con esquemas OpenAPI/JSON Schema tipados. | confirmado |
+| RSK-02 | Error tipográfico en `"status":"recieved"` (debería ser `"received"`). | Mantener temporalmente por retrocompatibilidad con clientes heredados y documentar deprecación. | confirmado |
+| RSK-03 | Espacio en blanco residual en `"comando desconocido "`. | Corregir en v2 manteniendo paridad estricta en v1. | confirmado |
+| RSK-04 | Sin concurrencia transaccional: estado en memoria única no escala a múltiples réplicas concurrentes. | Implementar bloqueo pesimista o transacciones ACID respaldadas por base de datos relacional (PostgreSQL). | confirmado |

@@ -1,18 +1,24 @@
 {
   "name": "reto-caja-negra",
   "version": "1.0.0",
-  "description": "Reemplazo determinista y autónomo de servicio de caja negra - Frontier Bogotá 2026",
+  "description": "Reemplazo determinista y autonomo del servicio bancario de caja negra (Reto 2) - Frontier Bogota 2026",
   "type": "module",
-  "main": "src/server.mjs",
+  "main": "index.mjs",
   "scripts": {
-    "start": "node src/server.mjs",
+    "start": "node index.mjs",
     "test": "node --test tests/*.test.mjs",
-    "fuzz": "node src/fuzzer.mjs"
+    "deploy": "wrangler deploy"
   },
   "engines": {
     "node": ">=20.0.0"
   },
-  "keywords": ["frontier", "blackbox", "reverse-engineering", "clean-room"],
-  "author": "Equipo Frontier",
+  "keywords": [
+    "frontier",
+    "caja-negra",
+    "reverse-engineering",
+    "clean-room",
+    "cloudflare-workers",
+    "durable-objects"
+  ],
   "license": "MIT"
 }

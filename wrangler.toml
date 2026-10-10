@@ -1,0 +1,17 @@
+name = "caja-negra-reemplazo"
+main = "src/worker.mjs"
+compatibility_date = "2024-04-05"
+
+[vars]
+TEAM_TOKEN = "cn-p-abh_bog_wlw9_8r83-QnLthfmAjCo3D6QXyf_Ztb"
+TUTOR_KEY = "tutor_key_cn-p-abh_bog_wlw9_8r83-QnLthfmAjCo3D6QXyf_Ztb"
+ALLOWED_TOKENS = "ftr_904403fa4633e37c63c98b305a14ccbd"
+
+[durable_objects]
+bindings = [
+  { name = "BANKING_DO", class_name = "BankingDurableObject" }
+]
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["BankingDurableObject"]

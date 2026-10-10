@@ -104,17 +104,14 @@
   }
   .lead{max-width:78ch;margin:0 0 18px}
   .tabs{display:flex;gap:4px;margin:6px 0 4px;border-bottom:1px solid var(--line)}
-  .tabs button{
+  .tabs .tab{
     font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;
     background:transparent;color:var(--dim);border:1px solid transparent;border-bottom:none;
     padding:9px 16px;cursor:pointer;
   }
-  .tabs button::before{content:"$ ";color:var(--green)}
-  .tabs button:hover{color:var(--ink)}
-  .tabs button.active{color:var(--green);border-color:var(--line);background:#0c120e;box-shadow:inset 0 3px 0 var(--green)}
-  body.t-doc #arquitectura{display:none}
-  body.t-arq main section{display:none}
-  body.t-arq #arquitectura{display:block}
+  .tabs .tab::before{content:"$ ";color:var(--green)}
+  .tabs .tab:hover{color:var(--ink)}
+  .tabs .tab.active{color:var(--green);border-color:var(--line);background:#0c120e;box-shadow:inset 0 3px 0 var(--green)}
   .grid{display:grid;gap:12px}
   .g3{grid-template-columns:repeat(3,1fr)}
   .g2{grid-template-columns:repeat(2,1fr)}
@@ -149,6 +146,15 @@
   .bar-fill.c{background:repeating-linear-gradient(90deg,var(--cyan) 0 7px,transparent 7px 9px);box-shadow:none}
   .bar-row .val{text-align:right;color:var(--green)}
 
+  .badge{display:inline-block;margin-left:8px;font-size:9px;letter-spacing:.1em;padding:1px 6px;
+    border:1px solid var(--line);color:var(--dim);vertical-align:middle;text-transform:uppercase;font-weight:600}
+  .bars.probe{border-color:#1c3b45;background:#08110f}
+  .bars.probe h3{color:var(--cyan)}
+  .bars.probe .badge{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 8px rgba(126,231,255,.25)}
+  .bars.probe .bar-track{background:#06121a;border-color:#173a45}
+  .bars.probe .bar-fill{background:repeating-linear-gradient(90deg,var(--cyan) 0 7px,transparent 7px 9px);box-shadow:0 0 8px rgba(126,231,255,.28)}
+  .bars.probe .bar-row .val{color:var(--cyan)}
+
   .table-wrap{overflow:auto;border:1px solid var(--line);background:#090d0a}
   table{border-collapse:collapse;width:100%;min-width:640px;font-size:12.5px}
   th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
@@ -162,7 +168,7 @@
 
   .diagram{border:1px solid var(--line);padding:12px;margin-top:12px;background:#090d0a}
  .diagram .cap{margin:0 0 8px;color:var(--amber);font-size:12px;letter-spacing:.08em;text-transform:uppercase;text-align:center}
- .mermaid{background:#070908;overflow:auto;padding:8px}
+ .mermaid{background:#070908;overflow:auto;padding:8px;white-space:pre-wrap}
  .mermaid svg{display:block;margin:0 auto}
  .legend{display:flex;gap:16px;flex-wrap:wrap;color:var(--dim);font-size:12px;margin-top:8px;justify-content:center}
   .sw{display:inline-block;width:22px;border-top:2px solid var(--green);margin-right:6px;vertical-align:middle}
@@ -201,6 +207,24 @@
 
   footer{margin-top:28px;border-top:1px solid var(--line);padding:16px;color:var(--dim);font-size:12px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
   footer b{color:var(--green);font-weight:600}
+  .terms{position:relative;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .info{
+    width:16px;height:16px;flex:none;border-radius:50%;
+    border:1px solid var(--cyan);color:var(--cyan);background:transparent;
+    font-family:var(--mono);font-size:10px;font-style:italic;cursor:pointer;
+    display:inline-flex;align-items:center;justify-content:center;line-height:1;padding:0;
+  }
+  .info:hover,.info:focus-visible,.info[aria-expanded="true"]{background:var(--cyan);color:#05080a;box-shadow:0 0 10px rgba(126,231,255,.55);outline:none}
+  .glosario{
+    position:absolute;bottom:calc(100% + 10px);right:0;width:min(480px,82vw);
+    border:1px solid var(--line);background:#0a0f0c;padding:14px 16px;text-align:left;
+    box-shadow:0 10px 40px rgba(0,0,0,.7),0 0 0 1px rgba(126,231,255,.08);z-index:60;
+  }
+  .glosario[hidden]{display:none}
+  .glosario::after{content:"";position:absolute;top:100%;right:6px;border:7px solid transparent;border-top-color:var(--line)}
+  .glosario dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:8px 12px}
+  .glosario dt{color:var(--cyan);font-weight:600;white-space:nowrap}
+  .glosario dd{margin:0;color:var(--dim)}
   .help{
     position:fixed;right:14px;bottom:14px;z-index:30;
     display:flex;align-items:center;gap:9px;
@@ -275,7 +299,7 @@
     <a href="#resumen">resumen</a>
     <a href="#metricas">datos</a>
     <a href="#problema">problema</a>
-    <a href="#arquitectura">arquitectura</a>
+    <a href="architecture.html">arquitectura</a>
     <a href="#decisiones">adr</a>
     <a href="#medicion">tests</a>
     <a href="#hipotesis">hipotesis</a>
@@ -317,9 +341,9 @@
 
 <main>
 
-  <div class="tabs" role="tablist" aria-label="vistas del documento">
-    <button role="tab" type="button" data-tab="doc" aria-selected="true">documentación</button>
-    <button role="tab" type="button" data-tab="arq" aria-selected="false">arquitectura</button>
+  <div class="tabs">
+    <span class="tab active">documentación</span>
+    <a class="tab" href="architecture.html">arquitectura &nearr;</a>
   </div>
 
   <section id="resumen">
@@ -346,7 +370,7 @@
   <section id="metricas">
     <div class="sec-head"><span class="kicker">datos observados</span></div>
     <h2>Stats</h2>
-    <p class="lead">20 ejemplos públicos (<code>pruebas/ejemplos.jsonl</code>). Barras de bloque, ordenadas, con n visible. Sin tortas.</p>
+    <p class="lead">Dos fuentes lado a lado: <strong>verde</strong> = 20 ejemplos públicos (<code>pruebas/ejemplos.jsonl</code>) · <strong>cian</strong> = 14 sondas en vivo contra el oráculo (<code>experimentos.jsonl</code>). Barras de bloque, ordenadas, con n visible. Sin tortas.</p>
     <div class="metrics">
       <div class="metric"><div class="n">20</div><div class="l">ejemplos</div></div>
       <div class="metric"><div class="n">13</div><div class="l">respuestas 2xx</div></div>
@@ -356,7 +380,7 @@
     </div>
     <div class="grid g2">
       <div class="bars">
-        <h3>status http</h3>
+        <h3>status http <span class="badge">baseline · 20 ejemplos</span></h3>
         <p class="hint">n = 20 · ordenado por frecuencia</p>
         <div class="bar-row"><span class="lab">200 OK</span><div class="bar-track"><div class="bar-fill" style="width:55%"></div></div><span class="val">11</span></div>
         <div class="bar-row"><span class="lab">400 BAD</span><div class="bar-track"><div class="bar-fill r" style="width:20%"></div></div><span class="val">4</span></div>
@@ -364,33 +388,64 @@
         <div class="bar-row"><span class="lab">422 LIM</span><div class="bar-track"><div class="bar-fill o" style="width:10%"></div></div><span class="val">2</span></div>
         <div class="bar-row"><span class="lab">404 MISS</span><div class="bar-track"><div class="bar-fill r" style="width:5%"></div></div><span class="val">1</span></div>
       </div>
+      <div class="bars probe">
+        <h3>status http <span class="badge">pruebas hechas · 14 sondas</span></h3>
+        <p class="hint">n = 14 · sondas adversariales en vivo</p>
+        <div class="bar-row"><span class="lab">400 BAD</span><div class="bar-track"><div class="bar-fill" style="width:64%"></div></div><span class="val">9</span></div>
+        <div class="bar-row"><span class="lab">404 MISS</span><div class="bar-track"><div class="bar-fill" style="width:21%"></div></div><span class="val">3</span></div>
+        <div class="bar-row"><span class="lab">200 OK</span><div class="bar-track"><div class="bar-fill" style="width:14%"></div></div><span class="val">2</span></div>
+      </div>
+    </div>
+    <div class="grid g2" style="margin-top:12px">
       <div class="bars">
-        <h3>familias de error</h3>
+        <h3>familias de error <span class="badge">baseline · 20 ejemplos</span></h3>
         <p class="hint">n = 7 · E2xx forma · E3xx comando · E4xx recurso · E5xx negocio</p>
         <div class="bar-row"><span class="lab">E2xx</span><div class="bar-track"><div class="bar-fill r" style="width:29%"></div></div><span class="val">2</span></div>
         <div class="bar-row"><span class="lab">E3xx</span><div class="bar-track"><div class="bar-fill o" style="width:29%"></div></div><span class="val">2</span></div>
         <div class="bar-row"><span class="lab">E5xx</span><div class="bar-track"><div class="bar-fill o" style="width:29%"></div></div><span class="val">2</span></div>
         <div class="bar-row"><span class="lab">E4xx</span><div class="bar-track"><div class="bar-fill c" style="width:14%"></div></div><span class="val">1</span></div>
       </div>
+      <div class="bars probe">
+        <h3>familias de error <span class="badge">pruebas hechas · 12 errores</span></h3>
+        <p class="hint">n = 12 · aparece E1xx (forma de mensaje), que el baseline no alcanzaba</p>
+        <div class="bar-row"><span class="lab">E3xx</span><div class="bar-track"><div class="bar-fill" style="width:50%"></div></div><span class="val">6</span></div>
+        <div class="bar-row"><span class="lab">E4xx</span><div class="bar-track"><div class="bar-fill" style="width:25%"></div></div><span class="val">3</span></div>
+        <div class="bar-row"><span class="lab">E1xx</span><div class="bar-track"><div class="bar-fill" style="width:17%"></div></div><span class="val">2</span></div>
+        <div class="bar-row"><span class="lab">E2xx</span><div class="bar-track"><div class="bar-fill" style="width:8%"></div></div><span class="val">1</span></div>
+      </div>
     </div>
-    <div class="bars" style="margin-top:12px">
-      <h3>comandos</h3>
-      <p class="hint">n = 20 · el comando es case-insensitive (<code>CONSULTa</code> fue aceptado)</p>
-      <div class="bar-row"><span class="lab">CONSULTA</span><div class="bar-track"><div class="bar-fill" style="width:25%"></div></div><span class="val">5</span></div>
-      <div class="bar-row"><span class="lab">ALTA</span><div class="bar-track"><div class="bar-fill" style="width:20%"></div></div><span class="val">4</span></div>
-      <div class="bar-row"><span class="lab">TRANSFER</span><div class="bar-track"><div class="bar-fill" style="width:20%"></div></div><span class="val">4</span></div>
-      <div class="bar-row"><span class="lab">DEPOSITO</span><div class="bar-track"><div class="bar-fill" style="width:15%"></div></div><span class="val">3</span></div>
-      <div class="bar-row"><span class="lab">ANULA</span><div class="bar-track"><div class="bar-fill" style="width:10%"></div></div><span class="val">2</span></div>
-      <div class="bar-row"><span class="lab">PING</span><div class="bar-track"><div class="bar-fill" style="width:5%"></div></div><span class="val">1</span></div>
-      <div class="bar-row"><span class="lab">UNKNOWN</span><div class="bar-track"><div class="bar-fill r" style="width:5%"></div></div><span class="val">1</span></div>
+    <div class="grid g2" style="margin-top:12px">
+      <div class="bars">
+        <h3>comandos <span class="badge">baseline · 20 ejemplos</span></h3>
+        <p class="hint">n = 20 · el comando es case-insensitive (<code>CONSULTa</code> fue aceptado)</p>
+        <div class="bar-row"><span class="lab">CONSULTA</span><div class="bar-track"><div class="bar-fill" style="width:25%"></div></div><span class="val">5</span></div>
+        <div class="bar-row"><span class="lab">ALTA</span><div class="bar-track"><div class="bar-fill" style="width:20%"></div></div><span class="val">4</span></div>
+        <div class="bar-row"><span class="lab">TRANSFER</span><div class="bar-track"><div class="bar-fill" style="width:20%"></div></div><span class="val">4</span></div>
+        <div class="bar-row"><span class="lab">DEPOSITO</span><div class="bar-track"><div class="bar-fill" style="width:15%"></div></div><span class="val">3</span></div>
+        <div class="bar-row"><span class="lab">ANULA</span><div class="bar-track"><div class="bar-fill" style="width:10%"></div></div><span class="val">2</span></div>
+        <div class="bar-row"><span class="lab">PING</span><div class="bar-track"><div class="bar-fill" style="width:5%"></div></div><span class="val">1</span></div>
+        <div class="bar-row"><span class="lab">UNKNOWN</span><div class="bar-track"><div class="bar-fill r" style="width:5%"></div></div><span class="val">1</span></div>
+      </div>
+      <div class="bars probe">
+        <h3>comandos <span class="badge">pruebas hechas · 14 sondas</span></h3>
+        <p class="hint">n = 14 · sesgo adversarial: TRANSFER y ANULA para forzar bordes</p>
+        <div class="bar-row"><span class="lab">TRANSFER</span><div class="bar-track"><div class="bar-fill" style="width:29%"></div></div><span class="val">4</span></div>
+        <div class="bar-row"><span class="lab">ANULA</span><div class="bar-track"><div class="bar-fill" style="width:21%"></div></div><span class="val">3</span></div>
+        <div class="bar-row"><span class="lab">DEPOSITO</span><div class="bar-track"><div class="bar-fill" style="width:14%"></div></div><span class="val">2</span></div>
+        <div class="bar-row"><span class="lab">PING</span><div class="bar-track"><div class="bar-fill" style="width:7%"></div></div><span class="val">1</span></div>
+        <div class="bar-row"><span class="lab">ALTA</span><div class="bar-track"><div class="bar-fill" style="width:7%"></div></div><span class="val">1</span></div>
+        <div class="bar-row"><span class="lab">CONSULTA</span><div class="bar-track"><div class="bar-fill" style="width:7%"></div></div><span class="val">1</span></div>
+        <div class="bar-row"><span class="lab">RETIRO</span><div class="bar-track"><div class="bar-fill" style="width:7%"></div></div><span class="val">1</span></div>
+        <div class="bar-row"><span class="lab">(vacío)</span><div class="bar-track"><div class="bar-fill" style="width:7%"></div></div><span class="val">1</span></div>
+      </div>
     </div>
-    <pre class="map">STATUS   n   barra
-200     11   ███████████
-400      4   ████
-201      2   ██
-422      2   ██
-404      1   █</pre>
-    <div class="note">Estado actual: las barras reflejan <strong>solo los 20 ejemplos públicos</strong> (baseline). Las <strong>sondas en vivo ya corren</strong> contra el oráculo — 14 probes (ids 21–34 en <code>experimentos.jsonl</code>) que fijaron precedencia de errores, límites de monto y el algoritmo de control (checksum mod 97). Pendiente: plegar esos resultados a las barras.</div>
+    <pre class="map">BASELINE (20)          n    barra        PRUEBAS (14)        n    barra
+200 OK                11   ███████████  400 BAD             9   █████████
+400 BAD                4   ████         404 MISS            3   ███
+201 NEW                2   ██           200 OK              2   ██
+422 LIM                2   ██
+404 MISS               1   █</pre>
+    <div class="note"><strong>Verde = baseline</strong> (20 ejemplos públicos) · <strong>cian = pruebas hechas</strong> (14 sondas en vivo, ids 21–34 en <code>experimentos.jsonl</code>). El probing fijó la precedencia de errores (E303→E304→E401→E506), los límites de monto y el algoritmo de control (checksum <code>mod 97</code>).</div>
   </section>
 
   <section id="problema">
@@ -470,87 +525,12 @@
     </div>
   </section>
 
-  <section id="arquitectura">
-    <div class="sec-head"><span class="kicker">system design · arquitectura</span></div>
+    <section id="arquitectura">
+    <div class="sec-head"><span class="kicker">system design &middot; arquitectura</span></div>
     <h2>Arquitectura</h2>
-    <p class="lead">C4 en dos niveles. El mapa ASCII es la lectura rápida. Los diagramas Mermaid son la versión formal, con elementos nombrados y flechas etiquetadas.</p>
-    <pre class="map center"><span class="am">EVALUADOR</span>                         <span class="dim">persona · 100 tests ocultos</span>
-    |
-    |  HTTPS + Bearer · JSON · 5s
-    v
-+---------------- ENTRYPOINT :3000 ----------------+
-|  GET /health          liveness, sin estado       |
-|  POST /__reset        token ok -> snapshot 0     |
-|  POST /msg  +  /*     router -> motor -> RAM     |
-+------------------------+-------------------------+
-                         :
-                         :  solo offline. prohibido en runtime
-                         v
-<span class="cy">ORACULO</span>                          <span class="dim">caja-negra-production</span>
-    ^
-    |  probe discriminativo
-<span class="am">HARNESS</span>  fuzzer -> comparador -> SPEC.md / LOG.md</pre>
-
-    <div class="diagram">
-      <p class="cap">C4 · nivel 1 — contexto</p>
-      <div class="mermaid">
-flowchart TD
-    Judge["Evaluador / Juez"]:::person
-    subgraph SYS["Reemplazo autonomo"]
-        EP["HTTP Entrypoint /health /__reset /msg"]:::system
-    end
-    Oracle["Servicio original"]:::external
-    Judge -->|"HTTPS + Bearer, JSON en 5s"| SYS
-    SYS -.->|"comparacion offline"| Oracle
-    classDef person fill:#102016,stroke:#39ff14,color:#d7f5c8;
-    classDef system fill:#0c1610,stroke:#7ee7ff,color:#d7f5c8;
-    classDef external fill:#141008,stroke:#ffb000,color:#ffe7b8;
-      </div>
-      <div class="legend"><span><i class="sw"></i>síncrono</span><span><i class="sw dash"></i>solo desarrollo</span></div>
-    </div>
-
-    <div class="diagram">
-      <p class="cap">C4 · nivel 2 — contenedores</p>
-      <div class="mermaid">
-flowchart TB
-    subgraph PROD["ENTRYPOINT Node.js ESM"]
-        Router["Router HTTP"]
-        Health["GET /health"]
-        Reset["POST /__reset"]
-        Engine["Motor replica.mjs"]
-        Store[("RAM store")]
-        Router --> Health
-        Router --> Reset
-        Router -->|"POST /msg"| Engine
-        Reset -->|"snapshot 0"| Store
-        Engine <--> Store
-    end
-    subgraph DISC["HARNESS offline"]
-        Fuzzer["Prober"]
-        Oracle2["Oraculo"]
-        Comparator["Comparador"]
-        SpecLog["SPEC + LOG"]
-        Fuzzer --> Oracle2
-        Fuzzer -.-> Engine
-        Oracle2 --> Comparator
-        Engine -.-> Comparator
-        Comparator --> SpecLog
-    end
-    Judge2["Evaluador"]:::person
-    Judge2 -->|"Bearer"| Router
-    classDef person fill:#102016,stroke:#39ff14,color:#d7f5c8;
-      </div>
-    </div>
-
-    <div class="grid g3" style="margin-top:12px">
-      <div class="card"><h3>Router</h3><p>Despacha <code>/health</code>, <code>/__reset</code> y <code>/msg</code>. El resto cae al fallback que imita al original. Límites de payload y UTF-8: supuesto S1, por confirmar.</p></div>
-      <div class="card"><h3>Controles</h3><p><code>/health</code> es 200 sin estado. <code>/__reset</code> exige el token. Sin token, responde como el original y no revela el mecanismo.</p></div>
-      <div class="card"><h3>Motor + RAM</h3><p>Máquina de estados determinista. El reset hace snapshot a cero en menos de 1 ms. Aísla cada test del juez.</p></div>
-    </div>
-    <div class="grid g2" style="margin-top:12px">
-      <div class="card"><h3>Runtime de un test</h3><p><code>POST /__reset</code> → estado 0 → <code>POST /msg</code> (1 a 12 requests) → validación → transición → cuerpo exacto. Más de 5 s es fallo.</p></div>
-      <div class="card"><h3>Despliegue</h3><p>Un proceso Node.js por HTTPS. <strong>Un proceso = un estado.</strong> Si hay N instancias, cada una tiene su memoria. Limitación documentada.</p></div>
-    </div>
+    <p class="lead">Producción en <strong>Cloudflare Workers</strong> con un <strong>Durable Object</strong> que garantiza un estado único global; el mismo motor corre en un servidor Node local. Integridad con <strong>ISO 7064 Mod 97-10</strong>.</p>
+    <p class="lead">Entrypoint público: <code>https://caja-negra-reemplazo.parsec-ai-labs.workers.dev</code></p>
+    <p><a class="pill" href="architecture.html">&rarr; abrir architecture.html (C4 nivel 1 y 2)</a></p>
   </section>
 
   <section id="decisiones">
@@ -622,8 +602,8 @@ flowchart TB
     <h2>Medición</h2>
     <p class="lead">Cómo sabremos que funciona antes de construirlo. Sin número, no hay defensa.</p>
     <div class="grid g3">
-      <div class="card"><h3>Baseline</h3><p>Tras <code>/__reset</code>, los 20 ejemplos deben dar 20/20 en status y cuerpo.</p></div>
-      <div class="card"><h3>Métricas</h3><ul><li>Paridad status + body</li><li>Paso < 5 s</li><li>Reset < 1 ms</li><li>Adversariales en verde</li></ul></div>
+      <div class="card"><h3>Baseline</h3><p>Tras <code>/__reset</code>, los 20 ejemplos dan <strong>20/20</strong> en status y cuerpo (test automatizado).</p></div>
+      <div class="card"><h3>Métricas</h3><ul><li>Paridad status + body</li><li>Paso < 5 s</li><li>Reset < 1 ms</li><li>Suite 11/11 en verde</li></ul></div>
       <div class="card"><h3>Éxito</h3><ul><li>100% en lo conocido</li><li>0 regresiones post-incidente</li><li>Reset aislado</li><li>Contrato de entrypoint válido</li></ul></div>
     </div>
     <div class="table-wrap" style="margin-top:12px">
@@ -667,7 +647,8 @@ flowchart TB
           <tr><td>C8</td><td><code>ANULA</code> es idempotente</td><td>#13 #14</td><td><span class="conf c1">confirmado</span></td></tr>
           <tr><td>C9</td><td>comando desconocido → 400 E301 literal</td><td>#12</td><td><span class="conf c1">confirmado</span></td></tr>
           <tr><td>C10</td><td>aridad inválida → 400 E302</td><td>#20</td><td><span class="conf c1">confirmado</span></td></tr>
-          <tr><td>H1</td><td>el control es un checksum del payload</td><td>#2 #17</td><td><span class="conf c2">probable</span></td></tr>
+          <tr><td>C11</td><td>control = <strong>ISO 7064 Mod 97-10</strong> (A=1…Z=26 sin padding, CD = 98 − (N·100) mod 97)</td><td>16/16 + probes</td><td><span class="conf c1">confirmado</span></td></tr>
+          <tr><td>H1</td><td>el control es un dígito de verificación del payload</td><td>confirmado como ISO 7064</td><td><span class="conf c1">confirmado</span></td></tr>
           <tr><td>H2</td><td>orden: forma → control → recurso → negocio</td><td>#15 vs #9</td><td><span class="conf c2">probable</span></td></tr>
           <tr><td>H3</td><td>IDs por proceso, se reinician con reset</td><td>#3 #6</td><td><span class="conf c2">probable</span></td></tr>
           <tr><td>S1</td><td>payload grande o encoding inválido → error estable</td><td>contrato</td><td><span class="conf c3">supuesto</span></td></tr>
@@ -696,11 +677,11 @@ flowchart TB
       <div class="card">
         <h3>abierto</h3>
         <ul>
-          <li>¿El control es checksum o posición? ¿algoritmo?</li>
-          <li>¿Umbral exacto de E506?</li>
-          <li>¿Un error parcial deja estado a medias?</li>
-          <li>¿Qué cambia a las 15:30?</li>
+          <li><strong>Resuelto:</strong> control = ISO 7064 Mod 97-10.</li>
+          <li><strong>Resuelto:</strong> precedencia E303 &gt; E304 &gt; E401 &gt; E506 &gt; E507.</li>
+          <li>¿Qué cambia exactamente a las 15:30?</li>
           <li>¿El rate-limit trae un cuerpo que haya que emular?</li>
+          <li>¿Rutas alternas (ej. <code>/saldo</code>) existen en el original?</li>
         </ul>
       </div>
     </div>
@@ -712,7 +693,7 @@ flowchart TB
     <p class="lead">Patrón: elegimos X por A y B; descartamos Y por C; el trade-off es D; si cambia E, pasamos a Y.</p>
     <div class="qa"><div class="q">¿Por qué esta arquitectura?</div><div class="a">Separa descubrimiento offline de ejecución online. El reemplazo nunca llama al original.</div></div>
     <div class="qa"><div class="q">¿Qué rechazaron?</div><div class="a">Un proxy al original (el set vale 0) y un fuzzer ciego (no modela estado).</div></div>
-    <div class="qa"><div class="q">¿La parte más débil?</div><div class="a">El campo de control y el orden de validación. Un supuesto mal puesto devuelve el error equivocado.</div></div>
+    <div class="qa"><div class="q">¿La parte más débil?</div><div class="a">La precedencia exacta entre errores de forma (fue necesario un par de probes extra) y el estado único, que dependió de usar un Durable Object.</div></div>
     <div class="qa"><div class="q">¿Qué rompe a 10x?</div><div class="a">Varias instancias, cada una con su RAM. El siguiente paso sería estado compartido con lease.</div></div>
     <div class="qa"><div class="q">¿Cómo saben que funciona?</div><div class="a">Diff oráculo vs réplica en los 20 ejemplos y en la batería adversarial. Mismo status, mismo cuerpo.</div></div>
     <div class="qa"><div class="q">¿Qué asumen?</div><div class="a">Máquina de estados determinista, comandos posicionales, estado reiniciable.</div></div>
@@ -726,7 +707,19 @@ flowchart TB
 
 <footer>
   <div><b>FRONTIER Bogotá 2026</b> · reto 2 · system design 12:00</div>
-  <div>C4 · MADR 4.0 · arc42 · Diátaxis · Data-to-Viz</div>
+  <div class="terms">
+    <span>C4 · MADR 4.0 · arc42 · Diátaxis · Data-to-Viz</span>
+    <button class="info" type="button" aria-expanded="false" aria-controls="glosario" aria-label="qué significan estos términos">i</button>
+    <div class="glosario" id="glosario" role="tooltip" hidden>
+      <dl>
+        <dt>C4</dt><dd>Modelo de diagramas de arquitectura en 4 niveles: Contexto → Contenedores → Componentes → Código. Aquí se usan los niveles 1 y 2 (Mermaid).</dd>
+        <dt>MADR 4.0</dt><dd><em>Markdown Any Decision Records</em>: formato estándar para escribir ADRs — contexto, drivers, opciones, decisión y consecuencias. Sección «Decisiones».</dd>
+        <dt>arc42</dt><dd>Plantilla de documentación de sistemas en 12 secciones (objetivos, restricciones, contexto, bloques, runtime, decisiones…). Sección «Problema».</dd>
+        <dt>Diátaxis</dt><dd>Marco que organiza la documentación en 4 tipos: tutorial, how-to, referencia y explicación.</dd>
+        <dt>Data-to-Viz</dt><dd>Guía de visualización de datos: barras ordenadas con n visible y evitar gráficos engañosos (tortas). Sección «Stats».</dd>
+      </dl>
+    </div>
+  </div>
 </footer>
 </div>
 <div class="help">
@@ -743,7 +736,7 @@ flowchart TB
     try {
       const mermaid = (await import("https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs")).default;
       mermaid.initialize({
-        startOnLoad: true,
+        startOnLoad: false,
         theme: "base",
         securityLevel: "loose",
         fontFamily: "IBM Plex Mono, ui-monospace, monospace",
@@ -761,6 +754,7 @@ flowchart TB
         },
         flowchart: { curve: "basis", htmlLabels: true }
       });
+      await mermaid.run({ querySelector: ".mermaid" });
     } catch (err) {
       console.warn("Mermaid no cargó; los diagramas quedan como texto fuente.", err);
     }
@@ -779,18 +773,6 @@ flowchart TB
   });
 
   const jumps = ["resumen","metricas","problema","arquitectura","decisiones","medicion","hipotesis","defensa"];
-  const tabButtons = document.querySelectorAll(".tabs button");
-  const setTab = (name, doScroll) => {
-    document.body.classList.toggle("t-arq", name === "arq");
-    document.body.classList.toggle("t-doc", name !== "arq");
-    tabButtons.forEach((t) => {
-      const on = t.dataset.tab === name;
-      t.classList.toggle("active", on);
-      t.setAttribute("aria-selected", on ? "true" : "false");
-    });
-    if (doScroll) window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-  tabButtons.forEach((t) => t.addEventListener("click", () => setTab(t.dataset.tab, true)));
   const flash = (el, cls, ms) => {
     el.classList.remove(cls);
     void el.offsetWidth;
@@ -800,8 +782,8 @@ flowchart TB
   };
   const goTo = (n) => {
     const id = jumps[n - 1];
-    setTab(id === "arquitectura" ? "arq" : "doc", false);
-    const sec = id && document.getElementById(id);
+    if (id === "arquitectura") { location.href = "architecture.html"; return; }
+    const sec = document.getElementById(id);
     if (sec) {
       sec.scrollIntoView({ behavior: "smooth" });
       flash(sec, "glow", 1000);
@@ -809,10 +791,6 @@ flowchart TB
     const k = document.querySelector(`.help kbd[data-jump="${n}"]`);
     if (k) flash(k, "hit", 900);
   };
-  document.querySelectorAll("nav.cmds a").forEach((a) => {
-    a.addEventListener("click", () => setTab(a.getAttribute("href") === "#arquitectura" ? "arq" : "doc", false));
-  });
-  setTab(location.hash === "#arquitectura" ? "arq" : "doc", false);
   document.addEventListener("keydown", (e) => {
     if (e.target.matches("input,textarea")) return;
     const n = Number(e.key);
@@ -821,6 +799,23 @@ flowchart TB
   document.querySelectorAll(".help kbd").forEach((k) => {
     k.addEventListener("click", () => goTo(Number(k.dataset.jump)));
   });
+
+  const infoBtn = document.querySelector(".info");
+  const glosario = document.getElementById("glosario");
+  if (infoBtn && glosario) {
+    const setOpen = (open) => {
+      glosario.hidden = !open;
+      infoBtn.setAttribute("aria-expanded", String(open));
+    };
+    infoBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      setOpen(glosario.hidden);
+    });
+    document.addEventListener("click", (e) => {
+      if (!glosario.hidden && !glosario.contains(e.target) && e.target !== infoBtn) setOpen(false);
+    });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") setOpen(false); });
+  }
 
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
