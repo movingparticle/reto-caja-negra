@@ -1,5 +1,7 @@
 <p align="center">
-  <img src="assets/hero.svg" alt="Caja Negra — observe, infer, replicate" width="100%">
+  <a href="https://reto-caja-negra.pages.dev/">
+    <img src="assets/hero.png" alt="Design doc — FRONTIER Bogotá 2026" width="100%">
+  </a>
 </p>
 
 # Reto 2 · La Caja Negra — Reemplazo autónomo
