@@ -22,6 +22,8 @@ const rootFiles = [
   'architecture.html',
   'architecture.mmd',
   'LOG.html',
+  'logs.html',
+  'LOGS.html',
   '.nojekyll'
 ];
 

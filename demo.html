@@ -1117,7 +1117,8 @@ RETO 2 · CAJA NEGRA · DEMO EN VIVO
         const res = await fetch(LIVE_URL + path, opts);
         const latency = Math.round(performance.now() - start);
         let body = {};
-        try { body = await res.json(); } catch { body = { raw: await res.text() }; }
+        const _t = await res.text();
+        try { body = JSON.parse(_t); } catch { body = { raw: _t }; }
         return { status: res.status, body, latency, ok: true };
       } catch (err) {
         const latency = Math.round(performance.now() - start);
@@ -1247,7 +1248,8 @@ RETO 2 · CAJA NEGRA · DEMO EN VIVO
         const res = await fetch(LIVE_URL + s.path, opts);
         const latency = Math.round(performance.now() - start);
         let parsed = {};
-        try { parsed = await res.json(); } catch { parsed = await res.text(); }
+        const _t = await res.text();
+        try { parsed = _t ? JSON.parse(_t) : ''; } catch { parsed = _t; }
         return { status: res.status, body: parsed, latency, ok: true };
       } catch (err) {
         return { status: 0, body: { error: 'NET_ERR', message: err.message }, latency: Math.round(performance.now() - start), ok: false };

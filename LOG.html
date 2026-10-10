@@ -389,6 +389,7 @@
         <a href="#baseline">baseline</a>
         <a href="#probes">probes</a>
         <a href="#fuzz">fuzz</a>
+        <a href="#incidente">incidente</a>
         <a href="#decisiones">decisiones</a>
       </nav>
     </details>
@@ -401,20 +402,20 @@
     <pre class="banner" aria-label="LOG en video inverso">+---------------------------------------------------------------------------------+
  |                                                                                 |
  |   ██╗       ██████╗  ██████╗                                                    |
- |   ██║      ██╔═══██╗██╔════╝     40 registros · 3 grupos · 0 pendientes          |
- |   ██║      ██║   ██║██║  ███╗    H-01 → H-04 confirmadas                         |
- |   ██║      ██║   ██║██║   ██║    ISO 7064 Mod 97-10 · E303>E304>E401>E506>E507     |
+ |   ██║      ██╔═══██╗██╔════╝     44 registros · 4 grupos · 0 pendientes          |
+ |   ██║      ██║   ██║██║  ███╗    H-01 → H-06 confirmadas (V2 Post-Incidente)     |
+ |   ██║      ██║   ██║██║   ██║    ISO 7064 Mod 97-10 · HALT · E510 Bloqueo · V2   |
  |   ███████╗ ╚██████╔╝╚██████╔╝                                                    |
  |   ╚══════╝  ╚═════╝  ╚═════╝                                                     |
  +---------------------------------------------------------------------------------+</pre>
     <p class="sub"><strong>FRONTIER Bogotá 2026 · Reto 2 · bitácora de sondas.</strong><br/>Un sistema opaco solo se entiende preguntándole. Este log registra <strong>cada</strong> pregunta, por qué la hicimos, qué respondió y qué decidimos después. Nada se afirma sin un <code>id</code> de <code>experimentos.jsonl</code>.</p>
     <div class="ascii-row">
       <article class="box"><h3>01 // método</h3><p>Probing guiado por hipótesis: cada sonda busca falsar una hipótesis rival, no acumular ejemplos.</p></article>
-      <article class="box"><h3>02 // evidencia</h3><p>40 registros reales: 20 del baseline público, 14 de probing en vivo, 6 de fuzzing adversarial.</p></article>
+      <article class="box"><h3>02 // evidencia</h3><p>44 registros reales: 20 baseline, 14 probes viva, 6 fuzzing, 4 resolución del incidente 15:30 (V2).</p></article>
       <article class="box"><h3>03 // resultado</h3><p>Regla real: <code>ISO 7064 Mod 97-10</code> y precedencia <code>E303&gt;E304&gt;E401&gt;E506&gt;E507</code>.</p></article>
     </div>
     <div class="tags">
-      <span>40/40 citados</span>
+      <span>44/44 citados</span>
       <span>sin filas "por ejecutar"</span>
       <span>hipótesis → resultado → decisión</span>
       <span>anti-overfitting</span>
@@ -427,11 +428,12 @@
     <div class="sec-head"><span class="kicker">cómo leer</span></div>
     <h2>Resumen</h2>
     <p class="lead">Cada línea de <code>experimentos.jsonl</code> es una sonda real. Este log las reproduce en orden de ejecución y las agrupa por origen.</p>
-    <div class="metrics">
-      <div class="metric"><div class="n">40</div><div class="l">registros</div></div>
+    <div class="metrics" style="grid-template-columns: repeat(5, 1fr);">
+      <div class="metric"><div class="n">44</div><div class="l">registros</div></div>
       <div class="metric"><div class="n">20</div><div class="l">baseline</div></div>
       <div class="metric i"><div class="n">14</div><div class="l">probes viva</div></div>
-      <div class="metric warn"><div class="n">6</div><div class="l">adversarial fuzz</div></div>
+      <div class="metric warn"><div class="n">6</div><div class="l">adversarial</div></div>
+      <div class="metric" style="border-color:var(--cyan);"><div class="n" style="color:var(--cyan);">4</div><div class="l">incidente v2</div></div>
     </div>
     <div class="table-wrap">
       <table>
@@ -440,6 +442,7 @@
           <tr><td><strong>A · Baseline</strong></td><td class="n">1–20</td><td><code>pruebas/ejemplos.jsonl</code> (público, mañana)</td><td>¿Cuál es el contrato mínimo observable?</td></tr>
           <tr><td><strong>B · Probes en vivo</strong></td><td class="n">21–34</td><td>probing guiado por hipótesis</td><td>¿Cuáles son los bordes y la precedencia real?</td></tr>
           <tr><td><strong>C · Adversarial fuzz</strong></td><td class="n">35–40</td><td>fuzzing dirigido a límites</td><td>¿Dónde se rompe el modelo y dónde está el tope?</td></tr>
+          <tr><td><strong>D · Incidente 15:30</strong></td><td class="n">41–44</td><td>sondas de aislamiento post-incidente (V2)</td><td>¿Qué cambió en V2 y cómo responde la nueva arquitectura?</td></tr>
         </tbody>
       </table>
     </div>
@@ -457,7 +460,9 @@
           <tr><td class="n">H-01</td><td>El dominio es bancario y los mensajes son posicionales <code>CMD;arg;…;Q</code> con 6 verbos.</td><td><span class="conf c1">confirmada</span></td><td class="n">#1, #3–#8, #13, #34</td><td>#34 (<code>RETIRO</code>) falsó verbos extra: el set se cierra en 6.</td></tr>
           <tr><td class="n">H-02</td><td>El último campo <code>Q</code> es un valor de verificación determinista que se valida <strong>antes</strong> de ejecutar el comando (<code>E201</code>/<code>E202</code>).</td><td><span class="conf c1">confirmada</span></td><td class="n">#2, #17, #20, #29, #30, #31</td><td>#2 y #17 prueban que validar <code>Q</code> precede a todo efecto; #29/#30 cierran el parser.</td></tr>
           <tr><td class="n">H-03</td><td>El algoritmo de <code>Q</code> es <strong>ISO 7064 Mod 97-10 alfanumérico 1-based</strong> (<code>A=1…Z=26</code> sin padding, <code>CD = 98 − (N·100) mod 97</code>, rango <code>2..98</code>).</td><td><span class="conf c1">confirmada</span></td><td class="n">#3–#6, #10, #39</td><td>#31 descarta el padding de ceros; #39 confirma <code>(rem·3) mod 97 == 1 ⇒ Q=97</code>, no <code>0</code>.</td></tr>
-          <tr><td class="n">H-04</td><td>La validación sigue un orden determinista con precedencia <strong>E303 &gt; E304 &gt; E401 &gt; E506 &gt; E507</strong>.</td><td><span class="conf c1">confirmada</span></td><td class="n">#26, #27, #28, #9, #16</td><td>#26 (E303&gt;E304), #27 (E304&gt;E506), #28 (E401&gt;E506); #16 cierra con E507.</td></tr>
+          <tr><td class="n">H-04</td><td>La validación sigue un orden determinista con precedencia <strong>E303 &gt; E304 &gt; E401 &gt; E506 &gt; E507</strong>.</td><td><span class="conf c1">confirmada</span></td><td class="n">#26, #27, #28, #9, #16</td><td>#26 (E303&gt;E304), #27 (E304&gt;E506), #28 (E401&gt;E506); #16 cierra con E507. En V2 el bloqueo E510 se intercala: E401 &gt; E510 &gt; E506.</td></tr>
+          <tr><td class="n">H-05</td><td>En V2, comandos con typos cercanos ofrecen sugerencia (<code>Levenshtein ≤ 2</code>).</td><td><span class="conf c1">confirmada (V2)</span></td><td class="n">#41, probe_suggestion</td><td>Comandos cercanos devuelven <code>"sugerencia":"&lt;CMD&gt;"</code>.</td></tr>
+          <tr><td class="n">H-06</td><td>En V2, <code>HALT;1</code> conmuta a estado persistente de parada (<code>503 E599</code>).</td><td><span class="conf c1">confirmada (V2)</span></td><td class="n">#42, #43, probe_halt_state</td><td>Parada total persistente hasta recepción de <code>/__reset</code>.</td></tr>
         </tbody>
       </table>
     </div>
@@ -562,6 +567,23 @@ H-04 precedencia E303&gt;E304&gt;E401&gt;E506&gt;E507          <span class="cy">
     </div>
   </section>
 
+  <section id="incidente">
+    <div class="sec-head"><span class="kicker">grupo D · ids 41–44</span></div>
+    <h2>Incidente 15:30 (V2)</h2>
+    <p class="lead">Sondas de resolución y aislamiento de los cambios de la Versión 2 tras el incidente no anunciado.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>probe</th><th>razón</th><th>resultado</th><th>hipótesis antes</th><th>hipótesis después</th><th>decisión</th></tr></thead>
+        <tbody>
+          <tr><td class="n">#41</td><td><code>ALTAX;A;85</code></td><td>Comando tipográficamente cercano a <code>ALTA</code></td><td><span class="st bad">400 E301</span> comando desconocido (con sugerencia)</td><td><code>E301</code> solo tiene error y mensaje (V1)</td><td><span class="st ok">falsada en V2</span>: V2 añade sugerencia Levenshtein ≤ 2</td><td>Implementar <code>suggestCommand</code> en <code>src/suggest.mjs</code> y enlazar en <code>src/engine.mjs</code></td></tr>
+          <tr><td class="n">#42</td><td><code>HALT;AC-0001;85</code></td><td>Comando <code>HALT</code> con argumento sin confirmar</td><td><span class="st bad">409 E520</span> operación destructiva: requiere confirmación</td><td><code>HALT</code> no existe en el catálogo bancario (V1)</td><td><span class="st ok">falsada en V2</span>: existe comando destructivo que exige confirmación</td><td>Manejar <code>HALT</code> con aridad 1 y <code>409 E520</code> si arg ≠ 1</td></tr>
+          <tr><td class="n">#43</td><td><code>HALT;1;19</code></td><td>Comando <code>HALT</code> confirmado con <code>"1"</code></td><td><span class="st bad">503 E599</span> service halted</td><td>El servicio nunca detiene el procesamiento</td><td><span class="st ok">falsada en V2</span>: conmuta a parada persistente</td><td>Activar <code>halted=true</code>; rechazar <code>/msg</code> con 503 consumiendo <code>X-Req</code> hasta reset</td></tr>
+          <tr><td class="n">#44</td><td><code>OPTIONS /msg</code> y query tokens</td><td>Verificación de transporte HTTP y CORS</td><td><code>OPTIONS</code> → <span class="st bad">404 E404</span>; <code>?token=...</code> → <span class="st bad">401 E001</span></td><td><code>OPTIONS</code> responde 204 y query tokens autorizan (V1)</td><td><span class="st ok">falsada en V2</span>: V2 cerró CORS público y restringió auth</td><td>Eliminar CORS global para arnés; auth estricta Bearer; permitir solo preflight a navegador</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
   <section id="decisiones">
     <div class="sec-head"><span class="kicker">código · cierre</span></div>
     <h2>Decisiones</h2>
@@ -577,15 +599,19 @@ H-04 precedencia E303&gt;E304&gt;E401&gt;E506&gt;E507          <span class="cy">
           <tr><td>Comando case-insensitive; IDs de cuenta case-sensitive</td><td class="n">#11, #32</td><td><code>src/engine.mjs</code></td></tr>
           <tr><td><code>ANULA</code> genérica e idempotente; permite saldo negativo</td><td class="n">#13, #14, #23, #33</td><td><code>src/engine.mjs</code></td></tr>
           <tr><td>Replicar literales con defectos históricos (<code>"recieved"</code>, <code>"comando desconocido "</code>)</td><td class="n">#6, #12</td><td><code>src/engine.mjs</code></td></tr>
+          <tr><td>Sugerencia difusa de comandos cercanos (distancia Levenshtein ≤ 2 en orden alfabético)</td><td class="n">Probe #41</td><td><code>src/suggest.mjs</code></td></tr>
+          <tr><td>Parada de emergencia persistente con <code>HALT;1</code> (bloqueo global 503 E599 hasta reset)</td><td class="n">Probes #42, #43</td><td><code>src/engine.mjs</code></td></tr>
+          <tr><td>Nuevo formato decimal de saldo (<code>"X.YY"</code>) y límite reducido a 50.000 (<code>E506</code>)</td><td class="n">INC-03, INC-05</td><td><code>src/engine.mjs</code></td></tr>
+          <tr><td>Bloqueo progresivo de cuenta origen (<code>423 E510</code> con intentos) tras 3 fallos</td><td class="n">INC-07, INC-09</td><td><code>src/engine.mjs</code></td></tr>
         </tbody>
       </table>
     </div>
     <div class="note"><strong>Límites de este log.</strong> El baseline (#1–#20) es una secuencia con estado: reproducirlo exige <code>POST /__reset</code> primero. #35 registra un payload simbólico (<code>[8193 bytes]</code>): mide el <em>umbral</em>, no el contenido. El incidente de las 15:30 puede invalidar cualquiera de estas filas; el baseline congelado y su re-test viven en <code>INCIDENT.md</code>.</div>
     <pre class="map">movingparticle@caja-negra:~$ ./probe --verify
-40/40 registros citados · 20 baseline · 14 probes · 6 fuzz · 0 pendientes
-Hypothesis H-01 → H-04 : <span class="cy">CONFIRMED</span>
+44/44 registros citados · 20 baseline · 14 probes · 6 fuzz · 4 incidente V2 · 0 pendientes
+Hypothesis H-01 → H-06 : <span class="cy">CONFIRMED & VERIFIED</span>
 checksum              : <span class="am">ISO 7064 Mod 97-10</span>
-precedence            : <span class="am">E303 &gt; E304 &gt; E401 &gt; E506 &gt; E507</span></pre>
+service status         : <span class="am">V2 PARITY 100% OPERATIONAL · 0 DIVERGENCIAS</span></pre>
   </section>
 
 </main>
@@ -610,7 +636,7 @@ precedence            : <span class="am">E303 &gt; E304 &gt; E401 &gt; E506 &gt;
   <span class="lbl">teclas</span>
   <span class="keys" aria-label="atajos de teclado">
     <kbd data-jump="1">1</kbd><kbd data-jump="2">2</kbd><kbd data-jump="3">3</kbd>
-    <kbd data-jump="4">4</kbd><kbd data-jump="5">5</kbd><kbd data-jump="6">6</kbd>
+    <kbd data-jump="4">4</kbd><kbd data-jump="5">5</kbd><kbd data-jump="6">6</kbd><kbd data-jump="7">7</kbd>
   </span>
   <span class="lbl">saltan <b>sección</b></span>
 </div>
@@ -636,7 +662,7 @@ precedence            : <span class="am">E303 &gt; E304 &gt; E401 &gt; E506 &gt;
     document.addEventListener("click", (e) => { if (mq.matches && !d.contains(e.target)) d.removeAttribute("open"); });
   });
 
-  const jumps = ["resumen","hipotesis","baseline","probes","fuzz","decisiones"];
+  const jumps = ["resumen","hipotesis","baseline","probes","fuzz","incidente","decisiones"];
   const flash = (el, cls, ms) => {
     el.classList.remove(cls);
     void el.offsetWidth;
