@@ -599,8 +599,8 @@
     <div class="nav-bar">
       <span class="spacer"></span>
 
-      <a href="https://reto-caja-negra.pages.dev/" target="_blank" rel="noopener noreferrer" class="term-btn" title="Documento de diseño, otra página">$ design_doc</a>
-      <a href="https://reto-caja-negra.pages.dev/architecture" target="_blank" rel="noopener noreferrer" class="term-btn">$ c4_arch</a>
+      <a href="index.html" target="_blank" rel="noopener noreferrer" class="term-btn" title="Documento de diseño, otra página">$ design_doc</a>
+      <a href="architecture.html" target="_blank" rel="noopener noreferrer" class="term-btn">$ c4_arch</a>
       <a href="LOG.html" target="_blank" rel="noopener noreferrer" class="term-btn">$ logs</a>
     </div>
   </header>
@@ -630,7 +630,7 @@ RETO 2 · CAJA NEGRA · DEMO EN VIVO
     <!-- Metrics Row (VT323 Display) -->
     <div class="metrics">
       <div class="metric">
-        <div class="n" id="statTotal">24</div>
+        <div class="n" id="statTotal">&mdash;</div>
         <div class="l">Total Pruebas</div>
       </div>
       <div class="metric">
@@ -658,13 +658,13 @@ RETO 2 · CAJA NEGRA · DEMO EN VIVO
         <!-- Barra de estado grande -->
         <div class="run-status-bar">
           <div class="run-status" id="runNow">LISTO</div>
-          <div class="run-status-title" id="runNowTitle">Presiona «EJECUTAR BATERÍA» para correr las 24 pruebas.</div>
+          <div class="run-status-title" id="runNowTitle">Cargando batería…</div>
         </div>
         <div class="bar-track"><div class="bar-fill" id="runProgressFill"></div></div>
 
         <!-- Controles -->
         <div class="runner-controls">
-          <button class="btn-run" id="btnRunAll" onclick="runAllTests()"><span>></span> EJECUTAR BATERÍA (24)</button>
+          <button class="btn-run" id="btnRunAll" onclick="runAllTests()"><span>></span> EJECUTAR BATERÍA</button>
           <button class="btn-secondary" onclick="executeReset()"><span>></span> POST /__reset</button>
           <button class="btn-secondary" onclick="executeHealthCheck()"><span>></span> GET /health</button>
           <button class="btn-secondary" onclick="resetTestState()"><span>></span> CLEAR</button>
@@ -691,6 +691,7 @@ RETO 2 · CAJA NEGRA · DEMO EN VIVO
                 <code>ANULA;OP-0001</code> → revierte una operación<br>
                 <code>HALT;1</code> → detiene el servicio <span style="color:var(--dim);">(503; se recupera con POST /__reset)</span>
               </div>
+              <div style="margin-top:6px; color:var(--amber); font-size:11.5px;">⚠ Orden importante: <code>DEPOSITO</code>, <code>TRANSFER</code> y <code>CONSULTA</code> necesitan que la cuenta <strong>ya exista</strong> → créala antes con <code>ALTA;Nombre</code>. La batería hace <code>/__reset</code>, así que el estado se reinicia.</div>
             </div>
           </div>
           <label class="custom-cmd-label">Comando a probar (ej. <code>ALTA;Carlos</code> o <code>DEPOSITO;AC-0001;50000</code>):</label>
@@ -861,11 +862,6 @@ RETO 2 · CAJA NEGRA · DEMO EN VIVO
       </div>
     </details>
 
-    <footer class="term-footer">
-      <div>FRONTIER Bogotá 2026 // Reto 2 · demo en vivo // reemplazo autónomo</div>
-      <div>caja-negra-reemplazo.parsec-ai-labs.workers.dev</div>
-    </footer>
-
   </div>
 
   <!-- CORE LOGIC SCRIPT -->
@@ -975,7 +971,7 @@ RETO 2 · CAJA NEGRA · DEMO EN VIVO
       incidentTimer = null;
     }
 
-    // 24 Test Suite Definitions
+    // Suite embebida (fallback si demo-suite.json no carga)
     let TEST_SUITE = [
       { id: 'auth_1', category: 'auth', title: 'Seguridad: petición anónima sin token', method: 'GET', path: '/health', forceAuth: 'none', payload: null, expectedStatus: 401, expectedBody: { error: 'E001', mensaje: 'no autorizado' } },
       { id: 'auth_2', category: 'auth', title: 'Seguridad: token inválido o falso', method: 'POST', path: '/msg', forceAuth: 'invalid', payload: { m: 'PING;64' }, expectedStatus: 401, expectedBody: { error: 'E001', mensaje: 'no autorizado' } },
@@ -1048,6 +1044,7 @@ RETO 2 · CAJA NEGRA · DEMO EN VIVO
       }
       document.getElementById('btnRunAll').innerHTML = `<span>></span> EJECUTAR BATERÍA (${TEST_SUITE.length})`;
       refreshFilterLabels();
+      updateStats();
     }
 
     function refreshFilterLabels() {
@@ -1401,6 +1398,26 @@ RETO 2 · CAJA NEGRA · DEMO EN VIVO
       log('info', `Cálculo ISO 7064 para "${val}" -> Control = ${ctrl}`);
     }
 
+    function manualErrorHint(body) {
+      const err = body && body.error;
+      const map = {
+        E401: 'Esa cuenta no existe. Créala primero con ALTA;Nombre (devuelve AC-0001, AC-0002…).',
+        E402: 'Esa operación no existe. Usa un OP-XXXX creado con DEPOSITO o TRANSFER.',
+        E302: 'Número de argumentos incorrecto. Formatos: ALTA;Nombre · CONSULTA;AC-0001 · DEPOSITO;AC-0001;50000 · TRANSFER;AC-0001;AC-0002;1000 · ANULA;OP-0001',
+        E303: 'Monto inválido: solo dígitos, sin ceros a la izquierda ni signos (máximo 10 dígitos).',
+        E304: 'Origen y destino no pueden ser la misma cuenta.',
+        E506: 'Monto mayor al límite de transferencia (50000).',
+        E507: 'Saldo insuficiente en la cuenta origen.',
+        E201: 'Control mal formado: deja que se calcule solo (casilla activada) o pulsa $ calc_iso97.',
+        E202: 'Dígito de control incorrecto: bórralo y deja que se calcule (casilla activada).',
+        E301: 'Comando desconocido. Válidos: PING, ALTA, CONSULTA, DEPOSITO, TRANSFER, ANULA, HALT.',
+        E100: 'Cuerpo JSON inválido.',
+        E102: "Falta el campo 'm'.",
+        E599: 'Servicio detenido (HALT). Recupéralo con POST /__reset.'
+      };
+      return map[err] || null;
+    }
+
     async function sendManualMessage() {
       const input = document.getElementById('manualInput');
       const out = document.getElementById('manualOutput');
@@ -1428,11 +1445,13 @@ RETO 2 · CAJA NEGRA · DEMO EN VIVO
       log('info', `Enviando manual: {"m": "${val}"}`);
       const res = await callWorker('/msg', 'POST', { m: val });
 
+      const hintTxt = manualErrorHint(res.body);
       out.innerHTML = `
         <div style="color:${res.status < 400 ? 'var(--green)' : 'var(--red)'}; font-weight:700;">
           HTTP ${res.status} (${res.latency}ms)
         </div>
         <pre style="margin:4px 0 0; color:var(--ink);">${JSON.stringify(res.body, null, 2)}</pre>
+        ${hintTxt ? `<div style="margin-top:6px; color:var(--amber); font-size:11.5px;">&#128161; ${hintTxt}</div>` : ''}
       `;
       if (res.status < 400) log('ok', `Manual -> HTTP ${res.status} (${res.latency}ms)`);
       else log('warn', `Manual -> HTTP ${res.status} (${res.latency}ms)`);

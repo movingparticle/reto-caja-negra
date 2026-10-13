@@ -4,7 +4,7 @@
 
 ```text
 entrypoint -> https://caja-negra-reemplazo.parsec-ai-labs.workers.dev
-demo web   -> https://caja-negra-demo.pages.dev/ (o https://reto-caja-negra.pages.dev/demo.html)
+demo web   -> https://movingparticle.github.io/reto-caja-negra/demo.html (o https://movingparticle.github.io/reto-caja-negra/demo.html)
 repo       -> https://github.com/movingparticle/reto-caja-negra
 duracion   -> <= 120 s (corte duro)
 ```

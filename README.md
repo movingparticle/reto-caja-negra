@@ -19,13 +19,13 @@ movingparticle@caja-negra:~$ cat ./SYSTEM_DESIGN.txt
 ```
 
 <p align="center">
-  <a href="https://caja-negra-demo.pages.dev/" target="_blank" rel="noopener noreferrer"><img alt="Demo interactiva" src="https://img.shields.io/badge/demo-consola%20en%20vivo-00f0ff?style=for-the-badge"></a>
+  <a href="https://movingparticle.github.io/reto-caja-negra/demo.html" target="_blank" rel="noopener noreferrer"><img alt="Demo interactiva" src="https://img.shields.io/badge/demo-consola%20en%20vivo-00f0ff?style=for-the-badge"></a>
   &nbsp;
-  <a href="https://reto-caja-negra.pages.dev/" target="_blank" rel="noopener noreferrer"><img alt="Abrir design doc" src="https://img.shields.io/badge/design%20doc-abrir%20p%C3%A1gina-39ff14?style=for-the-badge&logo=githubpages&logoColor=07110a"></a>
+  <a href="https://movingparticle.github.io/reto-caja-negra/" target="_blank" rel="noopener noreferrer"><img alt="Abrir design doc" src="https://img.shields.io/badge/design%20doc-abrir%20p%C3%A1gina-39ff14?style=for-the-badge&logo=githubpages&logoColor=07110a"></a>
   &nbsp;
-  <a href="https://reto-caja-negra.pages.dev/architecture" target="_blank" rel="noopener noreferrer"><img alt="Arquitectura" src="https://img.shields.io/badge/arquitectura-C4-ffb000?style=for-the-badge"></a>
+  <a href="https://movingparticle.github.io/reto-caja-negra/architecture.html" target="_blank" rel="noopener noreferrer"><img alt="Arquitectura" src="https://img.shields.io/badge/arquitectura-C4-ffb000?style=for-the-badge"></a>
   &nbsp;
-  <a href="https://reto-caja-negra.pages.dev/en/" target="_blank" rel="noopener noreferrer"><img alt="English" src="https://img.shields.io/badge/EN-english-7ee7ff?style=for-the-badge"></a>
+  <a href="https://movingparticle.github.io/reto-caja-negra/en/" target="_blank" rel="noopener noreferrer"><img alt="English" src="https://img.shields.io/badge/EN-english-7ee7ff?style=for-the-badge"></a>
 </p>
 
 # Reto 2 · La Caja Negra — Reemplazo autónomo
@@ -35,11 +35,11 @@ producción, sin código ni documentación) para **FRONTIER Bogotá 2026**. Repr
 paridad exacta el protocolo, los estados, los códigos HTTP y los mensajes de error del
 original, incluidos sus errores tipográficos históricos.
 
-- **Demo interactiva (consola en vivo):** <a href="https://caja-negra-demo.pages.dev/" target="_blank" rel="noopener noreferrer">https://caja-negra-demo.pages.dev/</a> (o <a href="https://reto-caja-negra.pages.dev/demo.html" target="_blank" rel="noopener noreferrer">https://reto-caja-negra.pages.dev/demo.html</a>)
-- **Design doc (página navegable):** <a href="https://reto-caja-negra.pages.dev/" target="_blank" rel="noopener noreferrer">https://reto-caja-negra.pages.dev/</a>
-- **Arquitectura C4:** <a href="https://reto-caja-negra.pages.dev/architecture" target="_blank" rel="noopener noreferrer">https://reto-caja-negra.pages.dev/architecture</a>
-- **Bitácora de sondas (LOG):** <a href="https://reto-caja-negra.pages.dev/LOG.html" target="_blank" rel="noopener noreferrer">https://reto-caja-negra.pages.dev/LOG.html</a>
-- **English version:** <a href="https://reto-caja-negra.pages.dev/en/" target="_blank" rel="noopener noreferrer">https://reto-caja-negra.pages.dev/en/</a>
+- **Demo interactiva (consola en vivo):** <a href="https://movingparticle.github.io/reto-caja-negra/demo.html" target="_blank" rel="noopener noreferrer">https://movingparticle.github.io/reto-caja-negra/demo.html</a> (o <a href="https://movingparticle.github.io/reto-caja-negra/demo.html" target="_blank" rel="noopener noreferrer">https://movingparticle.github.io/reto-caja-negra/demo.html</a>)
+- **Design doc (página navegable):** <a href="https://movingparticle.github.io/reto-caja-negra/" target="_blank" rel="noopener noreferrer">https://movingparticle.github.io/reto-caja-negra/</a>
+- **Arquitectura C4:** <a href="https://movingparticle.github.io/reto-caja-negra/architecture.html" target="_blank" rel="noopener noreferrer">https://movingparticle.github.io/reto-caja-negra/architecture.html</a>
+- **Bitácora de sondas (LOG):** <a href="https://movingparticle.github.io/reto-caja-negra/LOG.html" target="_blank" rel="noopener noreferrer">https://movingparticle.github.io/reto-caja-negra/LOG.html</a>
+- **English version:** <a href="https://movingparticle.github.io/reto-caja-negra/en/" target="_blank" rel="noopener noreferrer">https://movingparticle.github.io/reto-caja-negra/en/</a>
 - **Entrypoint de producción (Cloudflare Workers):**
   <a href="https://caja-negra-reemplazo.parsec-ai-labs.workers.dev" target="_blank" rel="noopener noreferrer">https://caja-negra-reemplazo.parsec-ai-labs.workers.dev</a>
 
