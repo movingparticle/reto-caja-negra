@@ -22,7 +22,7 @@ def req(method, path, data=None, headers=None):
 
 
 pf = req("OPTIONS", "/msg", headers={
-    "Origin": "https://caja-negra-demo.pages.dev",
+    "Origin": "https://movingparticle.github.io",
     "Access-Control-Request-Method": "POST",
     "Access-Control-Request-Headers": "authorization,content-type",
 })
@@ -34,6 +34,6 @@ print("plain OPTIONS", plain[0], plain[2])
 post = req("POST", "/msg", data=json.dumps({"m": "PING;64"}).encode(), headers={
     "Authorization": "Bearer " + TEAM_TOKEN,
     "Content-Type": "application/json",
-    "Origin": "https://caja-negra-demo.pages.dev",
+    "Origin": "https://movingparticle.github.io",
 })
 print("POST", post[0], post[2], "acao=", post[1].get("Access-Control-Allow-Origin"))

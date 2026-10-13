@@ -52,7 +52,7 @@ test('Preflight CORS real (OPTIONS con Access-Control-Request-Method) -> 204', a
     new Request('https://caja-negra.worker/msg', {
       method: 'OPTIONS',
       headers: {
-        Origin: 'https://caja-negra-demo.pages.dev',
+        Origin: 'https://movingparticle.github.io',
         'Access-Control-Request-Method': 'POST',
         'Access-Control-Request-Headers': 'authorization,content-type',
       },

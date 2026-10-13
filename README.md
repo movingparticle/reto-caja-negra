@@ -35,7 +35,7 @@ producción, sin código ni documentación) para **FRONTIER Bogotá 2026**. Repr
 paridad exacta el protocolo, los estados, los códigos HTTP y los mensajes de error del
 original, incluidos sus errores tipográficos históricos.
 
-- **Demo interactiva (consola en vivo):** <a href="https://movingparticle.github.io/reto-caja-negra/demo.html" target="_blank" rel="noopener noreferrer">https://movingparticle.github.io/reto-caja-negra/demo.html</a> (o <a href="https://movingparticle.github.io/reto-caja-negra/demo.html" target="_blank" rel="noopener noreferrer">https://movingparticle.github.io/reto-caja-negra/demo.html</a>)
+- **Demo interactiva (consola en vivo):** <a href="https://movingparticle.github.io/reto-caja-negra/demo.html" target="_blank" rel="noopener noreferrer">https://movingparticle.github.io/reto-caja-negra/demo.html</a> (o ruta limpia: <a href="https://movingparticle.github.io/reto-caja-negra/demo/" target="_blank" rel="noopener noreferrer">https://movingparticle.github.io/reto-caja-negra/demo/</a>)
 - **Design doc (página navegable):** <a href="https://movingparticle.github.io/reto-caja-negra/" target="_blank" rel="noopener noreferrer">https://movingparticle.github.io/reto-caja-negra/</a>
 - **Arquitectura C4:** <a href="https://movingparticle.github.io/reto-caja-negra/architecture.html" target="_blank" rel="noopener noreferrer">https://movingparticle.github.io/reto-caja-negra/architecture.html</a>
 - **Bitácora de sondas (LOG):** <a href="https://movingparticle.github.io/reto-caja-negra/LOG.html" target="_blank" rel="noopener noreferrer">https://movingparticle.github.io/reto-caja-negra/LOG.html</a>
