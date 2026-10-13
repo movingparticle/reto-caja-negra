@@ -623,9 +623,15 @@
 |                                                                                           |
 +-------------------------------------------------------------------------------------------+
 RETO 2 · CAJA NEGRA · DEMO EN VIVO                                                           
-* ENTRYPOINT: https://caja-negra-reemplazo.parsec-ai-labs.workers.dev                        
+* ENTRYPOINT: https://caja-negra-reemplazo.parsec-ai-labs.workers.dev (APAGADO POST-HACKATHON)                        
 * PROTOCOLO:  ISO 7064 Mod 97-10 · alfanumérico 1-based · Durable Objects · paridad 20/20    
     </pre>
+
+    <!-- AVISO ENTRYPOINT APAGADO -->
+    <div style="background:#201600;border:1px solid var(--amber,#ffb000);border-radius:4px;padding:12px 16px;margin:16px 0;color:var(--amber,#ffb000);font-size:12.5px;line-height:1.5;">
+      <strong>&#9888; AVISO &mdash; ENTRYPOINT APAGADO (POST-HACKATHON):</strong><br>
+      El servicio backend en Cloudflare Workers (<code>caja-negra-reemplazo.parsec-ai-labs.workers.dev</code>) se encuentra actualmente <strong>apagado / fuera de l&iacute;nea</strong> tras la conclusi&oacute;n del hackathon. Por esta raz&oacute;n, al ejecutar la bater&iacute;a de pruebas o enviar comandos manuales, las peticiones fallar&aacute;n por falta de conexi&oacute;n (error de red <code>NET_ERR</code>) y marcar&aacute;n <code>FAIL</code>. Esta consola se mantiene publicada con fines demostrativos, de registro y auditor&iacute;a de la arquitectura del reto.
+    </div>
 
     <!-- Metrics Row (VT323 Display) -->
     <div class="metrics">
@@ -657,8 +663,8 @@ RETO 2 · CAJA NEGRA · DEMO EN VIVO
 
         <!-- Barra de estado grande -->
         <div class="run-status-bar">
-          <div class="run-status" id="runNow">LISTO</div>
-          <div class="run-status-title" id="runNowTitle">Cargando batería…</div>
+          <div class="run-status" id="runNow" style="color:var(--amber,#ffb000);">OFFLINE</div>
+          <div class="run-status-title" id="runNowTitle">Entrypoint backend apagado post-hackathon &mdash; las pruebas reportar&aacute;n FAIL por falta de conexi&oacute;n al worker.</div>
         </div>
         <div class="bar-track"><div class="bar-fill" id="runProgressFill"></div></div>
 
@@ -737,8 +743,8 @@ RETO 2 · CAJA NEGRA · DEMO EN VIVO
           <div class="pane">
             <div class="pane-title">Terminal</div>
             <div class="log-console" id="logConsole">
-              <div class="entry info">[INIT] Consola conectada a https://caja-negra-reemplazo.parsec-ai-labs.workers.dev</div>
-              <div class="entry ok">[AUTH] Bearer token activo. Presiona EJECUTAR BATERÍA.</div>
+              <div class="entry info">[INIT] Consola configurada para https://caja-negra-reemplazo.parsec-ai-labs.workers.dev</div>
+              <div class="entry warn" style="color:var(--amber,#ffb000);">[AVISO] Entrypoint backend apagado post-hackathon. Las pruebas marcar&aacute;n FAIL por desconexi&oacute;n.</div>
             </div>
           </div>
         </div>

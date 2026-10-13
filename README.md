@@ -41,7 +41,9 @@ original, incluidos sus errores tipográficos históricos.
 - **Bitácora de sondas (LOG):** <a href="https://movingparticle.github.io/reto-caja-negra/LOG.html" target="_blank" rel="noopener noreferrer">https://movingparticle.github.io/reto-caja-negra/LOG.html</a>
 - **English version:** <a href="https://movingparticle.github.io/reto-caja-negra/en/" target="_blank" rel="noopener noreferrer">https://movingparticle.github.io/reto-caja-negra/en/</a>
 - **Entrypoint de producción (Cloudflare Workers):**
-  <a href="https://caja-negra-reemplazo.parsec-ai-labs.workers.dev" target="_blank" rel="noopener noreferrer">https://caja-negra-reemplazo.parsec-ai-labs.workers.dev</a>
+  <a href="https://caja-negra-reemplazo.parsec-ai-labs.workers.dev" target="_blank" rel="noopener noreferrer">https://caja-negra-reemplazo.parsec-ai-labs.workers.dev</a> *(Actualmente apagado post-hackathon)*
+
+> ⚠ **Aclaración sobre la demo en vivo:** El entrypoint backend (`caja-negra-reemplazo.parsec-ai-labs.workers.dev`) se encuentra actualmente **apagado / fuera de línea** al haber culminado el hackathon. Por este motivo, al ejecutar la batería de pruebas en la demo interactiva web (`demo.html`), las peticiones reportarán `FAIL` por falta de conexión al worker (`NET_ERR`). Todo el código fuente, la máquina de estados determinista y los tests locales (`npm test`, 34/34 aprobados) se encuentran 100% funcionales y reproducibles en local.
 
 > El reemplazo **no llama** al servicio original ni a otro reemplazo: es 100% autónomo.
 
